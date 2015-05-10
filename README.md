@@ -2,7 +2,9 @@
 
 a colorful reimplementation of the ls command.
 
-![examples](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/ls.png)
+![usage](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/usage.png)
+
+![example01](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/example01.png)
 
 ## Installation
 
