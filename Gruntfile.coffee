@@ -52,6 +52,7 @@ module.exports = (grunt) ->
 
     grunt.registerTask 'build',     [ 'bumpup', 'salt', 'coffee' ]
     grunt.registerTask 'default',   [ 'build' ]
+    grunt.registerTask 'publish',   [ 'bumpup', 'shell:publish' ]
 
 # npm install --save-dev grunt
 # npm install --save-dev grunt-contrib-watch
