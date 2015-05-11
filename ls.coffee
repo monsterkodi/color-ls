@@ -1,7 +1,7 @@
 #!/usr/bin/env coffee  
 log  = console.log
 prof = require './coffee/prof'
-str  = require './coffee/str'
+# str  = require './coffee/str'
 
 prof 'start', 'ls'
 ansi   = require 'ansi-256-colors'
@@ -111,6 +111,7 @@ colors =
     '_size':    { b: [fg(0,0,2)], kB: [fg(0,0,4), fg(0,0,2)], MB: [fg(1,1,5), fg(0,0,3)], TB: [fg(4,4,5), fg(2,2,5)] } 
     '_users':   { root:  fg(3,0,0), default: fg(1,0,1) }
     '_groups':  { wheel: fg(1,0,0), staff: fg(0,1,0), admin: fg(1,1,0), default: fg(1,0,1) }
+    '_error':   [ bold+BG(5,0,0)+fg(5,5,0), bold+BG(5,0,0)+fg(5,5,5) ]
     '_rights':  
                   'r+': bold+BW(1)+fg(1,1,1)
                   'r-': reset+BW(1) 
@@ -124,49 +125,7 @@ try
     colors['_users'][username] = fg(0,4,0)
 catch
     username = ""
-    
-###
- 0000000   0000000   00000000   000000000
-000       000   000  000   000     000   
-0000000   000   000  0000000       000   
-     000  000   000  000   000     000   
-0000000    0000000   000   000     000   
-###
-    
-sort = (list, stats, exts=[]) ->
-    l = _.zip list, stats, [0...list.length], (exts.length > 0 and exts or [0...list.length])
-    if args.kind
-        if exts == [] then return list
-        l.sort((a,b) -> 
-            if a[3] > b[3] then return 1 
-            if a[3] < b[3] then return -1
-            if args.time
-                m = moment(a[1].mtime)
-                if m.isAfter(b[1].mtime) then return 1
-                if m.isBefore(b[1].mtime) then return -1
-            if args.size
-                if a[1].size > b[1].size then return 1
-                if a[1].size < b[1].size then return -1
-            if a[2] > b[2] then return 1
-            -1)
-    else if args.time
-        l.sort((a,b) -> 
-            m = moment(a[1].mtime)
-            if m.isAfter(b[1].mtime) then return 1
-            if m.isBefore(b[1].mtime) then return -1
-            if args.size
-                if a[1].size > b[1].size then return 1
-                if a[1].size < b[1].size then return -1
-            if a[2] > b[2] then return 1
-            -1)
-    else if args.size
-        l.sort((a,b) -> 
-            if a[1].size > b[1].size then return 1
-            if a[1].size < b[1].size then return -1
-            if a[2] > b[2] then return 1
-            -1)
-    _.unzip(l)[0]
-    
+        
 ###
 00000000   00000000   000  000   000  000000000
 000   000  000   000  000  0000  000     000   
@@ -174,6 +133,9 @@ sort = (list, stats, exts=[]) ->
 000        000   000  000  000  0000     000   
 000        000   000  000  000   000     000   
 ###
+    
+log_error = () -> 
+    log " " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 and (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) or '') + " " + reset    
     
 linkString = (file)      -> reset + fw(1) + fg(1,0,1) + " ► " + fg(4,0,4) + fs.readlinkSync(file)
 nameString = (name, ext) -> " " + colors[colors[ext]? and ext or '_default'][0] + name + reset
@@ -243,6 +205,48 @@ rightsString = (stat) ->
     gr = rwxString(stat.mode, 1) + " "
     ro = rwxString(stat.mode, 0) + " "
     ur + gr + ro + reset
+     
+###
+ 0000000   0000000   00000000   000000000
+000       000   000  000   000     000   
+0000000   000   000  0000000       000   
+     000  000   000  000   000     000   
+0000000    0000000   000   000     000   
+###
+    
+sort = (list, stats, exts=[]) ->
+    l = _.zip list, stats, [0...list.length], (exts.length > 0 and exts or [0...list.length])
+    if args.kind
+        if exts == [] then return list
+        l.sort((a,b) -> 
+            if a[3] > b[3] then return 1 
+            if a[3] < b[3] then return -1
+            if args.time
+                m = moment(a[1].mtime)
+                if m.isAfter(b[1].mtime) then return 1
+                if m.isBefore(b[1].mtime) then return -1
+            if args.size
+                if a[1].size > b[1].size then return 1
+                if a[1].size < b[1].size then return -1
+            if a[2] > b[2] then return 1
+            -1)
+    else if args.time
+        l.sort((a,b) -> 
+            m = moment(a[1].mtime)
+            if m.isAfter(b[1].mtime) then return 1
+            if m.isBefore(b[1].mtime) then return -1
+            if args.size
+                if a[1].size > b[1].size then return 1
+                if a[1].size < b[1].size then return -1
+            if a[2] > b[2] then return 1
+            -1)
+    else if args.size
+        l.sort((a,b) -> 
+            if a[1].size > b[1].size then return 1
+            if a[1].size < b[1].size then return -1
+            if a[2] > b[2] then return 1
+            -1)
+    _.unzip(l)[0]
      
 ###
 00000000  000  000      00000000   0000000
@@ -393,7 +397,7 @@ listDir = (p) ->
     catch error
         msg = error.message
         msg = "permission denied" if _s.startsWith(msg, "EACCES")
-        log " " + BG(5,0,0)+" "+fg(5,5,0)+bold+msg+" "+reset
+        log_error msg
     
 ###
 00     00   0000000   000  000   000
@@ -403,13 +407,20 @@ listDir = (p) ->
 000   000  000   000  000  000   000
 ###
                 
-fileArgs = args.paths.filter( (f) -> not fs.statSync(f).isDirectory() )                
-if fileArgs.length > 0
+pathstats = args.paths.map (f) ->
+    try 
+         [f, fs.statSync(f)]
+    catch error
+        log_error 'no such file: ', f
+        []
+                
+filestats = pathstats.filter( (f) -> f.length and not f[1].isDirectory() )                
+if filestats.length > 0
     log reset
-    listFiles(process.cwd(), fileArgs)
+    listFiles process.cwd(), filestats.map( (s) -> s[0] )
     
-for p in args.paths.filter( (f) -> fs.statSync(f).isDirectory() )
-    listDir(p)
+for p in pathstats.filter( (f) -> f.length and f[1].isDirectory() )
+    listDir p[0]
     
 log ""
 if args.stats

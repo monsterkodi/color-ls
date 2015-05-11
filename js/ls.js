@@ -1,10 +1,8 @@
-var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, fileArgs, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, moment, nameString, ownerName, ownerString, p, path, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, stats, str, timeString, username, util, vsprintf;
+var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, stats, timeString, username, util, vsprintf;
 
 log = console.log;
 
 prof = require('./coffee/prof');
-
-str = require('./coffee/str');
 
 prof('start', 'ls');
 
@@ -213,6 +211,7 @@ colors = {
     admin: fg(1, 1, 0),
     "default": fg(1, 0, 1)
   },
+  '_error': [bold + BG(5, 0, 0) + fg(5, 5, 0), bold + BG(5, 0, 0) + fg(5, 5, 5)],
   '_rights': {
     'r+': bold + BW(1) + fg(1, 1, 1),
     'r-': reset + BW(1),
@@ -229,6 +228,113 @@ try {
 } catch (_error) {
   username = "";
 }
+
+
+/*
+00000000   00000000   000  000   000  000000000
+000   000  000   000  000  0000  000     000   
+00000000   0000000    000  000 0 000     000   
+000        000   000  000  000  0000     000   
+000        000   000  000  000   000     000
+ */
+
+log_error = function() {
+  return log(" " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 && (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) || '') + " " + reset);
+};
+
+linkString = function(file) {
+  return reset + fw(1) + fg(1, 0, 1) + " ► " + fg(4, 0, 4) + fs.readlinkSync(file);
+};
+
+nameString = function(name, ext) {
+  return " " + colors[(colors[ext] != null) && ext || '_default'][0] + name + reset;
+};
+
+dotString = function(ext) {
+  return colors[(colors[ext] != null) && ext || '_default'][1] + "." + reset;
+};
+
+extString = function(ext) {
+  return dotString(ext) + colors[(colors[ext] != null) && ext || '_default'][2] + ext + reset;
+};
+
+dirString = function(name, ext) {
+  c = name && '_dir' || '_.dir';
+  return colors[c][0] + (name && " " + name || "") + (ext ? colors['_dir'][1] + '.' + colors['_dir'][2] + ext : "") + " ";
+};
+
+sizeString = function(stat) {
+  if (stat.size < 1000) {
+    return colors['_size']['b'][0] + _s.lpad(stat.size, 10) + " ";
+  } else if (stat.size < 1000000) {
+    if (args.pretty) {
+      return colors['_size']['kB'][0] + _s.lpad((stat.size / 1000).toFixed(0), 7) + " " + colors['_size']['kB'][1] + "kB ";
+    } else {
+      return colors['_size']['kB'][0] + _s.lpad(stat.size, 10) + " ";
+    }
+  } else if (stat.size < 1000000000) {
+    if (args.pretty) {
+      return colors['_size']['MB'][0] + _s.lpad((stat.size / 1000000).toFixed(1), 7) + " " + colors['_size']['MB'][1] + "MB ";
+    } else {
+      return colors['_size']['MB'][0] + _s.lpad(stat.size, 10) + " ";
+    }
+  } else {
+    if (args.pretty) {
+      return colors['_size']['TB'][0] + _s.lpad((stat.size / 1000000000).toFixed(3), 7) + " " + colors['_size']['TB'][1] + "TB ";
+    } else {
+      return colors['_size']['TB'][0] + _s.lpad(stat.size, 10) + " ";
+    }
+  }
+};
+
+timeString = function(stat) {
+  var col, t;
+  t = moment(stat.mtime);
+  return fw(16) + (args.pretty ? _s.lpad(t.format("D"), 2) : t.format("DD")) + fw(7) + '.' + (args.pretty ? fw(14) + t.format("MMM") + fw(1) + "'" : fw(14) + t.format("MM") + fw(1) + "'") + fw(4) + t.format("YY") + " " + fw(16) + t.format("hh") + (col = fw(7) + ':' + fw(14) + t.format("mm") + (col = fw(1) + ':' + fw(4) + t.format("ss") + " "));
+};
+
+ownerName = function(stat) {
+  try {
+    return require('userid').username(stat.uid);
+  } catch (_error) {
+    return stat.uid;
+  }
+};
+
+groupName = function(stat) {
+  try {
+    return require('userid').groupname(stat.gid);
+  } catch (_error) {
+    return stat.gid;
+  }
+};
+
+ownerString = function(stat) {
+  var gcl, grp, ocl, own;
+  own = ownerName(stat);
+  grp = groupName(stat);
+  ocl = colors['_users'][own];
+  if (!ocl) {
+    ocl = colors['_users']['default'];
+  }
+  gcl = colors['_groups'][grp];
+  if (!gcl) {
+    gcl = colors['_groups']['default'];
+  }
+  return ocl + _s.rpad(own, stats.maxOwnerLength) + " " + gcl + _s.rpad(grp, stats.maxGroupLength);
+};
+
+rwxString = function(mode, i) {
+  return (((mode >> (i * 3)) & 0x4) && colors['_rights']['r+'] + ' r' || colors['_rights']['r-'] + '  ') + (((mode >> (i * 3)) & 0x2) && colors['_rights']['w+'] + ' w' || colors['_rights']['w-'] + '  ') + (((mode >> (i * 3)) & 0x1) && colors['_rights']['x+'] + ' x' || colors['_rights']['x-'] + '  ');
+};
+
+rightsString = function(stat) {
+  var gr, ro, ur;
+  ur = rwxString(stat.mode, 2) + " ";
+  gr = rwxString(stat.mode, 1) + " ";
+  ro = rwxString(stat.mode, 0) + " ";
+  return ur + gr + ro + reset;
+};
 
 
 /*
@@ -325,109 +431,6 @@ sort = function(list, stats, exts) {
     });
   }
   return _.unzip(l)[0];
-};
-
-
-/*
-00000000   00000000   000  000   000  000000000
-000   000  000   000  000  0000  000     000   
-00000000   0000000    000  000 0 000     000   
-000        000   000  000  000  0000     000   
-000        000   000  000  000   000     000
- */
-
-linkString = function(file) {
-  return reset + fw(1) + fg(1, 0, 1) + " ► " + fg(4, 0, 4) + fs.readlinkSync(file);
-};
-
-nameString = function(name, ext) {
-  return " " + colors[(colors[ext] != null) && ext || '_default'][0] + name + reset;
-};
-
-dotString = function(ext) {
-  return colors[(colors[ext] != null) && ext || '_default'][1] + "." + reset;
-};
-
-extString = function(ext) {
-  return dotString(ext) + colors[(colors[ext] != null) && ext || '_default'][2] + ext + reset;
-};
-
-dirString = function(name, ext) {
-  c = name && '_dir' || '_.dir';
-  return colors[c][0] + (name && " " + name || "") + (ext ? colors['_dir'][1] + '.' + colors['_dir'][2] + ext : "") + " ";
-};
-
-sizeString = function(stat) {
-  if (stat.size < 1000) {
-    return colors['_size']['b'][0] + _s.lpad(stat.size, 10) + " ";
-  } else if (stat.size < 1000000) {
-    if (args.pretty) {
-      return colors['_size']['kB'][0] + _s.lpad((stat.size / 1000).toFixed(0), 7) + " " + colors['_size']['kB'][1] + "kB ";
-    } else {
-      return colors['_size']['kB'][0] + _s.lpad(stat.size, 10) + " ";
-    }
-  } else if (stat.size < 1000000000) {
-    if (args.pretty) {
-      return colors['_size']['MB'][0] + _s.lpad((stat.size / 1000000).toFixed(1), 7) + " " + colors['_size']['MB'][1] + "MB ";
-    } else {
-      return colors['_size']['MB'][0] + _s.lpad(stat.size, 10) + " ";
-    }
-  } else {
-    if (args.pretty) {
-      return colors['_size']['TB'][0] + _s.lpad((stat.size / 1000000000).toFixed(3), 7) + " " + colors['_size']['TB'][1] + "TB ";
-    } else {
-      return colors['_size']['TB'][0] + _s.lpad(stat.size, 10) + " ";
-    }
-  }
-};
-
-timeString = function(stat) {
-  var col, t;
-  t = moment(stat.mtime);
-  return fw(16) + (args.pretty ? _s.lpad(t.format("D"), 2) : t.format("DD")) + fw(7) + '.' + (args.pretty ? fw(14) + t.format("MMM") + fw(1) + "'" : fw(14) + t.format("MM") + fw(1) + "'") + fw(4) + t.format("YY") + " " + fw(16) + t.format("hh") + (col = fw(7) + ':' + fw(14) + t.format("mm") + (col = fw(1) + ':' + fw(4) + t.format("ss") + " "));
-};
-
-ownerName = function(stat) {
-  try {
-    return require('userid').username(stat.uid);
-  } catch (_error) {
-    return stat.uid;
-  }
-};
-
-groupName = function(stat) {
-  try {
-    return require('userid').groupname(stat.gid);
-  } catch (_error) {
-    return stat.gid;
-  }
-};
-
-ownerString = function(stat) {
-  var gcl, grp, ocl, own;
-  own = ownerName(stat);
-  grp = groupName(stat);
-  ocl = colors['_users'][own];
-  if (!ocl) {
-    ocl = colors['_users']['default'];
-  }
-  gcl = colors['_groups'][grp];
-  if (!gcl) {
-    gcl = colors['_groups']['default'];
-  }
-  return ocl + _s.rpad(own, stats.maxOwnerLength) + " " + gcl + _s.rpad(grp, stats.maxGroupLength);
-};
-
-rwxString = function(mode, i) {
-  return (((mode >> (i * 3)) & 0x4) && colors['_rights']['r+'] + ' r' || colors['_rights']['r-'] + '  ') + (((mode >> (i * 3)) & 0x2) && colors['_rights']['w+'] + ' w' || colors['_rights']['w-'] + '  ') + (((mode >> (i * 3)) & 0x1) && colors['_rights']['x+'] + ' x' || colors['_rights']['x-'] + '  ');
-};
-
-rightsString = function(stat) {
-  var gr, ro, ur;
-  ur = rwxString(stat.mode, 2) + " ";
-  gr = rwxString(stat.mode, 1) + " ";
-  ro = rwxString(stat.mode, 0) + " ";
-  return ur + gr + ro + reset;
 };
 
 
@@ -623,7 +626,7 @@ listDir = function(p) {
     if (_s.startsWith(msg, "EACCES")) {
       msg = "permission denied";
     }
-    return log(" " + BG(5, 0, 0) + " " + fg(5, 5, 0) + bold + msg + " " + reset);
+    return log_error(msg);
   }
 };
 
@@ -636,21 +639,34 @@ listDir = function(p) {
 000   000  000   000  000  000   000
  */
 
-fileArgs = args.paths.filter(function(f) {
-  return !fs.statSync(f).isDirectory();
+pathstats = args.paths.map(function(f) {
+  var error;
+  try {
+    return [f, fs.statSync(f)];
+  } catch (_error) {
+    error = _error;
+    log_error('no such file: ', f);
+    return [];
+  }
 });
 
-if (fileArgs.length > 0) {
+filestats = pathstats.filter(function(f) {
+  return f.length && !f[1].isDirectory();
+});
+
+if (filestats.length > 0) {
   log(reset);
-  listFiles(process.cwd(), fileArgs);
+  listFiles(process.cwd(), filestats.map(function(s) {
+    return s[0];
+  }));
 }
 
-ref1 = args.paths.filter(function(f) {
-  return fs.statSync(f).isDirectory();
+ref1 = pathstats.filter(function(f) {
+  return f.length && f[1].isDirectory();
 });
 for (j = 0, len = ref1.length; j < len; j++) {
   p = ref1[j];
-  listDir(p);
+  listDir(p[0]);
 }
 
 log("");
