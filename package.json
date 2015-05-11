@@ -1,38 +1,42 @@
 {
-  "name": "color-ls",
-  "version": "0.1.4",
-  "description": "lists files, but more colorful than ls",
-  "main": "ls.coffee",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "monsterkodi",
-  "license": "Public Domain",
-  "bin": {
-    "color-ls": "./bin/color-ls"
-  },
-  "preferGlobal": true,
-  "keywords": [
-    "ls",
-    "commandline",
-    "coffeescript"
-  ],  
-  "dependencies": {
-    "ansi-256-colors": "^1.0.3",
-    "coffee-script": "^1.9.2",
-    "lodash": "^3.8.0",
-    "moment": "^2.10.2",
-    "nomnom": "^1.8.1",
-    "sprintf-js": "^1.0.2",
-    "underscore.string": "^3.0.3",
-    "userid": "^0.1.2"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-bumpup": "^0.6.2",
-    "grunt-contrib-coffee": "^0.13.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-pepper": "^0.4.7",
-    "grunt-shell": "^1.1.2"
-  }
+	"name": "color-ls",
+	"version": "0.1.4",
+	"description": "lists files, but more colorful than ls",
+	"main": "ls.coffee",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "monsterkodi",
+	"license": "Public Domain",
+	"bin": {
+		"color-ls": "./bin/color-ls"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/monsterkodi/color-ls"
+	},
+	"preferGlobal": true,
+	"keywords": [
+		"ls",
+		"commandline",
+		"coffeescript"
+	],
+	"dependencies": {
+		"ansi-256-colors": "^1.0.3",
+		"coffee-script": "^1.9.2",
+		"lodash": "^3.8.0",
+		"moment": "^2.10.2",
+		"nomnom": "^1.8.1",
+		"sprintf-js": "^1.0.2",
+		"underscore.string": "^3.0.3",
+		"userid": "^0.1.2"
+	},
+	"devDependencies": {
+		"grunt": "^0.4.5",
+		"grunt-bumpup": "^0.6.2",
+		"grunt-contrib-coffee": "^0.13.0",
+		"grunt-contrib-watch": "^0.6.1",
+		"grunt-pepper": "^0.4.7",
+		"grunt-shell": "^1.1.2"
+	}
 }
