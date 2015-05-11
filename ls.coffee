@@ -62,7 +62,6 @@ args = require("nomnom")
    .parse()
 
 if args.version
-     color-ls  0 . 1 . 9 
     v = '::package.json:version::'.split('.')
     log bold + BG(0,0,1)+ fw(23) + " co" + BG(0,0,2) + "lo" + BG(0,0,3) + fw(23) + "r" + fg(1,1,5) + "-" + fw(23) + BG(0,0,4) + "ls " +
                BG(0,0,5) + fw(23) + " " + v[0] + " " + BG(0,0,4) + fg(1,1,5) + '.' + BG(0,0,3) + fw(23) + " " + v[1] + " " + BG(0,0,2)  + fg(0,0,5) + '.' + BG(0,0,1)+ fw(23) + " " + v[2] + " "

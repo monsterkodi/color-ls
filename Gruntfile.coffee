@@ -50,6 +50,8 @@ module.exports = (grunt) ->
         shell:
             publish:
                 command: 'npm publish'
+            npmpage:
+                command: 'open https://www.npmjs.com/package/color-ls'
 
     grunt.loadNpmTasks 'grunt-contrib-watch'
     grunt.loadNpmTasks 'grunt-contrib-coffee'
@@ -59,7 +61,7 @@ module.exports = (grunt) ->
 
     grunt.registerTask 'build',     [ 'salt', 'pepper', 'coffee' ]
     grunt.registerTask 'default',   [ 'build' ]
-    grunt.registerTask 'publish',   [ 'bumpup','shell:publish' ]
+    grunt.registerTask 'publish',   [ 'bumpup', 'shell:publish', 'shell:npmpage' ]
 
 # npm install --save-dev grunt
 # npm install --save-dev grunt-contrib-watch
