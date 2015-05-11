@@ -1,4 +1,4 @@
-var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, fileArgs, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, moment, nameString, ownerName, ownerString, p, path, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, stats, str, timeString, username, util;
+var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, fileArgs, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, moment, nameString, ownerName, ownerString, p, path, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, stats, str, timeString, username, util, vsprintf;
 
 log = console.log;
 
@@ -141,11 +141,6 @@ args = require("nomnom").script("color-ls").options({
     flag: true,
     help: "shows color values",
     hidden: true
-  },
-  debug: {
-    flag: true,
-    help: "debug logs",
-    hidden: true
   }
 }).parse();
 
@@ -172,10 +167,6 @@ if (args.long) {
 
 if (!(((ref = args.paths) != null ? ref.length : void 0) > 0)) {
   args.paths = ['.'];
-}
-
-if (args.debug) {
-  log(BW(2) + fw(12) + str(args) + reset);
 }
 
 
@@ -665,5 +656,6 @@ for (j = 0, len = ref1.length; j < len; j++) {
 log("");
 
 if (args.stats) {
-  log(BW(1) + " " + fw(8) + "%d".fmt(stats.num_dirs) + (stats.hidden_dirs && fw(4) + "+" + fw(5) + stats.hidden_dirs || "") + fw(4) + " dirs " + fw(8) + "%d".fmt(stats.num_files) + (stats.hidden_files && fw(4) + "+" + fw(5) + stats.hidden_files || "") + fw(4) + " files " + fw(8) + "%2.1f".fmt(prof('end', 'ls')) + fw(4) + " ms" + " " + reset);
+  vsprintf = require("sprintf-js").vsprintf;
+  log(BW(1) + " " + fw(8) + stats.num_dirs + (stats.hidden_dirs && fw(4) + "+" + fw(5) + stats.hidden_dirs || "") + fw(4) + " dirs " + fw(8) + stats.num_files + (stats.hidden_files && fw(4) + "+" + fw(5) + stats.hidden_files || "") + fw(4) + " files " + fw(8) + vsprintf("%2.1f", prof('end', 'ls')) + fw(4) + " ms" + " " + reset);
 }
