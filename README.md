@@ -24,4 +24,4 @@ npm install -g color-ls
 * currently optimized for dark backgrounds only
 * only a small set of filetypes colorized so far
 * only tested on Mac OS X
-* call your doctor if your eyes start to bleed :)
+* call your doctor if your eyes start bleeding :)
