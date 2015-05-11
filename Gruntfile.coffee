@@ -4,6 +4,13 @@ module.exports = (grunt) ->
     grunt.initConfig
         pkg: grunt.file.readJSON 'package.json'
 
+        pepper:
+            options:
+                template: '::'
+            task:
+                files:
+                    'ls': [ 'ls.coffee' ]
+
         salt:
             options:
                 dryrun:  false
@@ -26,7 +33,7 @@ module.exports = (grunt) ->
                 expand: true,
                 flatten: true,
                 cwd: '.',
-                src: ['ls.coffee'],
+                src: ['.pepper/ls.coffee'],
                 dest: 'js',
                 ext: '.js'
             coffee:
@@ -50,7 +57,7 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks 'grunt-pepper'
     grunt.loadNpmTasks 'grunt-shell'
 
-    grunt.registerTask 'build',     [ 'salt', 'coffee' ]
+    grunt.registerTask 'build',     [ 'salt', 'pepper', 'coffee' ]
     grunt.registerTask 'default',   [ 'build' ]
     grunt.registerTask 'publish',   [ 'bumpup','shell:publish' ]
 

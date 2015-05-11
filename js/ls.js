@@ -1,4 +1,4 @@
-var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, stats, timeString, username, util, vsprintf;
+var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, stats, timeString, username, util, v, vsprintf;
 
 log = console.log;
 
@@ -120,6 +120,12 @@ args = require("nomnom").script("color-ls").options({
     flag: true,
     help: "show statistics"
   },
+  version: {
+    abbr: 'v',
+    flag: true,
+    help: "show version",
+    hidden: true
+  },
   bytes: {
     flag: true,
     help: 'include size',
@@ -141,6 +147,12 @@ args = require("nomnom").script("color-ls").options({
     hidden: true
   }
 }).parse();
+
+if (args.version) {
+  v = '0.1.9'.split('.');
+  log(bold + BG(0, 0, 1) + fw(23) + " co" + BG(0, 0, 2) + "lo" + BG(0, 0, 3) + fw(23) + "r" + fg(1, 1, 5) + "-" + fw(23) + BG(0, 0, 4) + "ls " + BG(0, 0, 5) + fw(23) + " " + v[0] + " " + BG(0, 0, 4) + fg(1, 1, 5) + '.' + BG(0, 0, 3) + fw(23) + " " + v[1] + " " + BG(0, 0, 2) + fg(0, 0, 5) + '.' + BG(0, 0, 1) + fw(23) + " " + v[2] + " ");
+  process.exit(0);
+}
 
 if (args.values) {
   c = require('./coffee/colors');

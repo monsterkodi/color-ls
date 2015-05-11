@@ -52,13 +52,21 @@ args = require("nomnom")
       time:   { abbr: 't', flag: true, help: 'sort by time' }
       kind:   { abbr: 'k', flag: true, help: 'sort by kind' }
       pretty: { abbr: 'p', flag: true, help: 'pretty size and date' }
-      recurse:{ abbr: 'R', flag: true, help: 'recurse into subdirs'}
+      recurse:{ abbr: 'R', flag: true, help: 'recurse into subdirs' }
       stats:  { abbr: 'i', flag: true, help: "show statistics" }
+      version:{ abbr: 'v', flag: true, help: "show version",              hidden: true }
       bytes:  {            flag: true, help: 'include size',              hidden: true }
       date:   {            flag: true, help: 'include modification date', hidden: true }
       colors: {            flag: true, help: "shows available colors",    hidden: true }
       values: {            flag: true, help: "shows color values",        hidden: true }
    .parse()
+
+if args.version
+     color-ls  0 . 1 . 9 
+    v = '::package.json:version::'.split('.')
+    log bold + BG(0,0,1)+ fw(23) + " co" + BG(0,0,2) + "lo" + BG(0,0,3) + fw(23) + "r" + fg(1,1,5) + "-" + fw(23) + BG(0,0,4) + "ls " +
+               BG(0,0,5) + fw(23) + " " + v[0] + " " + BG(0,0,4) + fg(1,1,5) + '.' + BG(0,0,3) + fw(23) + " " + v[1] + " " + BG(0,0,2)  + fg(0,0,5) + '.' + BG(0,0,1)+ fw(23) + " " + v[2] + " "
+    process.exit 0
 
 if args.values
     c = require './coffee/colors'
