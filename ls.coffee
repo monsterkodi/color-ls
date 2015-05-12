@@ -431,10 +431,10 @@ for p in pathstats.filter( (f) -> f.length and f[1].isDirectory() )
     
 log ""
 if args.stats
-    vsprintf = require("sprintf-js").vsprintf
+    sprintf = require("sprintf-js").sprintf
     log BW(1) + " " +
     fw(8) + stats.num_dirs + (stats.hidden_dirs and fw(4) + "+" + fw(5) + (stats.hidden_dirs) or "") + fw(4) + " dirs " + 
     fw(8) + stats.num_files + (stats.hidden_files and fw(4) + "+" + fw(5) + (stats.hidden_files) or "") + fw(4) + " files " + 
-    fw(8) + vsprintf("%2.1f", prof('end', 'ls')) + fw(4) + " ms" + " " +
+    fw(8) + sprintf("%2.1f", prof('end', 'ls')) + fw(4) + " ms" + " " +
     reset   
          

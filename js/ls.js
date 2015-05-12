@@ -1,4 +1,4 @@
-var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, stats, timeString, username, util, v, vsprintf;
+var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, sprintf, stats, timeString, username, util, v;
 
 log = console.log;
 
@@ -149,7 +149,7 @@ args = require("nomnom").script("color-ls").options({
 }).parse();
 
 if (args.version) {
-  v = '0.1.9'.split('.');
+  v = '0.1.11'.split('.');
   log(bold + BG(0, 0, 1) + fw(23) + " co" + BG(0, 0, 2) + "lo" + BG(0, 0, 3) + fw(23) + "r" + fg(1, 1, 5) + "-" + fw(23) + BG(0, 0, 4) + "ls " + BG(0, 0, 5) + fw(23) + " " + v[0] + " " + BG(0, 0, 4) + fg(1, 1, 5) + '.' + BG(0, 0, 3) + fw(23) + " " + v[1] + " " + BG(0, 0, 2) + fg(0, 0, 5) + '.' + BG(0, 0, 1) + fw(23) + " " + v[2] + " ");
   process.exit(0);
 }
@@ -684,6 +684,6 @@ for (j = 0, len = ref1.length; j < len; j++) {
 log("");
 
 if (args.stats) {
-  vsprintf = require("sprintf-js").vsprintf;
-  log(BW(1) + " " + fw(8) + stats.num_dirs + (stats.hidden_dirs && fw(4) + "+" + fw(5) + stats.hidden_dirs || "") + fw(4) + " dirs " + fw(8) + stats.num_files + (stats.hidden_files && fw(4) + "+" + fw(5) + stats.hidden_files || "") + fw(4) + " files " + fw(8) + vsprintf("%2.1f", prof('end', 'ls')) + fw(4) + " ms" + " " + reset);
+  sprintf = require("sprintf-js").sprintf;
+  log(BW(1) + " " + fw(8) + stats.num_dirs + (stats.hidden_dirs && fw(4) + "+" + fw(5) + stats.hidden_dirs || "") + fw(4) + " dirs " + fw(8) + stats.num_files + (stats.hidden_files && fw(4) + "+" + fw(5) + stats.hidden_files || "") + fw(4) + " files " + fw(8) + sprintf("%2.1f", prof('end', 'ls')) + fw(4) + " ms" + " " + reset);
 }
