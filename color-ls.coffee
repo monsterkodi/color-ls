@@ -1,7 +1,6 @@
 #!/usr/bin/env coffee  
 log  = console.log
 prof = require './coffee/prof'
-# str  = require './coffee/str'
 
 prof 'start', 'ls'
 ansi   = require 'ansi-256-colors'
@@ -26,6 +25,7 @@ stats = # counters for (hidden) dirs/files
     hidden_files:   0
     maxOwnerLength: 0
     maxGroupLength: 0
+    brokenLinks:    []
 
 ###
  0000000   00000000    0000000    0000000
@@ -112,6 +112,7 @@ colors =
     '_default': [      fw(15),     fw(1),     fw(6) ]
     '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), fg(2,2,5) ]
     '_.dir':    [ bold+BG(0,0,1)+fw(23), fg(1,1,5), fg(2,2,5) ]
+    '_link':    { 'arrow': fg(1,0,1), 'path': fg(4,0,4), 'broken': BG(5,0,0)+fg(5,5,0) }
     '_arrow':     fw(1)
     '_header':  [ bold+BW(2)+fg(3,2,0),  fw(4), bold+BW(2)+fg(5,5,0) ]  
     #
@@ -144,7 +145,7 @@ catch
 log_error = () -> 
     log " " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 and (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) or '') + " " + reset    
     
-linkString = (file)      -> reset + fw(1) + fg(1,0,1) + " ► " + fg(4,0,4) + fs.readlinkSync(file)
+linkString = (file)      -> reset + fw(1) + colors['_link']['arrow'] + " ► " + colors['_link'][(file in stats.brokenLinks) and 'broken' or 'path'] + fs.readlinkSync(file)
 nameString = (name, ext) -> " " + colors[colors[ext]? and ext or '_default'][0] + name + reset
 dotString  = (      ext) -> colors[colors[ext]? and ext or '_default'][1] + "." + reset
 extString  = (      ext) -> dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
@@ -297,8 +298,12 @@ listFiles = (p, files) ->
             link  = lstat.isSymbolicLink()
             stat  = link and fs.statSync(file) or lstat
         catch
-            # log 'failed: ' + file
-            return
+            if link
+                stat = lstat
+                stats.brokenLinks.push file
+            else
+                log_error 'can\'t read file:', file, link
+                return
             
         d    = path.parse file
         ext  = d.ext.substr(1)
@@ -318,7 +323,7 @@ listFiles = (p, files) ->
                 s += sizeString stat
             if args.date
                 s += timeString stat
-            if stat.isDirectory() 
+            if stat.isDirectory()
                 if not args.files
                     s += dirString name, ext
                     if link 
@@ -328,7 +333,7 @@ listFiles = (p, files) ->
                     stats.num_dirs += 1
                 else
                     stats.hidden_dirs += 1
-            else
+            else # if path is file
                 if not args.dirs
                     s += nameString name, ext
                     if ext 
@@ -398,7 +403,7 @@ listDir = (p) ->
         listFiles(p, fs.readdirSync(p))
         
         if args.recurse
-            for pr in fs.readdirSync(p).filter( (f) -> fs.statSync(path.join(p,f)).isDirectory() )
+            for pr in fs.readdirSync(p).filter( (f) -> fs.lstatSync(path.join(p,f)).isDirectory() )
                 listDir(path.resolve(path.join(p, pr)))
 
     catch error

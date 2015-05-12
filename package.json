@@ -1,6 +1,6 @@
 {
   "name": "color-ls",
-  "version": "0.1.14",
+  "version": "0.2.0",
   "description": "lists files, but more colorful than ls",
   "main": "color-ls.coffee",
   "scripts": {

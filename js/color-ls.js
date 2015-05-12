@@ -1,4 +1,5 @@
-var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, sprintf, stats, timeString, username, util, v;
+var BG, BW, _, _s, ansi, args, bold, c, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, sizeString, sort, sprintf, stats, timeString, username, util, v,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 log = console.log;
 
@@ -42,7 +43,8 @@ stats = {
   hidden_dirs: 0,
   hidden_files: 0,
   maxOwnerLength: 0,
-  maxGroupLength: 0
+  maxGroupLength: 0,
+  brokenLinks: []
 };
 
 
@@ -149,7 +151,7 @@ args = require("nomnom").script("color-ls").options({
 }).parse();
 
 if (args.version) {
-  v = '0.1.14'.split('.');
+  v = '0.2.0'.split('.');
   log(bold + BG(0, 0, 1) + fw(23) + " co" + BG(0, 0, 2) + "lo" + BG(0, 0, 3) + fw(23) + "r" + fg(1, 1, 5) + "-" + fw(23) + BG(0, 0, 4) + "ls " + BG(0, 0, 5) + fw(23) + " " + v[0] + " " + BG(0, 0, 4) + fg(1, 1, 5) + '.' + BG(0, 0, 3) + fw(23) + " " + v[1] + " " + BG(0, 0, 2) + fg(0, 0, 5) + '.' + BG(0, 0, 1) + fw(23) + " " + v[2] + " ");
   process.exit(0);
 }
@@ -205,6 +207,11 @@ colors = {
   '_default': [fw(15), fw(1), fw(6)],
   '_dir': [bold + BG(0, 0, 2) + fw(23), fg(1, 1, 5), fg(2, 2, 5)],
   '_.dir': [bold + BG(0, 0, 1) + fw(23), fg(1, 1, 5), fg(2, 2, 5)],
+  '_link': {
+    'arrow': fg(1, 0, 1),
+    'path': fg(4, 0, 4),
+    'broken': BG(5, 0, 0) + fg(5, 5, 0)
+  },
   '_arrow': fw(1),
   '_header': [bold + BW(2) + fg(3, 2, 0), fw(4), bold + BW(2) + fg(5, 5, 0)],
   '_size': {
@@ -255,7 +262,7 @@ log_error = function() {
 };
 
 linkString = function(file) {
-  return reset + fw(1) + fg(1, 0, 1) + " ► " + fg(4, 0, 4) + fs.readlinkSync(file);
+  return reset + fw(1) + colors['_link']['arrow'] + " ► " + colors['_link'][(indexOf.call(stats.brokenLinks, file) >= 0) && 'broken' || 'path'] + fs.readlinkSync(file);
 };
 
 nameString = function(name, ext) {
@@ -496,7 +503,13 @@ listFiles = function(p, files) {
       link = lstat.isSymbolicLink();
       stat = link && fs.statSync(file) || lstat;
     } catch (_error) {
-      return;
+      if (link) {
+        stat = lstat;
+        stats.brokenLinks.push(file);
+      } else {
+        log_error('can\'t read file:', file, link);
+        return;
+      }
     }
     d = path.parse(file);
     ext = d.ext.substr(1);
@@ -623,7 +636,7 @@ listDir = function(p) {
     listFiles(p, fs.readdirSync(p));
     if (args.recurse) {
       ref1 = fs.readdirSync(p).filter(function(f) {
-        return fs.statSync(path.join(p, f)).isDirectory();
+        return fs.lstatSync(path.join(p, f)).isDirectory();
       });
       results = [];
       for (j = 0, len = ref1.length; j < len; j++) {
