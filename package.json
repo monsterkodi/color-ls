@@ -1,8 +1,8 @@
 {
   "name": "color-ls",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "lists files, but more colorful than ls",
-  "main": "ls.coffee",
+  "main": "color-ls.coffee",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,7 +19,9 @@
   "keywords": [
     "ls",
     "commandline",
-    "coffeescript"
+    "coffeescript",
+    "ansi",
+    "color"
   ],
   "dependencies": {
     "ansi-256-colors": "^1.0.3",

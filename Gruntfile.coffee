@@ -9,7 +9,7 @@ module.exports = (grunt) ->
                 template: '::'
             task:
                 files:
-                    'ls': [ 'ls.coffee' ]
+                    'color-ls': [ 'color-ls.coffee' ]
 
         salt:
             options:
@@ -20,6 +20,11 @@ module.exports = (grunt) ->
                 files:
                     'asciiHeader': ['**/*.coffee']
                     'asciiText':   ['**/*.coffee']
+
+        sugar:
+            version:
+                src:  'publish'
+                dest:  '.sugar_publish'
 
         watch:
           sources:
@@ -33,7 +38,7 @@ module.exports = (grunt) ->
                 expand: true,
                 flatten: true,
                 cwd: '.',
-                src: ['.pepper/ls.coffee'],
+                src: ['.pepper/color-ls.coffee'],
                 dest: 'js',
                 ext: '.js'
             coffee:
@@ -49,8 +54,8 @@ module.exports = (grunt) ->
 
         shell:
             publish:
-                command: 'npm publish'
-            npmpage:
+                command: '/usr/bin/env bash .sugar_publish'
+            open:
                 command: 'open https://www.npmjs.com/package/color-ls'
 
     grunt.loadNpmTasks 'grunt-contrib-watch'
@@ -61,7 +66,7 @@ module.exports = (grunt) ->
 
     grunt.registerTask 'build',     [ 'salt', 'pepper', 'coffee' ]
     grunt.registerTask 'default',   [ 'build' ]
-    grunt.registerTask 'publish',   [ 'bumpup', 'shell:publish', 'shell:npmpage' ]
+    grunt.registerTask 'publish',   [ 'bumpup', 'build', 'sugar:version', 'shell:publish', 'shell:open' ]
 
 # npm install --save-dev grunt
 # npm install --save-dev grunt-contrib-watch

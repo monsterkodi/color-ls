@@ -3,4 +3,4 @@
 var path = require('path');
 var fs   = require('fs');
 
-require(path.join(path.dirname(fs.realpathSync(__filename)), '../js/ls'));
+require(path.join(path.dirname(fs.realpathSync(__filename)), '../js/color-ls'));
