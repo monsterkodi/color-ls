@@ -177,7 +177,7 @@ timeString = (stat) ->
     fw(16) + (if args.pretty then _s.lpad(t.format("D"),2) else t.format("DD")) + fw(7)+'.' + 
     (if args.pretty then fw(14) + t.format("MMM") + fw(1)+"'" else fw(14) + t.format("MM") + fw(1)+"'") +
     fw( 4) + t.format("YY") + " " +
-    fw(16) + t.format("hh") + col = fw(7)+':' + 
+    fw(16) + t.format("HH") + col = fw(7)+':' + 
     fw(14) + t.format("mm") + col = fw(1)+':' +
     fw( 4) + t.format("ss") + " "
     
@@ -437,4 +437,3 @@ if args.stats
     fw(8) + stats.num_files + (stats.hidden_files and fw(4) + "+" + fw(5) + (stats.hidden_files) or "") + fw(4) + " files " + 
     fw(8) + sprintf("%2.1f", prof('end', 'ls')) + fw(4) + " ms" + " " +
     reset   
-         

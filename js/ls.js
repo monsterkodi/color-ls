@@ -149,7 +149,7 @@ args = require("nomnom").script("color-ls").options({
 }).parse();
 
 if (args.version) {
-  v = '0.1.11'.split('.');
+  v = '0.1.12'.split('.');
   log(bold + BG(0, 0, 1) + fw(23) + " co" + BG(0, 0, 2) + "lo" + BG(0, 0, 3) + fw(23) + "r" + fg(1, 1, 5) + "-" + fw(23) + BG(0, 0, 4) + "ls " + BG(0, 0, 5) + fw(23) + " " + v[0] + " " + BG(0, 0, 4) + fg(1, 1, 5) + '.' + BG(0, 0, 3) + fw(23) + " " + v[1] + " " + BG(0, 0, 2) + fg(0, 0, 5) + '.' + BG(0, 0, 1) + fw(23) + " " + v[2] + " ");
   process.exit(0);
 }
@@ -302,7 +302,7 @@ sizeString = function(stat) {
 timeString = function(stat) {
   var col, t;
   t = moment(stat.mtime);
-  return fw(16) + (args.pretty ? _s.lpad(t.format("D"), 2) : t.format("DD")) + fw(7) + '.' + (args.pretty ? fw(14) + t.format("MMM") + fw(1) + "'" : fw(14) + t.format("MM") + fw(1) + "'") + fw(4) + t.format("YY") + " " + fw(16) + t.format("hh") + (col = fw(7) + ':' + fw(14) + t.format("mm") + (col = fw(1) + ':' + fw(4) + t.format("ss") + " "));
+  return fw(16) + (args.pretty ? _s.lpad(t.format("D"), 2) : t.format("DD")) + fw(7) + '.' + (args.pretty ? fw(14) + t.format("MMM") + fw(1) + "'" : fw(14) + t.format("MM") + fw(1) + "'") + fw(4) + t.format("YY") + " " + fw(16) + t.format("HH") + (col = fw(7) + ':' + fw(14) + t.format("mm") + (col = fw(1) + ':' + fw(4) + t.format("ss") + " "));
 };
 
 ownerName = function(stat) {
