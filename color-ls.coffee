@@ -99,6 +99,8 @@ colors =
     'py':       [ bold+fg(0,2,0),  fg(0,1,0), fg(0,1,0) ]
     'rb':       [ bold+fg(4,0,0),  fg(1,0,0), fg(1,0,0) ] 
     'json':     [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ] 
+    'cson':     [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ] 
+    'plist':    [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ] 
     'js':       [ bold+fg(5,0,5),  fg(1,0,1), fg(1,0,1) ] 
     'cpp':      [ bold+fg(5,4,0),  fw(1),     fg(1,1,0) ] 
     'h':        [      fg(3,1,0),  fw(1),     fg(1,1,0) ] 

@@ -151,7 +151,7 @@ args = require("nomnom").script("color-ls").options({
 }).parse();
 
 if (args.version) {
-  v = '0.2.1'.split('.');
+  v = '0.2.2'.split('.');
   log(bold + BG(0, 0, 1) + fw(23) + " co" + BG(0, 0, 2) + "lo" + BG(0, 0, 3) + fw(23) + "r" + fg(1, 1, 5) + "-" + fw(23) + BG(0, 0, 4) + "ls " + BG(0, 0, 5) + fw(23) + " " + v[0] + " " + BG(0, 0, 4) + fg(1, 1, 5) + '.' + BG(0, 0, 3) + fw(23) + " " + v[1] + " " + BG(0, 0, 2) + fg(0, 0, 5) + '.' + BG(0, 0, 1) + fw(23) + " " + v[2] + " ");
   process.exit(0);
 }
@@ -195,6 +195,8 @@ colors = {
   'py': [bold + fg(0, 2, 0), fg(0, 1, 0), fg(0, 1, 0)],
   'rb': [bold + fg(4, 0, 0), fg(1, 0, 0), fg(1, 0, 0)],
   'json': [bold + fg(4, 0, 4), fg(1, 0, 1), fg(1, 0, 1)],
+  'cson': [bold + fg(4, 0, 4), fg(1, 0, 1), fg(1, 0, 1)],
+  'plist': [bold + fg(4, 0, 4), fg(1, 0, 1), fg(1, 0, 1)],
   'js': [bold + fg(5, 0, 5), fg(1, 0, 1), fg(1, 0, 1)],
   'cpp': [bold + fg(5, 4, 0), fw(1), fg(1, 1, 0)],
   'h': [fg(3, 1, 0), fw(1), fg(1, 1, 0)],
