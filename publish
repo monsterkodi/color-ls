@@ -3,3 +3,4 @@ git add .
 git commit -m "version `sds -rp version`" 
 git push 
 npm publish
+npm install -g color-ls
