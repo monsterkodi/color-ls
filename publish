@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 git add .
-git commit -m "version ::package.json:version::" 
+git commit -m "version `sds -rp version`" 
 git push 
 npm publish
