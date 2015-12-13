@@ -1,11 +1,8 @@
 {
   "name": "color-ls",
-  "version": "0.2.3",
+  "version": "1.0.0",
   "description": "lists files, but more colorful than ls",
   "main": "color-ls.coffee",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "monsterkodi",
   "license": "Unlicense",
   "bin": {
@@ -18,10 +15,14 @@
   "preferGlobal": true,
   "keywords": [
     "ls",
+    "cli",
+    "list",
+    "files",
     "commandline",
     "coffeescript",
     "ansi",
-    "color"
+    "color",
+    "colors"
   ],
   "dependencies": {
     "ansi-256-colors": "^1.0.3",
