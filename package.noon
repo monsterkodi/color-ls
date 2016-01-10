@@ -1,5 +1,5 @@
 name            color-ls
-version         1.0.0
+version         1.0.1
 description     lists files, but more colorful than ls
 main            color-ls.coffee
 author          monsterkodi
@@ -22,7 +22,6 @@ keywords
                 colors
 dependencies    
                 ansi-256-colors     ^1.1.0
-                coffee-script       ^1.10.0
                 lodash              ^3.10.1
                 moment              ^2.11.1
                 sprintf-js          ^1.0.3
