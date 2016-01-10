@@ -1,8 +1,11 @@
-#!/usr/bin/env coffee  
-log  = console.log
-prof = require './coffee/prof'
+###
+ 0000000   0000000   000       0000000   00000000           000       0000000
+000       000   000  000      000   000  000   000          000      000     
+000       000   000  000      000   000  0000000    000000  000      0000000 
+000       000   000  000      000   000  000   000          000           000
+ 0000000   0000000   0000000   0000000   000   000          0000000  0000000 
+###
 
-prof 'start', 'ls'
 ansi   = require 'ansi-256-colors'
 fs     = require 'fs'
 path   = require 'path'
@@ -10,6 +13,40 @@ util   = require 'util'
 _s     = require 'underscore.string'
 _      = require 'lodash'
 moment = require 'moment'
+
+log  = console.log
+
+###
+00000000   00000000    0000000   00000000
+000   000  000   000  000   000  000     
+00000000   0000000    000   000  000000  
+000        000   000  000   000  000     
+000        000   000   0000000   000     
+###
+
+start = 0
+token = {}
+
+since = (t) ->
+  diff = process.hrtime token[t]
+  diff[0] * 1000 + diff[1] / 1000000
+  
+prof = () -> 
+    if arguments.length == 2
+        cmd = arguments[0]
+        t = arguments[1]
+    else if arguments.length == 1
+        t = arguments[0]
+        cmd = 'start' 
+
+    start = process.hrtime()
+    if cmd == 'start'
+        token[t] = start
+    else if cmd == 'end'
+        since(t)
+        
+prof 'start', 'ls'
+
 # colors
 bold   = '\x1b[1m'
 reset  = ansi.reset
@@ -35,54 +72,32 @@ stats = # counters for (hidden) dirs/files
 000   000  000   000   0000000   0000000 
 ###
 
-args = require("nomnom")
-   .script("color-ls")
-   .options
-      paths:
-         position: 0
-         help: "the file(s) and/or folder(s) to display"
-         list: true
-      long:   { abbr: 'l', flag: true, help: 'include size and modification date' }
-      owner:  { abbr: 'o', flag: true, help: 'include owner and group' }
-      rights: { abbr: 'r', flag: true, help: 'include rights' }
-      all:    { abbr: 'a', flag: true, help: 'show dot files' }
-      dirs:   { abbr: 'd', flag: true, help: "show only dirs"  }
-      files:  { abbr: 'f', flag: true, help: "show only files" }
-      size:   { abbr: 's', flag: true, help: 'sort by size' }
-      time:   { abbr: 't', flag: true, help: 'sort by time' }
-      kind:   { abbr: 'k', flag: true, help: 'sort by kind' }
-      pretty: { abbr: 'p', flag: true, help: 'pretty size and date' }
-      recurse:{ abbr: 'R', flag: true, help: 'recurse into subdirs' }
-      stats:  { abbr: 'i', flag: true, help: "show statistics" }
-      version:{ abbr: 'v', flag: true, help: "show version",              hidden: true }
-      bytes:  {            flag: true, help: 'include size',              hidden: true }
-      date:   {            flag: true, help: 'include modification date', hidden: true }
-      colors: {            flag: true, help: "shows available colors",    hidden: true }
-      values: {            flag: true, help: "shows color values",        hidden: true }
-   .parse()
+args = require('karg') """
+color-ls
+    paths    . ? the file(s) and/or folder(s) to display . **
+    bytes    . = false . ? include size
+    mdate    . = false . ? include modification date
+    long     . = false . ? include size and date
+    owner    . = false . ? include owner and group
+    rights   . = false . ? include rights
+    all      . = false . ? show dot files
+    dirs     . = false . ? show only dirs
+    files    . = false . ? show only files
+    size     . = false . ? sort by size
+    time     . = false . ? sort by time
+    kind     . = false . ? sort by kind
+    pretty   . = false . ? pretty size and date
+    recurse  . = false . ? recurse into subdirs . - R 
+    stats    . = false . ? show statistics . - i
+version      #{require("#{__dirname}/../package.json").version}    
+"""
 
-if args.version
-    v = '::package.json:version::'.split('.')
-    log bold + BG(0,0,1)+ fw(23) + " co" + BG(0,0,2) + "lo" + BG(0,0,3) + fw(23) + "r" + fg(1,1,5) + "-" + fw(23) + BG(0,0,4) + "ls " +
-               BG(0,0,5) + fw(23) + " " + v[0] + " " + BG(0,0,4) + fg(1,1,5) + '.' + BG(0,0,3) + fw(23) + " " + v[1] + " " + BG(0,0,2)  + fg(0,0,5) + '.' + BG(0,0,1)+ fw(23) + " " + v[2] + " "
-    process.exit 0
-
-if args.values
-    c = require './coffee/colors'
-    c.show_values()
-    process.exit 0
-    
-if args.colors
-    c = require './coffee/colors'
-    c.show()
-    process.exit 0
-    
 if args.size
     args.files = true
 
 if args.long
     args.bytes = true
-    args.date  = true
+    args.mdate = true
 
 args.paths = ['.'] unless args.paths?.length > 0
 
@@ -323,7 +338,7 @@ listFiles = (p, files) ->
                 s += " "
             if args.bytes
                 s += sizeString stat
-            if args.date
+            if args.mdate
                 s += timeString stat
             if stat.isDirectory()
                 if not args.files

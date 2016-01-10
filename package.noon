@@ -1,0 +1,31 @@
+name            color-ls
+version         1.0.0
+description     lists files, but more colorful than ls
+main            color-ls.coffee
+author          monsterkodi
+license         Unlicense
+bin             
+                color-ls    ./bin/color-ls
+repository      
+                type    git
+                url     git://github.com/monsterkodi/color-ls
+preferGlobal    true
+keywords        
+                ls
+                cli
+                list
+                files
+                commandline
+                coffeescript
+                ansi
+                color
+                colors
+dependencies    
+                ansi-256-colors     ^1.1.0
+                coffee-script       ^1.10.0
+                lodash              ^3.10.1
+                moment              ^2.11.1
+                sprintf-js          ^1.0.3
+                underscore.string   ^3.2.2
+                userid              ^0.2.0
+                karg                >=0.1.5

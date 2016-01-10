@@ -1,6 +1,6 @@
 {
   "name": "color-ls",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "lists files, but more colorful than ls",
   "main": "color-ls.coffee",
   "author": "monsterkodi",
@@ -25,21 +25,13 @@
     "colors"
   ],
   "dependencies": {
-    "ansi-256-colors": "^1.0.3",
-    "coffee-script": "^1.9.2",
-    "lodash": "^3.8.0",
-    "moment": "^2.10.2",
-    "nomnom": "^1.8.1",
-    "sprintf-js": "^1.0.2",
-    "underscore.string": "^3.0.3",
-    "userid": "^0.2.0"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-bumpup": "^0.6.2",
-    "grunt-contrib-coffee": "^0.13.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-pepper": "^0.4.7",
-    "grunt-shell": "^1.1.2"
+    "ansi-256-colors": "^1.1.0",
+    "coffee-script": "^1.10.0",
+    "lodash": "^3.10.1",
+    "moment": "^2.11.1",
+    "sprintf-js": "^1.0.3",
+    "underscore.string": "^3.2.2",
+    "userid": "^0.2.0",
+    "karg": ">=0.1.5"
   }
 }
