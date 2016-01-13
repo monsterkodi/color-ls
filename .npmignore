@@ -1,6 +1,5 @@
 test.dir
 coffee
-bin/publish
 img
 .gitignore
 package.noon
