@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-cd "`dirname $0`/.."
-bump
-git add .
-git commit -m "v`sds -rp version`" 
-git push
-npm publish
-npm install -g `sds -rp name`
