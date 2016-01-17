@@ -117,6 +117,7 @@ colors =
     'rb':       [ bold+fg(4,0,0),  fg(1,0,0), fg(1,0,0) ] 
     'json':     [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ] 
     'cson':     [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ] 
+    'noon':     [ bold+fg(4,4,0),  fg(1,1,0), fg(1,1,0) ] 
     'plist':    [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ] 
     'js':       [ bold+fg(5,0,5),  fg(1,0,1), fg(1,0,1) ] 
     'cpp':      [ bold+fg(5,4,0),  fw(1),     fg(1,1,0) ] 
@@ -127,6 +128,7 @@ colors =
     'txt':      [      fw(20),     fw(1),     fw(2) ]
     'md':       [ bold+fw(20),     fw(1),     fw(2) ]
     'markdown': [ bold+fw(20),     fw(1),     fw(2) ]
+    'png':      [ bold+fg(5,0,0),  fg(1,0,0), fg(1,0,0) ] 
     #
     '_default': [      fw(15),     fw(1),     fw(6) ]
     '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), fg(2,2,5) ]
