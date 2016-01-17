@@ -12,6 +12,10 @@
 
 ![example02](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/example02.png)
 
+... find file easily with the filter:
+
+![example02](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/example03.png)
+
 ## Installation
 
 ```shell
