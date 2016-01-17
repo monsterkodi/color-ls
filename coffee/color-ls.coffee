@@ -75,20 +75,20 @@ stats = # counters for (hidden) dirs/files
 args = require('karg') """
 color-ls
     paths    . ? the file(s) and/or folder(s) to display . **
-    bytes    . = false . ? include size
-    mdate    . = false . ? include modification date
-    long     . = false . ? include size and date
-    owner    . = false . ? include owner and group
-    rights   . = false . ? include rights
-    all      . = false . ? show dot files
-    dirs     . = false . ? show only dirs
-    files    . = false . ? show only files
-    size     . = false . ? sort by size
-    time     . = false . ? sort by time
-    kind     . = false . ? sort by kind
-    pretty   . = false . ? pretty size and date
-    recurse  . = false . ? recurse into subdirs . - R 
-    stats    . = false . ? show statistics . - i
+    bytes    . ? include size                 . = false 
+    mdate    . ? include modification date    . = false              
+    long     . ? include size and date        . = false          
+    owner    . ? include owner and group      . = false            
+    rights   . ? include rights               . = false   
+    all      . ? show dot files               . = false   
+    dirs     . ? show only dirs               . = false   
+    files    . ? show only files              . = false    
+    size     . ? sort by size                 . = false 
+    time     . ? sort by time                 . = false 
+    kind     . ? sort by kind                 . = false 
+    pretty   . ? pretty size and date         . = false         
+    recurse  . ? recurse into subdirs . - R   . = false                
+    stats    . ? show statistics . - i        . = false          
 version      #{require("#{__dirname}/../package.json").version}    
 """
 
