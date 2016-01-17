@@ -87,8 +87,10 @@ color-ls
     time     . ? sort by time                 . = false 
     kind     . ? sort by kind                 . = false 
     pretty   . ? pretty size and date         . = false         
-    recurse  . ? recurse into subdirs . - R   . = false                
-    stats    . ? show statistics . - i        . = false          
+    stats    . ? show statistics              . = false . - i
+    recurse  . ? recurse into subdirs         . = false . - R
+    find     . ? filter with a regexp                   . - F
+    
 version      #{require("#{__dirname}/../package.json").version}    
 """
 
@@ -392,7 +394,20 @@ listFiles = (p, files) ->
 listDir = (p) ->
     ps = p
         
-    if args.paths.length == 1 and args.paths[0] == '.' and not args.recurse
+    try
+        files = fs.readdirSync(p)
+        
+    catch error
+        msg = error.message
+        msg = "permission denied" if _s.startsWith(msg, "EACCES")
+        log_error msg
+        
+    if args.find
+        files = files.filter (f) -> 
+            f if RegExp(args.find).test f
+    if args.find and not files.length
+        true
+    else if args.paths.length == 1 and args.paths[0] == '.' and not args.recurse
         log reset
     else
         s = colors['_arrow'] + "►" + colors['_header'][0] + " "
@@ -415,18 +430,13 @@ listDir = (p) ->
         log reset
         log s + " " + reset
         log reset
-        
-    try
-        listFiles(p, fs.readdirSync(p))
-        
-        if args.recurse
-            for pr in fs.readdirSync(p).filter( (f) -> fs.lstatSync(path.join(p,f)).isDirectory() )
-                listDir(path.resolve(path.join(p, pr)))
-
-    catch error
-        msg = error.message
-        msg = "permission denied" if _s.startsWith(msg, "EACCES")
-        log_error msg
+    
+    if files.length  
+        listFiles(p, files)
+    
+    if args.recurse
+        for pr in fs.readdirSync(p).filter( (f) -> fs.lstatSync(path.join(p,f)).isDirectory() )
+            listDir(path.resolve(path.join(p, pr)))
     
 ###
 00     00   0000000   000  000   000
