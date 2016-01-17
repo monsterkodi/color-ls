@@ -12,7 +12,7 @@
 
 ![example02](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/example02.png)
 
-... finds files:
+... also finds files:
 
 ![example02](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/example03.png)
 
