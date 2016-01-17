@@ -128,7 +128,10 @@ colors =
     'txt':      [      fw(20),     fw(1),     fw(2) ]
     'md':       [ bold+fw(20),     fw(1),     fw(2) ]
     'markdown': [ bold+fw(20),     fw(1),     fw(2) ]
+    'sh':       [ bold+fg(5,1,0),  fg(1,0,0), fg(1,0,0) ] 
     'png':      [ bold+fg(5,0,0),  fg(1,0,0), fg(1,0,0) ] 
+    'jpg':      [ bold+fg(0,3,0),  fg(0,1,0), fg(0,1,0) ] 
+    'pxm':      [ bold+fg(1,1,5),  fg(0,0,1), fg(0,0,2) ] 
     #
     '_default': [      fw(15),     fw(1),     fw(6) ]
     '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), fg(2,2,5) ]
