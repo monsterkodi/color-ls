@@ -31,6 +31,6 @@
     "sprintf-js": "^1.0.3",
     "underscore.string": "^3.2.3",
     "userid": "^0.2.0",
-    "karg": ">=0.1.19"
+    "karg": ">=0.1.20"
   }
 }
