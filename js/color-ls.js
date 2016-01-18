@@ -437,7 +437,7 @@
       });
     }
     files.forEach(function(rp) {
-      var d, error2, ext, file, link, lstat, name, s, stat;
+      var error2, ext, file, link, lstat, name, s, stat;
       if (rp[0] === '/') {
         file = path.resolve(rp);
       } else {
@@ -456,11 +456,10 @@
           return;
         }
       }
-      d = path.parse(file);
-      ext = d.ext.substr(1);
-      name = d.name;
+      ext = path.extname(file).substr(1);
+      name = path.basename(file, path.extname(file));
       if (name[0] === '.') {
-        ext = name.substr(1) + d.ext;
+        ext = name.substr(1) + path.extname(file);
         name = '';
       }
       if (name.length || args.all) {

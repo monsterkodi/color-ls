@@ -330,11 +330,10 @@ listFiles = (p, files) ->
                 log_error 'can\'t read file:', file, link
                 return
             
-        d    = path.parse file
-        ext  = d.ext.substr(1)
-        name = d.name
+        ext  = path.extname(file).substr(1)
+        name = path.basename(file, path.extname(file))
         if name[0] == '.'
-            ext = name.substr(1) + d.ext
+            ext = name.substr(1) + path.extname(file)
             name = ''
         if name.length or args.all
             s = " " 
