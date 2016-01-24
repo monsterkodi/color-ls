@@ -1,5 +1,5 @@
 name          color-ls
-version       1.0.6
+version       1.0.7
 description   lists files, but more colorful than ls
 main          color-ls.coffee
 author        monsterkodi
