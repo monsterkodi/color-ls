@@ -1,6 +1,6 @@
 {
   "name": "color-ls",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "lists files, but more colorful than ls",
   "main": "color-ls.coffee",
   "author": "monsterkodi",
@@ -26,11 +26,11 @@
   ],
   "dependencies": {
     "ansi-256-colors": "^1.1.0",
-    "lodash": "^4.0.0",
+    "lodash": "^4.1.0",
     "moment": "^2.11.1",
     "sprintf-js": "^1.0.3",
     "underscore.string": "^3.2.3",
     "userid": "^0.2.0",
-    "karg": ">=0.2.1"
+    "karg": ">=0.3.1"
   }
 }

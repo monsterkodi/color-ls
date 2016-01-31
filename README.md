@@ -1,28 +1,27 @@
-# color-ls
 
-... has a sane set of options: 
+![icon](./img/icon.png)
 
-![usage](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/usage.png)
+![example01](./img/example01.png)
 
-... and produces output like this: 
+### usage
 
-![example01](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/example01.png)
+![usage](./img/usage.png)
 
-... recursion works as well:
+### recursion
 
-![example02](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/example02.png)
+![example02](./img/example02.png)
 
-... also finds files:
+### find files
 
-![example02](https://raw.githubusercontent.com/monsterkodi/color-ls/master/img/example03.png)
+![example02](./img/example03.png)
 
-## Installation
+### install
 
 ```shell
 npm install -g color-ls
 ```
 
-## Notes
+### notes
 
 * needs a terminal with 256 colors
 * currently optimized for dark backgrounds only
