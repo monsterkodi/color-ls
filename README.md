@@ -26,5 +26,5 @@ npm install -g color-ls
 * needs a terminal with 256 colors
 * currently optimized for dark backgrounds only
 * only a small set of filetypes colorized so far
-* only tested on Mac OS X
+* only tested on Mac OS X and Linux
 * call your doctor if your eyes start bleeding :)
