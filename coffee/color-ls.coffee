@@ -1,10 +1,8 @@
-###
- 0000000   0000000   000       0000000   00000000           000       0000000
-000       000   000  000      000   000  000   000          000      000     
-000       000   000  000      000   000  0000000    000000  000      0000000 
-000       000   000  000      000   000  000   000          000           000
- 0000000   0000000   0000000   0000000   000   000          0000000  0000000 
-###
+#  0000000   0000000   000       0000000   00000000           000       0000000
+# 000       000   000  000      000   000  000   000          000      000     
+# 000       000   000  000      000   000  0000000    000000  000      0000000 
+# 000       000   000  000      000   000  000   000          000           000
+#  0000000   0000000   0000000   0000000   000   000          0000000  0000000 
 
 ansi   = require 'ansi-256-colors'
 fs     = require 'fs'
@@ -13,16 +11,13 @@ util   = require 'util'
 _s     = require 'underscore.string'
 _      = require 'lodash'
 moment = require 'moment'
+log    = console.log
 
-log  = console.log
-
-###
-00000000   00000000    0000000   00000000
-000   000  000   000  000   000  000     
-00000000   0000000    000   000  000000  
-000        000   000  000   000  000     
-000        000   000   0000000   000     
-###
+# 00000000   00000000    0000000   00000000
+# 000   000  000   000  000   000  000     
+# 00000000   0000000    000   000  000000  
+# 000        000   000  000   000  000     
+# 000        000   000   0000000   000     
 
 start = 0
 token = {}
@@ -64,32 +59,31 @@ stats = # counters for (hidden) dirs/files
     maxGroupLength: 0
     brokenLinks:    []
 
-###
- 0000000   00000000    0000000    0000000
-000   000  000   000  000        000     
-000000000  0000000    000  0000  0000000 
-000   000  000   000  000   000       000
-000   000  000   000   0000000   0000000 
-###
+#  0000000   00000000    0000000    0000000
+# 000   000  000   000  000        000     
+# 000000000  0000000    000  0000  0000000 
+# 000   000  000   000  000   000       000
+# 000   000  000   000   0000000   0000000 
 
 args = require('karg') """
 color-ls
-    paths    . ? the file(s) and/or folder(s) to display . **
-    bytes    . ? include size                 . = false 
-    mdate    . ? include modification date    . = false              
-    long     . ? include size and date        . = false          
-    owner    . ? include owner and group      . = false            
-    rights   . ? include rights               . = false   
-    all      . ? show dot files               . = false   
-    dirs     . ? show only dirs               . = false   
-    files    . ? show only files              . = false    
-    size     . ? sort by size                 . = false 
-    time     . ? sort by time                 . = false 
-    kind     . ? sort by kind                 . = false 
-    pretty   . ? pretty size and date         . = true         
-    stats    . ? show statistics              . = false . - i
-    recurse  . ? recurse into subdirs         . = false . - R
-    find     . ? filter with a regexp                   . - F
+    paths         . ? the file(s) and/or folder(s) to display . **
+    bytes         . ? include size                    . = false 
+    mdate         . ? include modification date       . = false              
+    long          . ? include size and date           . = false          
+    owner         . ? include owner and group         . = false            
+    rights        . ? include rights                  . = false   
+    all           . ? show dot files                  . = false
+    dirs          . ? show only dirs                  . = false   
+    files         . ? show only files                 . = false    
+    size          . ? sort by size                    . = false 
+    time          . ? sort by time                    . = false 
+    kind          . ? sort by kind                    . = false 
+    pretty        . ? pretty size and date            . = true         
+    stats         . ? show statistics                 . = false . - i
+    recurse       . ? recurse into subdirs            . = false . - R
+    find          . ? filter with a regexp                      . - F
+    alphabetical  . ! don't group dirs before files   . = false . - A
     
 version      #{require("#{__dirname}/../package.json").version}    
 """
@@ -103,13 +97,11 @@ if args.long
 
 args.paths = ['.'] unless args.paths?.length > 0
 
-###
- 0000000   0000000   000       0000000   00000000    0000000
-000       000   000  000      000   000  000   000  000     
-000       000   000  000      000   000  0000000    0000000 
-000       000   000  000      000   000  000   000       000
- 0000000   0000000   0000000   0000000   000   000  0000000 
-###
+#  0000000   0000000   000       0000000   00000000    0000000
+# 000       000   000  000      000   000  000   000  000     
+# 000       000   000  000      000   000  0000000    0000000 
+# 000       000   000  000      000   000  000   000       000
+#  0000000   0000000   0000000   0000000   000   000  0000000 
 
 colors = 
     'coffee':   [ bold+fg(4,4,0),  fg(1,1,0), fg(1,1,0) ] 
@@ -136,7 +128,7 @@ colors =
     #
     '_default': [      fw(15),     fw(1),     fw(6) ]
     '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), fg(2,2,5) ]
-    '_.dir':    [ bold+BG(0,0,1)+fw(23), fg(1,1,5), fg(2,2,5) ]
+    '_.dir':    [ bold+BG(0,0,1)+fw(23), bold+BG(0,0,1)+fg(1,1,5), bold+BG(0,0,1)+fg(2,2,5) ]
     '_link':    { 'arrow': fg(1,0,1), 'path': fg(4,0,4), 'broken': BG(5,0,0)+fg(5,5,0) }
     '_arrow':     fw(1)
     '_header':  [ bold+BW(2)+fg(3,2,0),  fw(4), bold+BW(2)+fg(5,5,0) ]  
@@ -159,13 +151,11 @@ try
 catch
     username = ""
         
-###
-00000000   00000000   000  000   000  000000000
-000   000  000   000  000  0000  000     000   
-00000000   0000000    000  000 0 000     000   
-000        000   000  000  000  0000     000   
-000        000   000  000  000   000     000   
-###
+# 00000000   00000000   000  000   000  000000000
+# 000   000  000   000  000  0000  000     000   
+# 00000000   0000000    000  000 0 000     000   
+# 000        000   000  000  000  0000     000   
+# 000        000   000  000  000   000     000   
     
 log_error = () -> 
     log " " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 and (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) or '') + " " + reset    
@@ -176,8 +166,7 @@ dotString  = (      ext) -> colors[colors[ext]? and ext or '_default'][1] + "." 
 extString  = (      ext) -> dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
 dirString  = (name, ext) -> 
     c = name and '_dir' or '_.dir'
-    colors[c][0] + (name and " " + name or "") + 
-    (if ext then colors['_dir'][1] + '.' + colors['_dir'][2] + ext else "") + " "
+    colors[c][0] + (name and (" " + name) or "") + (if ext then colors[c][1] + '.' + colors[c][2] + ext else "") + " "
         
 sizeString = (stat) -> 
     if stat.size < 1000
@@ -239,13 +228,11 @@ rightsString = (stat) ->
     ro = rwxString(stat.mode, 0) + " "
     ur + gr + ro + reset
      
-###
- 0000000   0000000   00000000   000000000
-000       000   000  000   000     000   
-0000000   000   000  0000000       000   
-     000  000   000  000   000     000   
-0000000    0000000   000   000     000   
-###
+#  0000000   0000000   00000000   000000000
+# 000       000   000  000   000     000   
+# 0000000   000   000  0000000       000   
+#      000  000   000  000   000     000   
+# 0000000    0000000   000   000     000   
     
 sort = (list, stats, exts=[]) ->
     l = _.zip list, stats, [0...list.length], (exts.length > 0 and exts or [0...list.length])
@@ -281,15 +268,14 @@ sort = (list, stats, exts=[]) ->
             -1)
     _.unzip(l)[0]
      
-###
-00000000  000  000      00000000   0000000
-000       000  000      000       000     
-000000    000  000      0000000   0000000 
-000       000  000      000            000
-000       000  0000000  00000000  0000000 
-###
+# 00000000  000  000      00000000   0000000
+# 000       000  000      000       000     
+# 000000    000  000      0000000   0000000 
+# 000       000  000      000            000
+# 000       000  0000000  00000000  0000000 
         
 listFiles = (p, files) ->
+    alph = [] if args.alphabetical
     dirs = [] # visible dirs
     fils = [] # visible files
     dsts = [] # dir stats
@@ -315,11 +301,11 @@ listFiles = (p, files) ->
                 
     files.forEach (rp) -> 
         if rp[0] == '/'
-            file = path.resolve(rp)
+            file  = path.resolve rp
         else
-            file  = path.join(p, rp)
+            file  = path.join p, rp
         try    
-            lstat = fs.lstatSync(file)
+            lstat = fs.lstatSync file
             link  = lstat.isSymbolicLink()
             stat  = link and fs.statSync(file) or lstat
         catch
@@ -331,17 +317,17 @@ listFiles = (p, files) ->
                 return
             
         ext  = path.extname(file).substr(1)
-        name = path.basename(file, path.extname(file))
+        name = path.basename(file, path.extname file)
         if name[0] == '.'
-            ext = name.substr(1) + path.extname(file)
+            ext = name.substr(1) + path.extname file
             name = ''
         if name.length or args.all
             s = " " 
             if args.rights
-                s += rightsString(stat)
+                s += rightsString stat
                 s += " "                
             if args.owner
-                s += ownerString(stat)
+                s += ownerString stat
                 s += " "
             if args.bytes
                 s += sizeString stat
@@ -353,6 +339,7 @@ listFiles = (p, files) ->
                     if link 
                         s += linkString file
                     dirs.push s+reset
+                    alph.push s+reset if args.alphabetical
                     dsts.push stat
                     stats.num_dirs += 1
                 else
@@ -365,6 +352,7 @@ listFiles = (p, files) ->
                     if link 
                         s += linkString file
                     fils.push s+reset
+                    alph.push s+reset if args.alphabetical
                     fsts.push stat
                     exts.push ext
                     stats.num_files += 1
@@ -381,20 +369,18 @@ listFiles = (p, files) ->
             dirs = sort dirs, dsts
         if fils.length
             fils = sort fils, fsts, exts
-            
-    for d in dirs
-        log d
-                    
-    for f in fils
-        log f
-            
-###
-0000000    000  00000000 
-000   000  000  000   000
-000   000  000  0000000  
-000   000  000  000   000
-0000000    000  000   000
-###
+    
+    if args.alphabetical
+        log p for p in alph
+    else
+        log d for d in dirs
+        log f for f in fils
+                
+# 0000000    000  00000000 
+# 000   000  000  000   000
+# 000   000  000  0000000  
+# 000   000  000  000   000
+# 0000000    000  000   000
                 
 listDir = (p) ->
     ps = p
@@ -443,13 +429,11 @@ listDir = (p) ->
         for pr in fs.readdirSync(p).filter( (f) -> fs.lstatSync(path.join(p,f)).isDirectory() )
             listDir(path.resolve(path.join(p, pr)))
     
-###
-00     00   0000000   000  000   000
-000   000  000   000  000  0000  000
-000000000  000000000  000  000 0 000
-000 0 000  000   000  000  000  0000
-000   000  000   000  000  000   000
-###
+# 00     00   0000000   000  000   000
+# 000   000  000   000  000  0000  000
+# 000000000  000000000  000  000 0 000
+# 000 0 000  000   000  000  000  0000
+# 000   000  000   000  000  000   000
                 
 pathstats = args.paths.map (f) ->
     try 

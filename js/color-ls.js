@@ -1,12 +1,3 @@
-
-/*
- 0000000   0000000   000       0000000   00000000           000       0000000
-000       000   000  000      000   000  000   000          000      000     
-000       000   000  000      000   000  0000000    000000  000      0000000 
-000       000   000  000      000   000  000   000          000           000
- 0000000   0000000   0000000   0000000   000   000          0000000  0000000
- */
-
 (function() {
   var BG, BW, _, _s, ansi, args, bold, colors, dirString, dotString, error1, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, since, sizeString, sort, sprintf, start, stats, timeString, token, username, util,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -26,15 +17,6 @@
   moment = require('moment');
 
   log = console.log;
-
-
-  /*
-  00000000   00000000    0000000   00000000
-  000   000  000   000  000   000  000     
-  00000000   0000000    000   000  000000  
-  000        000   000  000   000  000     
-  000        000   000   0000000   000
-   */
 
   start = 0;
 
@@ -91,16 +73,7 @@
     brokenLinks: []
   };
 
-
-  /*
-   0000000   00000000    0000000    0000000
-  000   000  000   000  000        000     
-  000000000  0000000    000  0000  0000000 
-  000   000  000   000  000   000       000
-  000   000  000   000   0000000   0000000
-   */
-
-  args = require('karg')("color-ls\n    paths    . ? the file(s) and/or folder(s) to display . **\n    bytes    . ? include size                 . = false \n    mdate    . ? include modification date    . = false              \n    long     . ? include size and date        . = false          \n    owner    . ? include owner and group      . = false            \n    rights   . ? include rights               . = false   \n    all      . ? show dot files               . = false   \n    dirs     . ? show only dirs               . = false   \n    files    . ? show only files              . = false    \n    size     . ? sort by size                 . = false \n    time     . ? sort by time                 . = false \n    kind     . ? sort by kind                 . = false \n    pretty   . ? pretty size and date         . = true         \n    stats    . ? show statistics              . = false . - i\n    recurse  . ? recurse into subdirs         . = false . - R\n    find     . ? filter with a regexp                   . - F\n    \nversion      " + (require(__dirname + "/../package.json").version) + "    ");
+  args = require('karg')("color-ls\n    paths         . ? the file(s) and/or folder(s) to display . **\n    bytes         . ? include size                    . = false \n    mdate         . ? include modification date       . = false              \n    long          . ? include size and date           . = false          \n    owner         . ? include owner and group         . = false            \n    rights        . ? include rights                  . = false   \n    all           . ? show dot files                  . = false\n    dirs          . ? show only dirs                  . = false   \n    files         . ? show only files                 . = false    \n    size          . ? sort by size                    . = false \n    time          . ? sort by time                    . = false \n    kind          . ? sort by kind                    . = false \n    pretty        . ? pretty size and date            . = true         \n    stats         . ? show statistics                 . = false . - i\n    recurse       . ? recurse into subdirs            . = false . - R\n    find          . ? filter with a regexp                      . - F\n    alphabetical  . ! don't group dirs before files   . = false . - A\n    \nversion      " + (require(__dirname + "/../package.json").version) + "    ");
 
   if (args.size) {
     args.files = true;
@@ -114,15 +87,6 @@
   if (!(((ref = args.paths) != null ? ref.length : void 0) > 0)) {
     args.paths = ['.'];
   }
-
-
-  /*
-   0000000   0000000   000       0000000   00000000    0000000
-  000       000   000  000      000   000  000   000  000     
-  000       000   000  000      000   000  0000000    0000000 
-  000       000   000  000      000   000  000   000       000
-   0000000   0000000   0000000   0000000   000   000  0000000
-   */
 
   colors = {
     'coffee': [bold + fg(4, 4, 0), fg(1, 1, 0), fg(1, 1, 0)],
@@ -148,7 +112,7 @@
     'tiff': [bold + fg(1, 1, 5), fg(0, 0, 1), fg(0, 0, 2)],
     '_default': [fw(15), fw(1), fw(6)],
     '_dir': [bold + BG(0, 0, 2) + fw(23), fg(1, 1, 5), fg(2, 2, 5)],
-    '_.dir': [bold + BG(0, 0, 1) + fw(23), fg(1, 1, 5), fg(2, 2, 5)],
+    '_.dir': [bold + BG(0, 0, 1) + fw(23), bold + BG(0, 0, 1) + fg(1, 1, 5), bold + BG(0, 0, 1) + fg(2, 2, 5)],
     '_link': {
       'arrow': fg(1, 0, 1),
       'path': fg(4, 0, 4),
@@ -190,15 +154,6 @@
     username = "";
   }
 
-
-  /*
-  00000000   00000000   000  000   000  000000000
-  000   000  000   000  000  0000  000     000   
-  00000000   0000000    000  000 0 000     000   
-  000        000   000  000  000  0000     000   
-  000        000   000  000  000   000     000
-   */
-
   log_error = function() {
     return log(" " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 && (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) || '') + " " + reset);
   };
@@ -222,7 +177,7 @@
   dirString = function(name, ext) {
     var c;
     c = name && '_dir' || '_.dir';
-    return colors[c][0] + (name && " " + name || "") + (ext ? colors['_dir'][1] + '.' + colors['_dir'][2] + ext : "") + " ";
+    return colors[c][0] + (name && (" " + name) || "") + (ext ? colors[c][1] + '.' + colors[c][2] + ext : "") + " ";
   };
 
   sizeString = function(stat) {
@@ -299,15 +254,6 @@
     ro = rwxString(stat.mode, 0) + " ";
     return ur + gr + ro + reset;
   };
-
-
-  /*
-   0000000   0000000   00000000   000000000
-  000       000   000  000   000     000   
-  0000000   000   000  0000000       000   
-       000  000   000  000   000     000   
-  0000000    0000000   000   000     000
-   */
 
   sort = function(list, stats, exts) {
     var j, k, l, ref1, ref2, results, results1;
@@ -397,17 +343,11 @@
     return _.unzip(l)[0];
   };
 
-
-  /*
-  00000000  000  000      00000000   0000000
-  000       000  000      000       000     
-  000000    000  000      0000000   0000000 
-  000       000  000      000            000
-  000       000  0000000  00000000  0000000
-   */
-
   listFiles = function(p, files) {
-    var d, dirs, dsts, exts, f, fils, fsts, j, k, len, len1, results;
+    var alph, d, dirs, dsts, exts, f, fils, fsts, j, k, len, len1, len2, n, results, results1;
+    if (args.alphabetical) {
+      alph = [];
+    }
     dirs = [];
     fils = [];
     dsts = [];
@@ -485,6 +425,9 @@
               s += linkString(file);
             }
             dirs.push(s + reset);
+            if (args.alphabetical) {
+              alph.push(s + reset);
+            }
             dsts.push(stat);
             return stats.num_dirs += 1;
           } else {
@@ -500,6 +443,9 @@
               s += linkString(file);
             }
             fils.push(s + reset);
+            if (args.alphabetical) {
+              alph.push(s + reset);
+            }
             fsts.push(stat);
             exts.push(ext);
             return stats.num_files += 1;
@@ -523,26 +469,26 @@
         fils = sort(fils, fsts, exts);
       }
     }
-    for (j = 0, len = dirs.length; j < len; j++) {
-      d = dirs[j];
-      log(d);
+    if (args.alphabetical) {
+      results = [];
+      for (j = 0, len = alph.length; j < len; j++) {
+        p = alph[j];
+        results.push(log(p));
+      }
+      return results;
+    } else {
+      for (k = 0, len1 = dirs.length; k < len1; k++) {
+        d = dirs[k];
+        log(d);
+      }
+      results1 = [];
+      for (n = 0, len2 = fils.length; n < len2; n++) {
+        f = fils[n];
+        results1.push(log(f));
+      }
+      return results1;
     }
-    results = [];
-    for (k = 0, len1 = fils.length; k < len1; k++) {
-      f = fils[k];
-      results.push(log(f));
-    }
-    return results;
   };
-
-
-  /*
-  0000000    000  00000000 
-  000   000  000  000   000
-  000   000  000  0000000  
-  000   000  000  000   000
-  0000000    000  000   000
-   */
 
   listDir = function(p) {
     var error, error2, files, j, len, msg, pn, pr, ps, ref1, results, s, sp;
@@ -610,15 +556,6 @@
       return results;
     }
   };
-
-
-  /*
-  00     00   0000000   000  000   000
-  000   000  000   000  000  0000  000
-  000000000  000000000  000  000 0 000
-  000 0 000  000   000  000  000  0000
-  000   000  000   000  000  000   000
-   */
 
   pathstats = args.paths.map(function(f) {
     var error, error2;
