@@ -133,7 +133,7 @@ colors =
     '_arrow':     fw(1)
     '_header':  [ bold+BW(2)+fg(3,2,0),  fw(4), bold+BW(2)+fg(5,5,0) ]  
     #
-    '_size':    { b: [fg(0,0,2)], kB: [fg(0,0,4), fg(0,0,2)], MB: [fg(1,1,5), fg(0,0,3)], TB: [fg(4,4,5), fg(2,2,5)] } 
+    '_size':    { b: [fg(0,0,2)], kB: [fg(0,0,4), fg(0,0,2)], MB: [fg(1,1,5), fg(0,0,3)], GB: [fg(4,4,5), fg(2,2,5)], TB: [fg(4,4,5), fg(2,2,5)] } 
     '_users':   { root:  fg(3,0,0), default: fg(1,0,1) }
     '_groups':  { wheel: fg(1,0,0), staff: fg(0,1,0), admin: fg(1,1,0), default: fg(1,0,1) }
     '_error':   [ bold+BG(5,0,0)+fg(5,5,0), bold+BG(5,0,0)+fg(5,5,5) ]
@@ -181,9 +181,14 @@ sizeString = (stat) ->
             colors['_size']['MB'][0] + _s.lpad((stat.size / 1000000).toFixed(1), 7) + " " + colors['_size']['MB'][1] + "MB "
         else
             colors['_size']['MB'][0] + _s.lpad(stat.size, 10) + " "
+    else if stat.size < 1000000000000
+        if args.pretty 
+            colors['_size']['GB'][0] + _s.lpad((stat.size / 1000000000).toFixed(1), 7) + " " + colors['_size']['GB'][1] + "GB "
+        else
+            colors['_size']['GB'][0] + _s.lpad(stat.size, 10) + " "
     else 
         if args.pretty 
-            colors['_size']['TB'][0] + _s.lpad((stat.size / 1000000000).toFixed(3), 7) + " " + colors['_size']['TB'][1] + "TB "
+            colors['_size']['TB'][0] + _s.lpad((stat.size / 1000000000000).toFixed(3), 7) + " " + colors['_size']['TB'][1] + "TB "
         else
             colors['_size']['TB'][0] + _s.lpad(stat.size, 10) + " "
     

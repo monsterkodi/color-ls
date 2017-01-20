@@ -1,5 +1,5 @@
 (function() {
-  var BG, BW, _, _s, ansi, args, bold, colors, dirString, dotString, error1, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, since, sizeString, sort, sprintf, start, stats, timeString, token, username, util,
+  var BG, BW, _, _s, ansi, args, bold, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, since, sizeString, sort, sprintf, start, stats, timeString, token, username, util,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   ansi = require('ansi-256-colors');
@@ -124,6 +124,7 @@
       b: [fg(0, 0, 2)],
       kB: [fg(0, 0, 4), fg(0, 0, 2)],
       MB: [fg(1, 1, 5), fg(0, 0, 3)],
+      GB: [fg(4, 4, 5), fg(2, 2, 5)],
       TB: [fg(4, 4, 5), fg(2, 2, 5)]
     },
     '_users': {
@@ -195,9 +196,15 @@
       } else {
         return colors['_size']['MB'][0] + _s.lpad(stat.size, 10) + " ";
       }
+    } else if (stat.size < 1000000000000) {
+      if (args.pretty) {
+        return colors['_size']['GB'][0] + _s.lpad((stat.size / 1000000000).toFixed(1), 7) + " " + colors['_size']['GB'][1] + "GB ";
+      } else {
+        return colors['_size']['GB'][0] + _s.lpad(stat.size, 10) + " ";
+      }
     } else {
       if (args.pretty) {
-        return colors['_size']['TB'][0] + _s.lpad((stat.size / 1000000000).toFixed(3), 7) + " " + colors['_size']['TB'][1] + "TB ";
+        return colors['_size']['TB'][0] + _s.lpad((stat.size / 1000000000000).toFixed(3), 7) + " " + colors['_size']['TB'][1] + "TB ";
       } else {
         return colors['_size']['TB'][0] + _s.lpad(stat.size, 10) + " ";
       }
@@ -211,19 +218,17 @@
   };
 
   ownerName = function(stat) {
-    var error2;
     try {
       return require('userid').username(stat.uid);
-    } catch (error2) {
+    } catch (error1) {
       return stat.uid;
     }
   };
 
   groupName = function(stat) {
-    var error2;
     try {
       return require('userid').groupname(stat.gid);
-    } catch (error2) {
+    } catch (error1) {
       return stat.gid;
     }
   };
@@ -355,7 +360,7 @@
     exts = [];
     if (args.owner) {
       files.forEach(function(rp) {
-        var error2, file, gl, ol, stat;
+        var file, gl, ol, stat;
         if (rp[0] === '/') {
           file = path.resolve(rp);
         } else {
@@ -371,13 +376,13 @@
           if (gl > stats.maxGroupLength) {
             return stats.maxGroupLength = gl;
           }
-        } catch (error2) {
+        } catch (error1) {
 
         }
       });
     }
     files.forEach(function(rp) {
-      var error2, ext, file, link, lstat, name, s, stat;
+      var ext, file, link, lstat, name, s, stat;
       if (rp[0] === '/') {
         file = path.resolve(rp);
       } else {
@@ -387,7 +392,7 @@
         lstat = fs.lstatSync(file);
         link = lstat.isSymbolicLink();
         stat = link && fs.statSync(file) || lstat;
-      } catch (error2) {
+      } catch (error1) {
         if (link) {
           stat = lstat;
           stats.brokenLinks.push(file);
@@ -491,12 +496,12 @@
   };
 
   listDir = function(p) {
-    var error, error2, files, j, len, msg, pn, pr, ps, ref1, results, s, sp;
+    var error, files, j, len, msg, pn, pr, ps, ref1, results, s, sp;
     ps = p;
     try {
       files = fs.readdirSync(p);
-    } catch (error2) {
-      error = error2;
+    } catch (error1) {
+      error = error1;
       msg = error.message;
       if (_s.startsWith(msg, "EACCES")) {
         msg = "permission denied";
@@ -558,11 +563,11 @@
   };
 
   pathstats = args.paths.map(function(f) {
-    var error, error2;
+    var error;
     try {
       return [f, fs.statSync(f)];
-    } catch (error2) {
-      error = error2;
+    } catch (error1) {
+      error = error1;
       log_error('no such file: ', f);
       return [];
     }
