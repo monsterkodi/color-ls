@@ -2,3 +2,4 @@ node_modules
 test.dir
 Icon?
 *.tiff
+yarn.lock
