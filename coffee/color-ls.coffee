@@ -11,6 +11,7 @@ util   = require 'util'
 _s     = require 'underscore.string'
 _      = require 'lodash'
 moment = require 'moment'
+childp = require 'child_process'
 log    = console.log
 
 # 00000000   00000000    0000000   00000000
@@ -145,11 +146,30 @@ colors =
                   'x+': bold+BW(1)+fg(5,0,0)
                   'x-': reset+BW(1)
 
-try
-    username = require('userid').username(process.getuid())
-    colors['_users'][username] = fg(0,4,0)
-catch
-    username = ""
+userMap = {}
+username = (uid) ->
+    if not userMap[uid]
+        try
+            userMap[uid] = childp.spawnSync("id", ["-un", "#{uid}"]).stdout.toString('utf8').trim()
+        catch e
+            console.log e
+    userMap[uid]
+
+groupMap = null
+groupname = (gid) ->
+    if not groupMap    
+        try
+            gids = childp.spawnSync("id", ["-G"]).stdout.toString('utf8').split(' ')
+            gnms = childp.spawnSync("id", ["-Gn"]).stdout.toString('utf8').split(' ')
+            groupMap = {}
+            for i in [0...gids.length]
+                groupMap[gids[i]] = gnms[i]
+        catch e
+            console.log e
+    groupMap[gid]
+
+colors['_users'][username(process.getuid())] = fg(0,4,0)
+
         
 # 00000000   00000000   000  000   000  000000000
 # 000   000  000   000  000  0000  000     000   
@@ -203,13 +223,13 @@ timeString = (stat) ->
     
 ownerName = (stat) -> 
     try
-        require('userid').username(stat.uid)
+        username stat.uid
     catch
         stat.uid        
     
 groupName = (stat) ->
     try
-        require('userid').groupname(stat.gid)
+        groupname stat.gid
     catch
         stat.gid    
     

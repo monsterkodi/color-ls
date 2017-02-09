@@ -1,5 +1,5 @@
 (function() {
-  var BG, BW, _, _s, ansi, args, bold, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupName, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, since, sizeString, sort, sprintf, start, stats, timeString, token, username, util,
+  var BG, BW, _, _s, ansi, args, bold, childp, colors, dirString, dotString, extString, fg, filestats, fs, fw, groupMap, groupName, groupname, j, len, linkString, listDir, listFiles, log, log_error, moment, nameString, ownerName, ownerString, p, path, pathstats, prof, ref, ref1, reset, rightsString, rwxString, since, sizeString, sort, sprintf, start, stats, timeString, token, userMap, username, util,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   ansi = require('ansi-256-colors');
@@ -15,6 +15,8 @@
   _ = require('lodash');
 
   moment = require('moment');
+
+  childp = require('child_process');
 
   log = console.log;
 
@@ -148,12 +150,42 @@
     }
   };
 
-  try {
-    username = require('userid').username(process.getuid());
-    colors['_users'][username] = fg(0, 4, 0);
-  } catch (error1) {
-    username = "";
-  }
+  userMap = {};
+
+  username = function(uid) {
+    var e;
+    if (!userMap[uid]) {
+      try {
+        userMap[uid] = childp.spawnSync("id", ["-un", "" + uid]).stdout.toString('utf8').trim();
+      } catch (error1) {
+        e = error1;
+        console.log(e);
+      }
+    }
+    return userMap[uid];
+  };
+
+  groupMap = null;
+
+  groupname = function(gid) {
+    var e, gids, gnms, i, j, ref1;
+    if (!groupMap) {
+      try {
+        gids = childp.spawnSync("id", ["-G"]).stdout.toString('utf8').split(' ');
+        gnms = childp.spawnSync("id", ["-Gn"]).stdout.toString('utf8').split(' ');
+        groupMap = {};
+        for (i = j = 0, ref1 = gids.length; 0 <= ref1 ? j < ref1 : j > ref1; i = 0 <= ref1 ? ++j : --j) {
+          groupMap[gids[i]] = gnms[i];
+        }
+      } catch (error1) {
+        e = error1;
+        console.log(e);
+      }
+    }
+    return groupMap[gid];
+  };
+
+  colors['_users'][username(process.getuid())] = fg(0, 4, 0);
 
   log_error = function() {
     return log(" " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 && (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) || '') + " " + reset);
@@ -219,7 +251,7 @@
 
   ownerName = function(stat) {
     try {
-      return require('userid').username(stat.uid);
+      return username(stat.uid);
     } catch (error1) {
       return stat.uid;
     }
@@ -227,7 +259,7 @@
 
   groupName = function(stat) {
     try {
-      return require('userid').groupname(stat.gid);
+      return groupname(stat.gid);
     } catch (error1) {
       return stat.gid;
     }
