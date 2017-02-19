@@ -153,7 +153,7 @@
   userMap = {};
 
   username = function(uid) {
-    var e;
+    var e, error1;
     if (!userMap[uid]) {
       try {
         userMap[uid] = childp.spawnSync("id", ["-un", "" + uid]).stdout.toString('utf8').trim();
@@ -168,7 +168,7 @@
   groupMap = null;
 
   groupname = function(gid) {
-    var e, gids, gnms, i, j, ref1;
+    var e, error1, gids, gnms, i, j, ref1;
     if (!groupMap) {
       try {
         gids = childp.spawnSync("id", ["-G"]).stdout.toString('utf8').split(' ');
@@ -250,6 +250,7 @@
   };
 
   ownerName = function(stat) {
+    var error1;
     try {
       return username(stat.uid);
     } catch (error1) {
@@ -258,6 +259,7 @@
   };
 
   groupName = function(stat) {
+    var error1;
     try {
       return groupname(stat.gid);
     } catch (error1) {
@@ -392,7 +394,7 @@
     exts = [];
     if (args.owner) {
       files.forEach(function(rp) {
-        var file, gl, ol, stat;
+        var error1, file, gl, ol, stat;
         if (rp[0] === '/') {
           file = path.resolve(rp);
         } else {
@@ -414,7 +416,7 @@
       });
     }
     files.forEach(function(rp) {
-      var ext, file, link, lstat, name, s, stat;
+      var error1, ext, file, link, lstat, name, s, stat;
       if (rp[0] === '/') {
         file = path.resolve(rp);
       } else {
@@ -528,7 +530,7 @@
   };
 
   listDir = function(p) {
-    var error, files, j, len, msg, pn, pr, ps, ref1, results, s, sp;
+    var error, error1, files, j, len, msg, pn, pr, ps, ref1, results, s, sp;
     ps = p;
     try {
       files = fs.readdirSync(p);
@@ -595,7 +597,7 @@
   };
 
   pathstats = args.paths.map(function(f) {
-    var error;
+    var error, error1;
     try {
       return [f, fs.statSync(f)];
     } catch (error1) {
