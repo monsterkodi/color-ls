@@ -153,7 +153,7 @@
   userMap = {};
 
   username = function(uid) {
-    var e, error1;
+    var e;
     if (!userMap[uid]) {
       try {
         userMap[uid] = childp.spawnSync("id", ["-un", "" + uid]).stdout.toString('utf8').trim();
@@ -168,7 +168,7 @@
   groupMap = null;
 
   groupname = function(gid) {
-    var e, error1, gids, gnms, i, j, ref1;
+    var e, gids, gnms, i, j, ref1;
     if (!groupMap) {
       try {
         gids = childp.spawnSync("id", ["-G"]).stdout.toString('utf8').split(' ');
@@ -250,7 +250,6 @@
   };
 
   ownerName = function(stat) {
-    var error1;
     try {
       return username(stat.uid);
     } catch (error1) {
@@ -259,7 +258,6 @@
   };
 
   groupName = function(stat) {
-    var error1;
     try {
       return groupname(stat.gid);
     } catch (error1) {
@@ -394,7 +392,7 @@
     exts = [];
     if (args.owner) {
       files.forEach(function(rp) {
-        var error1, file, gl, ol, stat;
+        var file, gl, ol, stat;
         if (rp[0] === '/') {
           file = path.resolve(rp);
         } else {
@@ -416,7 +414,7 @@
       });
     }
     files.forEach(function(rp) {
-      var error1, ext, file, link, lstat, name, s, stat;
+      var ext, file, link, lstat, name, s, stat;
       if (rp[0] === '/') {
         file = path.resolve(rp);
       } else {
@@ -431,7 +429,7 @@
           stat = lstat;
           stats.brokenLinks.push(file);
         } else {
-          log_error('can\'t read file:', file, link);
+          log_error("can't read file:", file, link);
           return;
         }
       }
@@ -441,7 +439,7 @@
         ext = name.substr(1) + path.extname(file);
         name = '';
       }
-      if (name.length || args.all) {
+      if (name.length && name[name.length - 1] !== '\r' || args.all) {
         s = " ";
         if (args.rights) {
           s += rightsString(stat);
@@ -530,7 +528,7 @@
   };
 
   listDir = function(p) {
-    var error, error1, files, j, len, msg, pn, pr, ps, ref1, results, s, sp;
+    var error, files, j, len, msg, pn, pr, ps, ref1, results, s, sp;
     ps = p;
     try {
       files = fs.readdirSync(p);
@@ -597,7 +595,7 @@
   };
 
   pathstats = args.paths.map(function(f) {
-    var error, error1;
+    var error;
     try {
       return [f, fs.statSync(f)];
     } catch (error1) {

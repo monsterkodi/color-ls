@@ -338,7 +338,7 @@ listFiles = (p, files) ->
                 stat = lstat
                 stats.brokenLinks.push file
             else
-                log_error 'can\'t read file:', file, link
+                log_error "can't read file:", file, link
                 return
             
         ext  = path.extname(file).substr(1)
@@ -346,7 +346,7 @@ listFiles = (p, files) ->
         if name[0] == '.'
             ext = name.substr(1) + path.extname file
             name = ''
-        if name.length or args.all
+        if name.length and name[name.length-1] != '\r' or args.all
             s = " " 
             if args.rights
                 s += rightsString stat
