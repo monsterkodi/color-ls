@@ -75,7 +75,7 @@
     brokenLinks: []
   };
 
-  args = require('karg')("color-ls\n    paths         . ? the file(s) and/or folder(s) to display . **\n    bytes         . ? include size                    . = false \n    mdate         . ? include modification date       . = false              \n    long          . ? include size and date           . = false          \n    owner         . ? include owner and group         . = false            \n    rights        . ? include rights                  . = false   \n    all           . ? show dot files                  . = false\n    dirs          . ? show only dirs                  . = false   \n    files         . ? show only files                 . = false    \n    size          . ? sort by size                    . = false \n    time          . ? sort by time                    . = false \n    kind          . ? sort by kind                    . = false \n    pretty        . ? pretty size and date            . = true         \n    stats         . ? show statistics                 . = false . - i\n    recurse       . ? recurse into subdirs            . = false . - R\n    find          . ? filter with a regexp                      . - F\n    alphabetical  . ! don't group dirs before files   . = false . - A\n    \nversion      " + (require(__dirname + "/../package.json").version) + "    ");
+  args = require('karg')("color-ls\n    paths         . ? the file(s) and/or folder(s) to display . **\n    bytes         . ? include size                    . = false\n    mdate         . ? include modification date       . = false\n    long          . ? include size and date           . = false\n    owner         . ? include owner and group         . = false\n    rights        . ? include rights                  . = false\n    all           . ? show dot files                  . = false\n    dirs          . ? show only dirs                  . = false\n    files         . ? show only files                 . = false\n    size          . ? sort by size                    . = false\n    time          . ? sort by time                    . = false\n    kind          . ? sort by kind                    . = false\n    pretty        . ? pretty size and date            . = true\n    stats         . ? show statistics                 . = false . - i\n    recurse       . ? recurse into subdirs            . = false . - R\n    find          . ? filter with a regexp                      . - F\n    alphabetical  . ! don't group dirs before files   . = false . - A\n\nversion      " + (require(__dirname + "/../package.json").version));
 
   if (args.size) {
     args.files = true;
@@ -185,7 +185,9 @@
     return groupMap[gid];
   };
 
-  colors['_users'][username(process.getuid())] = fg(0, 4, 0);
+  if (_.isFunction(process.getuid)) {
+    colors['_users'][username(process.getuid())] = fg(0, 4, 0);
+  }
 
   log_error = function() {
     return log(" " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 && (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) || '') + " " + reset);
