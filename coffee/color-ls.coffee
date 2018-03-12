@@ -6,7 +6,7 @@
  0000000   0000000   0000000   0000000   000   000          0000000  0000000
 ###
 
-{ childp, slash, fs, _ } = require 'kxk'
+{ childp, slash, karg, fs, _ } = require 'kxk'
 
 log    = console.log
 ansi   = require 'ansi-256-colors'
@@ -66,7 +66,7 @@ stats = # counters for (hidden) dirs/files
 # 000   000  000   000  000   000       000
 # 000   000  000   000   0000000   0000000
 
-args = require('karg') """
+args = karg """
 color-ls
     paths         . ? the file(s) and/or folder(s) to display . **
     bytes         . ? include size                    . = false
