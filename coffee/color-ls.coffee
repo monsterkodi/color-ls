@@ -1,18 +1,18 @@
-#  0000000   0000000   000       0000000   00000000           000       0000000
-# 000       000   000  000      000   000  000   000          000      000
-# 000       000   000  000      000   000  0000000    000000  000      0000000
-# 000       000   000  000      000   000  000   000          000           000
-#  0000000   0000000   0000000   0000000   000   000          0000000  0000000
+###
+ 0000000   0000000   000       0000000   00000000           000       0000000
+000       000   000  000      000   000  000   000          000      000
+000       000   000  000      000   000  0000000    000000  000      0000000
+000       000   000  000      000   000  000   000          000           000
+ 0000000   0000000   0000000   0000000   000   000          0000000  0000000
+###
 
+{ childp, slash, fs, _ } = require 'kxk'
+
+log    = console.log
 ansi   = require 'ansi-256-colors'
-fs     = require 'fs'
-path   = require 'path'
 util   = require 'util'
 _s     = require 'underscore.string'
-_      = require 'lodash'
 moment = require 'moment'
-childp = require 'child_process'
-log    = console.log
 
 # 00000000   00000000    0000000   00000000
 # 000   000  000   000  000   000  000
@@ -152,7 +152,7 @@ username = (uid) ->
         try
             userMap[uid] = childp.spawnSync("id", ["-un", "#{uid}"]).stdout.toString('utf8').trim()
         catch e
-            console.log e
+            log e
     userMap[uid]
 
 groupMap = null
@@ -165,12 +165,11 @@ groupname = (gid) ->
             for i in [0...gids.length]
                 groupMap[gids[i]] = gnms[i]
         catch e
-            console.log e
+            log e
     groupMap[gid]
 
 if _.isFunction process.getuid
     colors['_users'][username(process.getuid())] = fg(0,4,0)
-
 
 # 00000000   00000000   000  000   000  000000000
 # 000   000  000   000  000  0000  000     000
@@ -181,7 +180,7 @@ if _.isFunction process.getuid
 log_error = () ->
     log " " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 and (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) or '') + " " + reset
 
-linkString = (file)      -> reset + fw(1) + colors['_link']['arrow'] + " ► " + colors['_link'][(file in stats.brokenLinks) and 'broken' or 'path'] + fs.readlinkSync(file)
+linkString = (file)      -> reset + fw(1) + colors['_link']['arrow'] + " ► " + colors['_link'][(file in stats.brokenLinks) and 'broken' or 'path'] + slash.path fs.readlinkSync(file)
 nameString = (name, ext) -> " " + colors[colors[ext]? and ext or '_default'][0] + name + reset
 dotString  = (      ext) -> colors[colors[ext]? and ext or '_default'][1] + "." + reset
 extString  = (      ext) -> dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
@@ -294,6 +293,13 @@ sort = (list, stats, exts=[]) ->
             -1)
     _.unzip(l)[0]
 
+filter = (p) ->
+    if slash.win()
+        return true if p[0] == '$'
+        return true if p == 'desktop.ini'
+        return true if p.toLowerCase().startsWith 'ntuser'
+    false
+    
 # 00000000  000  000      00000000   0000000
 # 000       000  000      000       000
 # 000000    000  000      0000000   0000000
@@ -310,10 +316,10 @@ listFiles = (p, files) ->
 
     if args.owner
         files.forEach (rp) ->
-            if rp[0] == '/'
-                file = path.resolve(rp)
+            if slash.isAbsolute rp
+                file = slash.resolve rp
             else
-                file  = path.join(p, rp)
+                file  = slash.join p, rp
             try
                 stat = fs.lstatSync(file)
                 ol = ownerName(stat).length
@@ -326,10 +332,14 @@ listFiles = (p, files) ->
                 return
 
     files.forEach (rp) ->
-        if rp[0] == '/'
-            file  = path.resolve rp
+        
+        if slash.isAbsolute rp
+            file  = slash.resolve rp
         else
-            file  = path.join p, rp
+            file  = slash.resolve slash.join p, rp
+            
+        return if filter rp
+        
         try
             lstat = fs.lstatSync file
             link  = lstat.isSymbolicLink()
@@ -339,13 +349,13 @@ listFiles = (p, files) ->
                 stat = lstat
                 stats.brokenLinks.push file
             else
-                log_error "can't read file:", file, link
+                log_error "can't read file: ", file, link
                 return
 
-        ext  = path.extname(file).substr(1)
-        name = path.basename(file, path.extname file)
+        ext  = slash.extname(file).substr(1)
+        name = slash.basename(file, slash.extname file)
         if name[0] == '.'
-            ext = name.substr(1) + path.extname file
+            ext = name.substr(1) + slash.extname file
             name = ''
         if name.length and name[name.length-1] != '\r' or args.all
             s = " "
@@ -409,11 +419,13 @@ listFiles = (p, files) ->
 # 0000000    000  000   000
 
 listDir = (p) ->
+    
+    return if filter p
+    
     ps = p
 
     try
         files = fs.readdirSync(p)
-
     catch error
         msg = error.message
         msg = "permission denied" if _s.startsWith(msg, "EACCES")
@@ -422,13 +434,14 @@ listDir = (p) ->
     if args.find
         files = files.filter (f) ->
             f if RegExp(args.find).test f
+            
     if args.find and not files.length
         true
     else if args.paths.length == 1 and args.paths[0] == '.' and not args.recurse
         log reset
     else
         s = colors['_arrow'] + "►" + colors['_header'][0] + " "
-        ps = path.resolve(ps) if ps[0] != '~'
+        ps = slash.resolve(ps) if ps[0] != '~'
         if _s.startsWith(ps, process.env.PWD)
             ps = "./" + ps.substr(process.env.PWD.length)
         else if _s.startsWith(p, process.env.HOME)
@@ -452,8 +465,8 @@ listDir = (p) ->
         listFiles(p, files)
 
     if args.recurse
-        for pr in fs.readdirSync(p).filter( (f) -> fs.lstatSync(path.join(p,f)).isDirectory() )
-            listDir(path.resolve(path.join(p, pr)))
+        for pr in fs.readdirSync(p).filter( (f) -> fs.lstatSync(slash.join(p,f)).isDirectory() )
+            listDir(slash.resolve(slash.join(p, pr)))
 
 # 00     00   0000000   000  000   000
 # 000   000  000   000  000  0000  000
@@ -463,7 +476,7 @@ listDir = (p) ->
 
 pathstats = args.paths.map (f) ->
     try
-         [f, fs.statSync(f)]
+        [f, fs.statSync(f)]
     catch error
         log_error 'no such file: ', f
         []
