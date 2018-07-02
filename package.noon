@@ -22,7 +22,7 @@ keywords
               colors
 dependencies
               ansi-256-colors  ^1.1.0
-              kxk             ^0.90.0
+              kxk             https://github.com/monsterkodi/kxk.git
               moment          ^2.22.2
               sprintf-js      ^1.1.1
               underscore.string  ^3.3.4
