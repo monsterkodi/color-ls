@@ -180,7 +180,15 @@ if _.isFunction process.getuid
 log_error = () ->
     log " " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 and (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) or '') + " " + reset
 
-linkString = (file)      -> reset + fw(1) + colors['_link']['arrow'] + " ► " + colors['_link'][(file in stats.brokenLinks) and 'broken' or 'path'] + slash.path fs.readlinkSync(file)
+linkString = (file) -> 
+    s  = reset + fw(1) + colors['_link']['arrow'] + " ► " 
+    s += colors['_link'][(file in stats.brokenLinks) and 'broken' or 'path'] 
+    try
+        s += slash.path fs.readlinkSync(file)
+    catch err
+        s += ' ? '
+    s
+
 nameString = (name, ext) -> " " + colors[colors[ext]? and ext or '_default'][0] + name + reset
 dotString  = (      ext) -> colors[colors[ext]? and ext or '_default'][1] + "." + reset
 extString  = (      ext) -> dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
