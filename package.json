@@ -1,6 +1,6 @@
 {
   "name": "color-ls",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "lists files, but more colorful than ls",
   "main": "color-ls.coffee",
   "author": "monsterkodi",
@@ -15,7 +15,6 @@
   "preferGlobal": true,
   "keywords": [
     "ls",
-    "cli",
     "list",
     "files",
     "commandline",
@@ -26,9 +25,9 @@
   ],
   "dependencies": {
     "ansi-256-colors": "^1.1.0",
-    "kxk": "https://github.com/monsterkodi/kxk.git",
-    "moment": "^2.22.2",
-    "sprintf-js": "^1.1.1",
-    "underscore.string": "^3.3.4"
+    "kxk": "^0.277.0",
+    "moment": "^2.24.0",
+    "sprintf-js": "^1.1.2",
+    "underscore.string": "^3.3.5"
   }
 }
