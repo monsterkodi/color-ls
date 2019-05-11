@@ -106,6 +106,7 @@ args.paths = ['.'] unless args.paths?.length > 0
 
 colors =
     'coffee':   [ bold+fg(4,4,0),  fg(1,1,0), fg(1,1,0) ]
+    'koffee':   [ bold+fg(5,5,0),  fg(1,0,0), fg(1,0,0) ]
     'py':       [ bold+fg(0,2,0),  fg(0,1,0), fg(0,1,0) ]
     'rb':       [ bold+fg(4,0,0),  fg(1,0,0), fg(1,0,0) ]
     'json':     [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ]
