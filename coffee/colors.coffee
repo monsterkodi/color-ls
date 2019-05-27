@@ -7,8 +7,6 @@
 ###
 colors = require 'ansi-256-colors'
 
-log = console.log
-
 r = (i=4) -> (i < 6) and colors.fg.getRgb(i, 0, 0) or colors.fg.getRgb(  5, i-5, i-5)
 R = (i=4) -> (i < 6) and colors.bg.getRgb(i, 0, 0) or colors.bg.getRgb(  5, i-5, i-5)
 g = (i=4) -> (i < 6) and colors.fg.getRgb(0, i, 0) or colors.fg.getRgb(i-5,   5, i-5)
@@ -141,5 +139,7 @@ module.exports.show = () ->
 				s += module.exports[fn] + ' ' + fg + ' '
 			log s + reset
 	log " "
-		
-module.exports.show()
+
+if require.main == module
+    module.exports.show()
+    

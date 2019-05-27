@@ -8,7 +8,6 @@
 
 { childp, slash, karg, fs, _ } = require 'kxk'
 
-log    = console.log
 ansi   = require 'ansi-256-colors'
 util   = require 'util'
 _s     = require 'underscore.string'
@@ -127,14 +126,14 @@ colors =
     'jpg':      [ bold+fg(0,3,0),  fg(0,1,0), fg(0,1,0) ]
     'pxm':      [ bold+fg(1,1,5),  fg(0,0,1), fg(0,0,2) ]
     'tiff':     [ bold+fg(1,1,5),  fg(0,0,1), fg(0,0,2) ]
-    #
+
     '_default': [      fw(15),     fw(1),     fw(6) ]
     '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), fg(2,2,5) ]
     '_.dir':    [ bold+BG(0,0,1)+fw(23), bold+BG(0,0,1)+fg(1,1,5), bold+BG(0,0,1)+fg(2,2,5) ]
     '_link':    { 'arrow': fg(1,0,1), 'path': fg(4,0,4), 'broken': BG(5,0,0)+fg(5,5,0) }
     '_arrow':     fw(1)
     '_header':  [ bold+BW(2)+fg(3,2,0),  fw(4), bold+BW(2)+fg(5,5,0) ]
-    #
+
     '_size':    { b: [fg(0,0,2)], kB: [fg(0,0,4), fg(0,0,2)], MB: [fg(1,1,5), fg(0,0,3)], GB: [fg(4,4,5), fg(2,2,5)], TB: [fg(4,4,5), fg(2,2,5)] }
     '_users':   { root:  fg(3,0,0), default: fg(1,0,1) }
     '_groups':  { wheel: fg(1,0,0), staff: fg(0,1,0), admin: fg(1,1,0), default: fg(1,0,1) }
