@@ -6,7 +6,9 @@
  0000000   0000000   0000000   0000000   000   000          0000000  0000000
 ###
 
-{ childp, slash, karg, kstr, fs, _ } = require 'kxk'
+startTime = process.hrtime.bigint()
+
+{ childp, slash, karg, kstr, klog, noon, fs, _ } = require 'kxk'
 
 ansi   = require 'ansi-256-colors'
 util   = require 'util'
@@ -20,10 +22,8 @@ icons  = require './icons'
 # 000        000   000  000   000  000
 # 000        000   000   0000000   000
 
-startTime = process.hrtime.bigint()
 token = {}
 
-# colors
 bold   = '\x1b[1m'
 reset  = ansi.reset
 fg     = ansi.fg.getRgb
@@ -65,8 +65,10 @@ color-ls
     offset        . ? indent short listings           . = false . - O
     info          . ? show statistics                 . = false . - i
     recurse       . ? recurse into subdirs            . = false . - R
+    tree          . ? recurse n levels and indent     . = 0     . - T
     find          . ? filter with a regexp                      . - F
     alphabetical  . ! don't group dirs before files   . = false . - A
+    debug                                             . = false . - D
 
 version      #{require("#{__dirname}/../package.json").version}
 """
@@ -77,6 +79,13 @@ if args.size
 if args.long
     args.bytes = true
     args.mdate = true
+    
+if args.tree > 0
+    args.recurse = true
+    args.offset  = false
+    
+if args.debug
+    klog noon.stringify args, colors:true
 
 args.paths = ['.'] unless args.paths?.length > 0
 
@@ -114,7 +123,7 @@ colors =
     '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), bold+BG(0,0,2)+fg(2,2,5) ]
     '_.dir':    [ bold+BG(0,0,1)+fw(23), bold+BG(0,0,1)+fg(1,1,5), bold+BG(0,0,1)+fg(2,2,5) ]
     '_link':    { 'arrow': fg(1,0,1), 'path': fg(4,0,4), 'broken': BG(5,0,0)+fg(5,5,0) }
-    '_arrow':     fw(1)
+    '_arrow':     BW(2)+fw(0)
     '_header':  [ bold+BW(2)+fg(3,2,0),  fw(4), bold+BW(2)+fg(5,5,0) ]
     '_size':    { b: [fg(0,0,3)], kB: [fg(0,0,5), fg(0,0,3)], MB: [fg(1,1,5), fg(0,0,5)], GB: [fg(4,4,5), fg(2,2,5)], TB: [fg(4,4,5), fg(2,2,5)] }
     '_users':   { root:  fg(3,0,0), default: fg(1,0,1) }
@@ -160,9 +169,11 @@ if _.isFunction process.getuid
 # 000        000   000  000  000   000     000
 
 log_error = () ->
+    
     log " " + colors['_error'][0] + " " + bold + arguments[0] + (arguments.length > 1 and (colors['_error'][1] + [].slice.call(arguments).slice(1).join(' ')) or '') + " " + reset
 
 linkString = (file) -> 
+    
     s  = reset + fw(1) + colors['_link']['arrow'] + " ► " 
     s += colors['_link'][(file in stats.brokenLinks) and 'broken' or 'path'] 
     try
@@ -172,17 +183,22 @@ linkString = (file) ->
     s
 
 nameString = (name, ext) -> 
-    icon = args.nerdy and (colors[colors[ext]? and ext or '_default'][2] + (icons.get(name, ext) ? ' ')) + ' ' or ''
-    " " + icon + colors[colors[ext]? and ext or '_default'][0] + name + reset
     
-dotString  = (      ext) -> 
+    icon = args.nerdy and (colors[colors[ext]? and ext or '_default'][2] + (icons.get(name, ext) ? ' ')) + ' ' or ''
+    # " " + icon + colors[colors[ext]? and ext or '_default'][0] + name + reset
+    icon + colors[colors[ext]? and ext or '_default'][0] + name + reset
+    
+dotString  = (ext) -> 
+    
     colors[colors[ext]? and ext or '_default'][1] + "." + reset
     
 extString  = (name, ext) -> 
+    
     if args.nerdy and name and icons.get(name, ext) then return ''
     dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
     
 dirString  = (name, ext) ->
+    
     c = name and '_dir' or '_.dir'
     icon = args.nerdy and colors[c][2] + ' \uf413' or ''
     icon + colors[c][0] + (name and (" " + name) or " ") + (if ext then colors[c][1] + '.' + colors[c][2] + ext else "") + " "
@@ -321,10 +337,12 @@ sort = (list, stats, exts=[]) ->
     _.unzip(l)[0]
 
 filter = (p) ->
+    
     if slash.win()
         return true if p[0] == '$'
         return true if p == 'desktop.ini'
         return true if p.toLowerCase().startsWith 'ntuser'
+        
     false
     
 # 00000000  000  000      00000000   0000000
@@ -333,7 +351,8 @@ filter = (p) ->
 # 000       000  000      000            000
 # 000       000  0000000  00000000  0000000
 
-listFiles = (p, files) ->
+listFiles = (p, files, depth) ->
+    
     alph = [] if args.alphabetical
     dirs = [] # visible dirs
     fils = [] # visible files
@@ -342,6 +361,7 @@ listFiles = (p, files) ->
     exts = [] # file extensions
 
     if args.owner
+        
         files.forEach (rp) ->
             if slash.isAbsolute rp
                 file = slash.resolve rp
@@ -379,12 +399,15 @@ listFiles = (p, files) ->
                 log_error "can't read file: ", file, link
                 return
 
-        ext  = slash.extname(file).substr(1)
-        name = slash.basename(file, slash.extname file)
+        ext  = slash.ext file
+        name = slash.base file
+        
         if name[0] == '.'
             ext = name.substr(1) + slash.extname file
             name = ''
+            
         if name.length and name[name.length-1] != '\r' or args.all
+            
             s = " "
             if args.rights
                 s += rightsString stat
@@ -397,16 +420,23 @@ listFiles = (p, files) ->
             if args.mdate
                 s += timeString stat
                 
+            if depth
+                s += _.pad '', depth*4
+                
             if s.length == 1 and args.offset
                 s += '       '
                 
             if stat.isDirectory()
                 if not args.files
-                    s += dirString name, ext
-                    if link
-                        s += linkString file
-                    dirs.push s+reset
-                    alph.push s+reset if args.alphabetical
+                    if not args.tree > 0
+                        if name.startsWith './'
+                            name = name[2..]
+                        
+                        s += dirString name, ext
+                        if link
+                            s += linkString file
+                        dirs.push s+reset
+                        alph.push s+reset if args.alphabetical
                     dsts.push stat
                     stats.num_dirs += 1
                 else
@@ -452,6 +482,11 @@ listFiles = (p, files) ->
 listDir = (p) ->
     
     return if filter p
+        
+    if args.tree > 0
+        depth = pathDepth p
+    
+    return if depth > args.tree
     
     ps = p
 
@@ -470,13 +505,18 @@ listDir = (p) ->
         true
     else if args.paths.length == 1 and args.paths[0] == '.' and not args.recurse
         log reset
+    else if args.tree > 0
+        if args.nerdy
+            log _.pad('', depth*4-2) + colors['_dir'][0] + '  ' + slash.basename(ps) + ' ' + reset
+        else
+            log _.pad('', depth*4) + colors['_dir'][0] + slash.basename(ps) + ' ' + reset
     else
-        s = colors['_arrow'] + "►" + colors['_header'][0] + " "
-        ps = slash.resolve(ps) if ps[0] != '~'
-        if _s.startsWith(ps, process.env.PWD)
-            ps = "./" + ps.substr(process.env.PWD.length)
-        else if _s.startsWith(p, process.env.HOME)
-            ps = "~" + p.substr(process.env.HOME.length)
+        s = colors['_arrow'] + " ▶ " + colors['_header'][0]
+        ps = slash.resolve ps if ps[0] != '~'
+        if _s.startsWith ps, process.env.PWD
+            ps = ps.substr process.env.PWD.length+1
+        else if _s.startsWith p, process.env.HOME
+            ps = "~" + p.substr process.env.HOME.length
 
         if ps == '/'
             s += '/'
@@ -493,11 +533,22 @@ listDir = (p) ->
         log reset
 
     if files.length
-        listFiles(p, files)
+        listFiles p, files, depth
 
     if args.recurse
-        for pr in fs.readdirSync(p).filter( (f) -> fs.lstatSync(slash.join(p,f)).isDirectory() )
-            listDir(slash.resolve(slash.join(p, pr)))
+        
+        doRecurse = (f) -> 
+            return false if not args.all and f[0] == '.'
+            slash.isDir slash.join p, f
+            
+        for pr in fs.readdirSync(p).filter doRecurse
+            listDir slash.resolve slash.join p, pr
+            
+pathDepth = (p) ->
+    
+    rel = slash.relative p, process.cwd()
+    return 0 if p == '.'
+    rel.split('/').length
 
 # 00     00   0000000   000  000   000
 # 000   000  000   000  000  0000  000
@@ -513,6 +564,7 @@ pathstats = args.paths.map (f) ->
         []
 
 filestats = pathstats.filter( (f) -> f.length and not f[1].isDirectory() )
+
 if filestats.length > 0
     log reset
     listFiles process.cwd(), filestats.map( (s) -> s[0] )
