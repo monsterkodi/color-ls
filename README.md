@@ -1,19 +1,19 @@
 
-![icon](./img/icon.png)
+![icon](./bin/img/icon.png)
 
-![example01](./img/example01.png)
+![example01](./bin/img/example01.png)
 
 ### usage
 
-![usage](./img/usage.png)
+![usage](./bin/img/usage.png)
 
 ### recursion
 
-![example02](./img/example02.png)
+![example02](./bin/img/example02.png)
 
 ### find files
 
-![example02](./img/example03.png)
+![example02](./bin/img/example03.png)
 
 ### install
 
@@ -23,7 +23,6 @@ npm install -g color-ls
 
 ### notes
 
-* needs a terminal with 256 colors
-* currently optimized for dark backgrounds only
-* only a small set of filetypes colorized so far
-* call your doctor if your eyes start bleeding :)
+* needs a terminal that supports 256 colors
+* optimized for dark backgrounds
+* call a doctor if your eyes start bleeding :)

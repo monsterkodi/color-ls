@@ -12,6 +12,7 @@ ansi   = require 'ansi-256-colors'
 util   = require 'util'
 _s     = require 'underscore.string'
 moment = require 'moment'
+icons  = require './icons'
 
 # 00000000   00000000    0000000   00000000
 # 000   000  000   000  000   000  000
@@ -60,6 +61,7 @@ color-ls
     time          . ? sort by time                    . = false
     kind          . ? sort by kind                    . = false
     pretty        . ? pretty size and date            . = true
+    nerdy         . ? use nerd font icons             . = false
     stats         . ? show statistics                 . = false . - i
     recurse       . ? recurse into subdirs            . = false . - R
     find          . ? filter with a regexp                      . - F
@@ -108,7 +110,7 @@ colors =
     'tiff':     [ bold+fg(1,1,5),  fg(0,0,1), fg(0,0,2) ]
 
     '_default': [      fw(15),     fw(1),     fw(6) ]
-    '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), fg(2,2,5) ]
+    '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), bold+BG(0,0,2)+fg(2,2,5) ]
     '_.dir':    [ bold+BG(0,0,1)+fw(23), bold+BG(0,0,1)+fg(1,1,5), bold+BG(0,0,1)+fg(2,2,5) ]
     '_link':    { 'arrow': fg(1,0,1), 'path': fg(4,0,4), 'broken': BG(5,0,0)+fg(5,5,0) }
     '_arrow':     fw(1)
@@ -168,14 +170,24 @@ linkString = (file) ->
         s += ' ? '
     s
 
-nameString = (name, ext) -> " " + colors[colors[ext]? and ext or '_default'][0] + name + reset
-dotString  = (      ext) -> colors[colors[ext]? and ext or '_default'][1] + "." + reset
-extString  = (      ext) -> dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
+nameString = (name, ext) -> 
+    icon = args.nerdy and (colors[colors[ext]? and ext or '_default'][2] + (icons.get(name, ext) ? ' ')) + ' ' or ''
+    " " + icon + colors[colors[ext]? and ext or '_default'][0] + name + reset
+    
+dotString  = (      ext) -> 
+    colors[colors[ext]? and ext or '_default'][1] + "." + reset
+    
+extString  = (name, ext) -> 
+    if args.nerdy and icons.get(name, ext) then return ''
+    dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
+    
 dirString  = (name, ext) ->
     c = name and '_dir' or '_.dir'
-    colors[c][0] + (name and (" " + name) or "") + (if ext then colors[c][1] + '.' + colors[c][2] + ext else "") + " "
+    icon = args.nerdy and colors[c][2] + ' \uf413' or ''
+    icon + colors[c][0] + (name and (" " + name) or "") + (if ext then colors[c][1] + '.' + colors[c][2] + ext else "") + " "
 
 sizeString = (stat) ->
+    
     if args.pretty and stat.size == 0
         return _s.lpad(' ', 11)
     if stat.size < 1000
@@ -202,6 +214,7 @@ sizeString = (stat) ->
             colors['_size']['TB'][0] + _s.lpad(stat.size, 10) + " "
 
 timeString = (stat) ->
+    
     t = moment(stat.mtime)
     if args.pretty
         age = moment().to(t, true)
@@ -230,18 +243,21 @@ timeString = (stat) ->
         fw( 4) + t.format("ss") + ' '
 
 ownerName = (stat) ->
+    
     try
         username stat.uid
     catch
         stat.uid
 
 groupName = (stat) ->
+    
     try
         groupname stat.gid
     catch
         stat.gid
 
 ownerString = (stat) ->
+    
     own = ownerName(stat)
     grp = groupName(stat)
     ocl = colors['_users'][own]
@@ -251,11 +267,13 @@ ownerString = (stat) ->
     ocl + _s.rpad(own, stats.maxOwnerLength) + " " + gcl + _s.rpad(grp, stats.maxGroupLength)
 
 rwxString = (mode, i) ->
+    
     (((mode >> (i*3)) & 0b100) and colors['_rights']['r+'] + ' r' or colors['_rights']['r-'] + '  ') +
     (((mode >> (i*3)) & 0b010) and colors['_rights']['w+'] + ' w' or colors['_rights']['w-'] + '  ') +
     (((mode >> (i*3)) & 0b001) and colors['_rights']['x+'] + ' x' or colors['_rights']['x-'] + '  ')
 
 rightsString = (stat) ->
+    
     ur = rwxString(stat.mode, 2) + " "
     gr = rwxString(stat.mode, 1) + " "
     ro = rwxString(stat.mode, 0) + " "
@@ -392,7 +410,7 @@ listFiles = (p, files) ->
                 if not args.dirs
                     s += nameString name, ext
                     if ext
-                        s += extString ext
+                        s += extString name, ext
                     if link
                         s += linkString file
                     fils.push s+reset
