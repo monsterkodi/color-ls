@@ -521,7 +521,7 @@ for p in pathstats.filter( (f) -> f.length and f[1].isDirectory() )
     listDir p[0]
 
 log ""
-if args.stats
+if args.info
     sprintf = require("sprintf-js").sprintf
     log BW(1) + " " +
     fw(8) + stats.num_dirs + (stats.hidden_dirs and fw(4) + "+" + fw(5) + (stats.hidden_dirs) or "") + fw(4) + " dirs " +
