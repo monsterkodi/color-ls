@@ -138,6 +138,7 @@ icons =
         'lua':              '\ue620' # 
         'm4a':              '\uf001' # 
         'markdown':         '\uf48a' # 
+        'map':              '\uf278'
         'md':               '\uf48a' # 
         'mkd':              '\uf48a' # 
         'mkv':              '\uf03d' # 

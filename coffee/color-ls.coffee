@@ -62,7 +62,8 @@ color-ls
     kind          . ? sort by kind                    . = false
     pretty        . ? pretty size and date            . = true
     nerdy         . ? use nerd font icons             . = false
-    stats         . ? show statistics                 . = false . - i
+    offset        . ? indent short listings           . = false . - O
+    info          . ? show statistics                 . = false . - i
     recurse       . ? recurse into subdirs            . = false . - R
     find          . ? filter with a regexp                      . - F
     alphabetical  . ! don't group dirs before files   . = false . - A
@@ -178,13 +179,13 @@ dotString  = (      ext) ->
     colors[colors[ext]? and ext or '_default'][1] + "." + reset
     
 extString  = (name, ext) -> 
-    if args.nerdy and icons.get(name, ext) then return ''
+    if args.nerdy and name and icons.get(name, ext) then return ''
     dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
     
 dirString  = (name, ext) ->
     c = name and '_dir' or '_.dir'
     icon = args.nerdy and colors[c][2] + ' \uf413' or ''
-    icon + colors[c][0] + (name and (" " + name) or "") + (if ext then colors[c][1] + '.' + colors[c][2] + ext else "") + " "
+    icon + colors[c][0] + (name and (" " + name) or " ") + (if ext then colors[c][1] + '.' + colors[c][2] + ext else "") + " "
 
 sizeString = (stat) ->
     
@@ -395,6 +396,10 @@ listFiles = (p, files) ->
                 s += sizeString stat
             if args.mdate
                 s += timeString stat
+                
+            if s.length == 1 and args.offset
+                s += '       '
+                
             if stat.isDirectory()
                 if not args.files
                     s += dirString name, ext

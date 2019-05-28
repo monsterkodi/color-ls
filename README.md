@@ -15,6 +15,12 @@
 
 ![example02](./bin/img/example03.png)
 
+### nerd font icons
+
+![nerdy](./bin/img/nerdy.png)
+
+icon map by [lsd](https://github.com/Peltoche/lsd), works only with a [nerd font](https://github.com/ryanoasis/nerd-fonts)
+
 ### install
 
 ```shell
