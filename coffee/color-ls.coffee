@@ -6,7 +6,7 @@
  0000000   0000000   0000000   0000000   000   000          0000000  0000000
 ###
 
-{ childp, slash, karg, fs, _ } = require 'kxk'
+{ childp, slash, karg, kstr, fs, _ } = require 'kxk'
 
 ansi   = require 'ansi-256-colors'
 util   = require 'util'
@@ -19,28 +19,8 @@ moment = require 'moment'
 # 000        000   000  000   000  000
 # 000        000   000   0000000   000
 
-start = 0
+startTime = process.hrtime.bigint()
 token = {}
-
-since = (t) ->
-  diff = process.hrtime token[t]
-  diff[0] * 1000 + diff[1] / 1000000
-
-prof = () ->
-    if arguments.length == 2
-        cmd = arguments[0]
-        t = arguments[1]
-    else if arguments.length == 1
-        t = arguments[0]
-        cmd = 'start'
-
-    start = process.hrtime()
-    if cmd == 'start'
-        token[t] = start
-    else if cmd == 'end'
-        since(t)
-
-prof 'start', 'ls'
 
 # colors
 bold   = '\x1b[1m'
@@ -133,8 +113,7 @@ colors =
     '_link':    { 'arrow': fg(1,0,1), 'path': fg(4,0,4), 'broken': BG(5,0,0)+fg(5,5,0) }
     '_arrow':     fw(1)
     '_header':  [ bold+BW(2)+fg(3,2,0),  fw(4), bold+BW(2)+fg(5,5,0) ]
-
-    '_size':    { b: [fg(0,0,2)], kB: [fg(0,0,4), fg(0,0,2)], MB: [fg(1,1,5), fg(0,0,3)], GB: [fg(4,4,5), fg(2,2,5)], TB: [fg(4,4,5), fg(2,2,5)] }
+    '_size':    { b: [fg(0,0,3)], kB: [fg(0,0,5), fg(0,0,3)], MB: [fg(1,1,5), fg(0,0,5)], GB: [fg(4,4,5), fg(2,2,5)], TB: [fg(4,4,5), fg(2,2,5)] }
     '_users':   { root:  fg(3,0,0), default: fg(1,0,1) }
     '_groups':  { wheel: fg(1,0,0), staff: fg(0,1,0), admin: fg(1,1,0), default: fg(1,0,1) }
     '_error':   [ bold+BG(5,0,0)+fg(5,5,0), bold+BG(5,0,0)+fg(5,5,5) ]
@@ -197,6 +176,8 @@ dirString  = (name, ext) ->
     colors[c][0] + (name and (" " + name) or "") + (if ext then colors[c][1] + '.' + colors[c][2] + ext else "") + " "
 
 sizeString = (stat) ->
+    if args.pretty and stat.size == 0
+        return _s.lpad(' ', 11)
     if stat.size < 1000
         colors['_size']['b'][0] + _s.lpad(stat.size, 10) + " "
     else if stat.size < 1000000
@@ -222,12 +203,31 @@ sizeString = (stat) ->
 
 timeString = (stat) ->
     t = moment(stat.mtime)
-    fw(16) + (if args.pretty then _s.lpad(t.format("D"),2) else t.format("DD")) + fw(7)+'.' +
-    (if args.pretty then fw(14) + t.format("MMM") + fw(1)+"'" else fw(14) + t.format("MM") + fw(1)+"'") +
-    fw( 4) + t.format("YY") + " " +
-    fw(16) + t.format("HH") + col = fw(7)+':' +
-    fw(14) + t.format("mm") + col = fw(1)+':' +
-    fw( 4) + t.format("ss") + " "
+    if args.pretty
+        age = moment().to(t, true)
+        [num, range] = age.split ' '
+        num = '1' if num == 'a'
+        if range == 'few'
+            num = moment().diff t, 'seconds'
+            range = 'seconds'
+            fw(23) + _s.lpad(num, 2) + ' ' + fw(16) + _s.rpad(range, 7) + ' '
+        else if range.startsWith 'year'
+            fw(6) + _s.lpad(num, 2) + ' ' + fw(3) + _s.rpad(range, 7) + ' '
+        else if range.startsWith 'month'
+            fw(8) + _s.lpad(num, 2) + ' ' + fw(4) + _s.rpad(range, 7) + ' '
+        else if range.startsWith 'day'
+            fw(10) + _s.lpad(num, 2) + ' ' + fw(6) + _s.rpad(range, 7) + ' '
+        else if range.startsWith 'hour'
+            fw(15) + _s.lpad(num, 2) + ' ' + fw(8) + _s.rpad(range, 7) + ' '
+        else
+            fw(18) + _s.lpad(num, 2) + ' ' + fw(12) + _s.rpad(range, 7) + ' '
+    else
+        fw(16) + _s.lpad(t.format("DD"),2) + fw(7)+'.' +
+        fw(12) + t.format("MM") + fw(7)+"." +
+        fw( 8) + t.format("YY") + ' ' +
+        fw(16) + t.format("HH") + col = fw(7)+':' +
+        fw(14) + t.format("mm") + col = fw(1)+':' +
+        fw( 4) + t.format("ss") + ' '
 
 ownerName = (stat) ->
     try
@@ -503,5 +503,5 @@ if args.stats
     log BW(1) + " " +
     fw(8) + stats.num_dirs + (stats.hidden_dirs and fw(4) + "+" + fw(5) + (stats.hidden_dirs) or "") + fw(4) + " dirs " +
     fw(8) + stats.num_files + (stats.hidden_files and fw(4) + "+" + fw(5) + (stats.hidden_files) or "") + fw(4) + " files " +
-    fw(8) + sprintf("%2.1f", prof('end', 'ls')) + fw(4) + " ms" + " " +
+    fw(8) + kstr.time(process.hrtime.bigint()-startTime) + " " +
     reset
