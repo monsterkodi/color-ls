@@ -185,8 +185,7 @@ linkString = (file) ->
 nameString = (name, ext) -> 
     
     icon = args.nerdy and (colors[colors[ext]? and ext or '_default'][2] + (icons.get(name, ext) ? ' ')) + ' ' or ''
-    # " " + icon + colors[colors[ext]? and ext or '_default'][0] + name + reset
-    icon + colors[colors[ext]? and ext or '_default'][0] + name + reset
+    " " + icon + colors[colors[ext]? and ext or '_default'][0] + name + reset
     
 dotString  = (ext) -> 
     
@@ -236,7 +235,7 @@ timeString = (stat) ->
     if args.pretty
         age = moment().to(t, true)
         [num, range] = age.split ' '
-        num = '1' if num == 'a'
+        num = '1' if num[0] == 'a'
         if range == 'few'
             num = moment().diff t, 'seconds'
             range = 'seconds'
@@ -296,6 +295,27 @@ rightsString = (stat) ->
     ro = rwxString(stat.mode, 0) + " "
     ur + gr + ro + reset
 
+getPrefix = (stat, depth) ->
+    
+    s = ''
+    if args.rights
+        s += rightsString stat
+        s += " "
+    if args.owner
+        s += ownerString stat
+        s += " "
+    if args.bytes
+        s += sizeString stat
+    if args.mdate
+        s += timeString stat
+        
+    if depth
+        s += _.pad '', depth*4
+        
+    if s.length == 1 and args.offset
+        s += '       '
+    s
+    
 #  0000000   0000000   00000000   000000000
 # 000       000   000  000   000     000
 # 0000000   000   000  0000000       000
@@ -303,7 +323,9 @@ rightsString = (stat) ->
 # 0000000    0000000   000   000     000
 
 sort = (list, stats, exts=[]) ->
+    
     l = _.zip list, stats, [0...list.length], (exts.length > 0 and exts or [0...list.length])
+    
     if args.kind
         if exts == [] then return list
         l.sort((a,b) ->
@@ -408,23 +430,7 @@ listFiles = (p, files, depth) ->
             
         if name.length and name[name.length-1] != '\r' or args.all
             
-            s = " "
-            if args.rights
-                s += rightsString stat
-                s += " "
-            if args.owner
-                s += ownerString stat
-                s += " "
-            if args.bytes
-                s += sizeString stat
-            if args.mdate
-                s += timeString stat
-                
-            if depth
-                s += _.pad '', depth*4
-                
-            if s.length == 1 and args.offset
-                s += '       '
+            s = getPrefix stat, depth
                 
             if stat.isDirectory()
                 if not args.files
@@ -506,10 +512,7 @@ listDir = (p) ->
     else if args.paths.length == 1 and args.paths[0] == '.' and not args.recurse
         log reset
     else if args.tree > 0
-        if args.nerdy
-            log _.pad('', depth*4-2) + colors['_dir'][0] + '  ' + slash.basename(ps) + ' ' + reset
-        else
-            log _.pad('', depth*4) + colors['_dir'][0] + slash.basename(ps) + ' ' + reset
+        log getPrefix(slash.isDir(p), depth-1) + dirString(slash.base(ps), slash.ext(ps)) + reset
     else
         s = colors['_arrow'] + " ▶ " + colors['_header'][0]
         ps = slash.resolve ps if ps[0] != '~'
