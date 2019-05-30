@@ -3,10 +3,6 @@
 
 ![example01](./bin/img/example01.png)
 
-### usage
-
-![usage](./bin/img/usage.png)
-
 ### recursion
 
 ![example02](./bin/img/example02.png)
@@ -20,6 +16,10 @@
 ![nerdy](./bin/img/nerdy.png)
 
 icon map by [lsd](https://github.com/Peltoche/lsd), works only with a [nerd font](https://github.com/ryanoasis/nerd-fonts)
+
+### usage
+
+![usage](./bin/img/usage.png)
 
 ### install
 

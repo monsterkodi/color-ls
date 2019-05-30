@@ -16,12 +16,6 @@ _s     = require 'underscore.string'
 moment = require 'moment'
 icons  = require './icons'
 
-# 00000000   00000000    0000000   00000000
-# 000   000  000   000  000   000  000
-# 00000000   0000000    000   000  000000
-# 000        000   000  000   000  000
-# 000        000   000   0000000   000
-
 token = {}
 
 bold   = '\x1b[1m'
@@ -46,48 +40,61 @@ stats = # counters for (hidden) dirs/files
 # 000   000  000   000  000   000       000
 # 000   000  000   000   0000000   0000000
 
-args = karg """
-color-ls
-    paths         . ? the file(s) and/or folder(s) to display . **
-    bytes         . ? include size                    . = false
-    mdate         . ? include modification date       . = false
-    long          . ? include size and date           . = false
-    owner         . ? include owner and group         . = false
-    rights        . ? include rights                  . = false
-    all           . ? show dot files                  . = false
-    dirs          . ? show only dirs                  . = false
-    files         . ? show only files                 . = false
-    size          . ? sort by size                    . = false
-    time          . ? sort by time                    . = false
-    kind          . ? sort by kind                    . = false
-    pretty        . ? pretty size and date            . = true
-    nerdy         . ? use nerd font icons             . = false
-    offset        . ? indent short listings           . = false . - O
-    info          . ? show statistics                 . = false . - i
-    recurse       . ? recurse into subdirs            . = false . - R
-    tree          . ? recurse n levels and indent     . = 0     . - T
-    find          . ? filter with a regexp                      . - F
-    alphabetical  . ! don't group dirs before files   . = false . - A
-    debug                                             . = false . - D
+if module.parent.id == '.'
 
-version      #{require("#{__dirname}/../package.json").version}
-"""
-
-if args.size
-    args.files = true
-
-if args.long
-    args.bytes = true
-    args.mdate = true
+    args = karg """
+    color-ls
+        paths         . ? the file(s) and/or folder(s) to display . **
+        all           . ? show dot files                  . = false
+        dirs          . ? show only dirs                  . = false
+        files         . ? show only files                 . = false
+        bytes         . ? include size                    . = false
+        mdate         . ? include modification date       . = false
+        long          . ? include size and date           . = false
+        owner         . ? include owner and group         . = false
+        rights        . ? include rights                  . = false
+        size          . ? sort by size                    . = false
+        time          . ? sort by time                    . = false
+        kind          . ? sort by kind                    . = false
+        nerdy         . ? use nerd font icons             . = false
+        pretty        . ? pretty size and age             . = true
+        ignore        . ? don't recurse into              . = node_modules
+        info          . ? show statistics                 . = false . - I
+        alphabetical  . ? don't group dirs before files   . = false . - A
+        offset        . ? indent short listings           . = false . - O
+        recurse       . ? recurse into subdirs            . = false . - R
+        tree          . ? recurse and indent              . = false . - T
+        depth         . ? recursion depth                 . = ∞     . - D
+        find          . ? filter with a regexp                      . - F
+        debug                                             . = false . - X
     
-if args.tree > 0
-    args.recurse = true
-    args.offset  = false
+    version      #{require("#{__dirname}/../package.json").version}
+    """
     
-if args.debug
-    klog noon.stringify args, colors:true
-
-args.paths = ['.'] unless args.paths?.length > 0
+    if args.size
+        args.files = true
+    
+    if args.long
+        args.bytes = true
+        args.mdate = true
+        
+    if args.tree
+        args.recurse = true
+        args.offset  = false
+    
+    if args.dirs and args.files
+        args.dirs = args.files = false
+        
+    args.ignore = args.ignore.split ' '
+        
+    if args.depth == '∞' then args.depth = Infinity
+    else args.depth = Math.max 0, parseInt args.depth
+    if Number.isNaN args.depth then args.depth = 0
+        
+    if args.debug
+        klog noon.stringify args, colors:true
+    
+    args.paths = ['.'] unless args.paths?.length > 0
 
 #  0000000   0000000   000       0000000   00000000    0000000
 # 000       000   000  000      000   000  000   000  000
@@ -358,13 +365,22 @@ sort = (list, stats, exts=[]) ->
             -1)
     _.unzip(l)[0]
 
-filter = (p) ->
+# 000   0000000   000   000   0000000   00000000   00000000  
+# 000  000        0000  000  000   000  000   000  000       
+# 000  000  0000  000 0 000  000   000  0000000    0000000   
+# 000  000   000  000  0000  000   000  000   000  000       
+# 000   0000000   000   000   0000000   000   000  00000000  
+
+ignore = (p) ->
     
     if slash.win()
         return true if p[0] == '$'
         return true if p == 'desktop.ini'
         return true if p.toLowerCase().startsWith 'ntuser'
-        
+    else
+        return true if slash.ext(p) == 'app' 
+    
+    return true if p in args.ignore
     false
     
 # 00000000  000  000      00000000   0000000
@@ -407,7 +423,7 @@ listFiles = (p, files, depth) ->
         else
             file  = slash.resolve slash.join p, rp
             
-        return if filter rp
+        return if ignore rp
         
         try
             lstat = fs.lstatSync file
@@ -434,7 +450,7 @@ listFiles = (p, files, depth) ->
                 
             if stat.isDirectory()
                 if not args.files
-                    if not args.tree > 0
+                    if not args.tree
                         if name.startsWith './'
                             name = name[2..]
                         
@@ -487,12 +503,11 @@ listFiles = (p, files, depth) ->
 
 listDir = (p) ->
     
-    return if filter p
+    return if ignore slash.basename p
         
-    if args.tree > 0
+    if args.recurse
         depth = pathDepth p
-    
-    return if depth > args.tree
+        return if depth > args.depth
     
     ps = p
 
@@ -511,7 +526,7 @@ listDir = (p) ->
         true
     else if args.paths.length == 1 and args.paths[0] == '.' and not args.recurse
         log reset
-    else if args.tree > 0
+    else if args.tree
         log getPrefix(slash.isDir(p), depth-1) + dirString(slash.base(ps), slash.ext(ps)) + reset
     else
         s = colors['_arrow'] + " ▶ " + colors['_header'][0]
@@ -559,27 +574,34 @@ pathDepth = (p) ->
 # 000 0 000  000   000  000  000  0000
 # 000   000  000   000  000  000   000
 
-pathstats = args.paths.map (f) ->
-    try
-        [f, fs.statSync(f)]
-    catch error
-        log_error 'no such file: ', f
-        []
-
-filestats = pathstats.filter( (f) -> f.length and not f[1].isDirectory() )
-
-if filestats.length > 0
-    log reset
-    listFiles process.cwd(), filestats.map( (s) -> s[0] )
-
-for p in pathstats.filter( (f) -> f.length and f[1].isDirectory() )
-    listDir p[0]
-
-log ""
-if args.info
-    sprintf = require("sprintf-js").sprintf
-    log BW(1) + " " +
-    fw(8) + stats.num_dirs + (stats.hidden_dirs and fw(4) + "+" + fw(5) + (stats.hidden_dirs) or "") + fw(4) + " dirs " +
-    fw(8) + stats.num_files + (stats.hidden_files and fw(4) + "+" + fw(5) + (stats.hidden_files) or "") + fw(4) + " files " +
-    fw(8) + kstr.time(process.hrtime.bigint()-startTime) + " " +
-    reset
+main = (args) ->
+    
+    pathstats = args.paths.map (f) ->
+        try
+            [f, fs.statSync(f)]
+        catch error
+            log_error 'no such file: ', f
+            []
+    
+    filestats = pathstats.filter( (f) -> f.length and not f[1].isDirectory() )
+    
+    if filestats.length > 0
+        log reset
+        listFiles process.cwd(), filestats.map( (s) -> s[0] )
+    
+    for p in pathstats.filter( (f) -> f.length and f[1].isDirectory() )
+        listDir p[0]
+    
+    log ""
+    if args.info
+        log BW(1) + " " +
+        fw(8) + stats.num_dirs + (stats.hidden_dirs and fw(4) + "+" + fw(5) + (stats.hidden_dirs) or "") + fw(4) + " dirs " +
+        fw(8) + stats.num_files + (stats.hidden_files and fw(4) + "+" + fw(5) + (stats.hidden_files) or "") + fw(4) + " files " +
+        fw(8) + kstr.time(process.hrtime.bigint()-startTime) + " " +
+        reset
+    
+if args
+    main args
+else
+    module.exports = main
+    

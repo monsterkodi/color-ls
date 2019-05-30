@@ -1,27 +1,34 @@
-name          color-ls
-version       1.7.0
-description   lists files, but more colorful than ls
-main          color-ls.coffee
-author        monsterkodi
-license       Unlicense
+name            color-ls
+version         1.7.0
+description     lists files, but more colorful than ls
+main            ./coffee/color-ls.coffee
+author          monsterkodi
+license         Unlicense
 bin
-              color-ls  ./bin/color-ls
+                color-ls  ./bin/color-ls
+scripts
+                test    ./node_modules/.bin/mocha -c --require koffee/js/register ./coffee/test.coffee
+                watch   ./node_modules/.bin/onchange coffee/test.coffee coffee/color-ls.coffee -- npm run test
 repository
-              type  git
-              url   git://github.com/monsterkodi/color-ls
-preferGlobal  true
+                type  git
+                url   git://github.com/monsterkodi/color-ls
+preferGlobal    true
 keywords
-              ls
-              list
-              files
-              commandline
-              coffeescript
-              ansi
-              color
-              colors
+                ls
+                list
+                files
+                commandline
+                coffeescript
+                ansi
+                color
+                colors
 dependencies
-              ansi-256-colors  ^1.1.0
-              kxk             ^0.294.0
-              moment          ^2.24.0
-              sprintf-js      ^1.1.2
-              underscore.string  ^3.3.5
+                ansi-256-colors  ^1.1.0
+                kxk             ^0.294.0
+                moment          ^2.24.0
+                underscore.string  ^3.3.5
+devDependencies
+                chai      ^4.2.0
+                koffee    ^0.56.0
+                mocha     ^6.1.4
+                onchange  ^6.0.0
