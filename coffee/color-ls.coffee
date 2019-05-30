@@ -8,13 +8,16 @@
 
 startTime = process.hrtime.bigint()
 
-{ childp, slash, karg, kstr, klog, noon, fs, _ } = require 'kxk'
-
-ansi   = require 'ansi-256-colors'
-util   = require 'util'
-_s     = require 'underscore.string'
-moment = require 'moment'
-icons  = require './icons'
+▸profile 'require'
+    ▸profile 'kstr  ' { lpad, rpad } = require 'kxk/js/str'
+    ▸profile '_     ' _      = require 'lodash'
+    ▸profile 'fs    ' fs     = require 'fs'
+    ▸profile 'childp' childp = require 'child_process'
+    ▸profile 'slash ' slash  = require 'kxk/js/slash'
+    ▸profile 'ansi  ' ansi   = require 'ansi-256-colors'
+    ▸profile 'util  ' util   = require 'util'
+    ▸profile 'moment' moment = require 'moment'
+    ▸profile 'icons ' icons  = require './icons'
 
 token = {}
 
@@ -42,6 +45,7 @@ stats = # counters for (hidden) dirs/files
 
 if module.parent.id == '.'
 
+    karg = require 'karg'
     args = karg """
     color-ls
         paths         . ? the file(s) and/or folder(s) to display . **
@@ -92,6 +96,7 @@ if module.parent.id == '.'
     if Number.isNaN args.depth then args.depth = 0
         
     if args.debug
+        { klog, noon } = require 'kxk'
         klog noon.stringify args, colors:true
     
     args.paths = ['.'] unless args.paths?.length > 0
@@ -184,6 +189,7 @@ linkString = (file) ->
     s  = reset + fw(1) + colors['_link']['arrow'] + " ► " 
     s += colors['_link'][(file in stats.brokenLinks) and 'broken' or 'path'] 
     try
+        slash = require 'kxk/js/slash'
         s += slash.path fs.readlinkSync(file)
     catch err
         s += ' ? '
@@ -212,29 +218,29 @@ dirString  = (name, ext) ->
 sizeString = (stat) ->
     
     if args.pretty and stat.size == 0
-        return _s.lpad(' ', 11)
+        return lpad(' ', 11)
     if stat.size < 1000
-        colors['_size']['b'][0] + _s.lpad(stat.size, 10) + " "
+        colors['_size']['b'][0] + lpad(stat.size, 10) + " "
     else if stat.size < 1000000
         if args.pretty
-            colors['_size']['kB'][0] + _s.lpad((stat.size / 1000).toFixed(0), 7) + " " + colors['_size']['kB'][1] + "kB "
+            colors['_size']['kB'][0] + lpad((stat.size / 1000).toFixed(0), 7) + " " + colors['_size']['kB'][1] + "kB "
         else
-            colors['_size']['kB'][0] + _s.lpad(stat.size, 10) + " "
+            colors['_size']['kB'][0] + lpad(stat.size, 10) + " "
     else if stat.size < 1000000000
         if args.pretty
-            colors['_size']['MB'][0] + _s.lpad((stat.size / 1000000).toFixed(1), 7) + " " + colors['_size']['MB'][1] + "MB "
+            colors['_size']['MB'][0] + lpad((stat.size / 1000000).toFixed(1), 7) + " " + colors['_size']['MB'][1] + "MB "
         else
-            colors['_size']['MB'][0] + _s.lpad(stat.size, 10) + " "
+            colors['_size']['MB'][0] + lpad(stat.size, 10) + " "
     else if stat.size < 1000000000000
         if args.pretty
-            colors['_size']['GB'][0] + _s.lpad((stat.size / 1000000000).toFixed(1), 7) + " " + colors['_size']['GB'][1] + "GB "
+            colors['_size']['GB'][0] + lpad((stat.size / 1000000000).toFixed(1), 7) + " " + colors['_size']['GB'][1] + "GB "
         else
-            colors['_size']['GB'][0] + _s.lpad(stat.size, 10) + " "
+            colors['_size']['GB'][0] + lpad(stat.size, 10) + " "
     else
         if args.pretty
-            colors['_size']['TB'][0] + _s.lpad((stat.size / 1000000000000).toFixed(3), 7) + " " + colors['_size']['TB'][1] + "TB "
+            colors['_size']['TB'][0] + lpad((stat.size / 1000000000000).toFixed(3), 7) + " " + colors['_size']['TB'][1] + "TB "
         else
-            colors['_size']['TB'][0] + _s.lpad(stat.size, 10) + " "
+            colors['_size']['TB'][0] + lpad(stat.size, 10) + " "
 
 timeString = (stat) ->
     
@@ -246,19 +252,19 @@ timeString = (stat) ->
         if range == 'few'
             num = moment().diff t, 'seconds'
             range = 'seconds'
-            fw(23) + _s.lpad(num, 2) + ' ' + fw(16) + _s.rpad(range, 7) + ' '
+            fw(23) + lpad(num, 2) + ' ' + fw(16) + rpad(range, 7) + ' '
         else if range.startsWith 'year'
-            fw(6) + _s.lpad(num, 2) + ' ' + fw(3) + _s.rpad(range, 7) + ' '
+            fw(6) + lpad(num, 2) + ' ' + fw(3) + rpad(range, 7) + ' '
         else if range.startsWith 'month'
-            fw(8) + _s.lpad(num, 2) + ' ' + fw(4) + _s.rpad(range, 7) + ' '
+            fw(8) + lpad(num, 2) + ' ' + fw(4) + rpad(range, 7) + ' '
         else if range.startsWith 'day'
-            fw(10) + _s.lpad(num, 2) + ' ' + fw(6) + _s.rpad(range, 7) + ' '
+            fw(10) + lpad(num, 2) + ' ' + fw(6) + rpad(range, 7) + ' '
         else if range.startsWith 'hour'
-            fw(15) + _s.lpad(num, 2) + ' ' + fw(8) + _s.rpad(range, 7) + ' '
+            fw(15) + lpad(num, 2) + ' ' + fw(8) + rpad(range, 7) + ' '
         else
-            fw(18) + _s.lpad(num, 2) + ' ' + fw(12) + _s.rpad(range, 7) + ' '
+            fw(18) + lpad(num, 2) + ' ' + fw(12) + rpad(range, 7) + ' '
     else
-        fw(16) + _s.lpad(t.format("DD"),2) + fw(7)+'.' +
+        fw(16) + lpad(t.format("DD"),2) + fw(7)+'.' +
         fw(12) + t.format("MM") + fw(7)+"." +
         fw( 8) + t.format("YY") + ' ' +
         fw(16) + t.format("HH") + col = fw(7)+':' +
@@ -287,7 +293,7 @@ ownerString = (stat) ->
     ocl = colors['_users']['default'] unless ocl
     gcl = colors['_groups'][grp]
     gcl = colors['_groups']['default'] unless gcl
-    ocl + _s.rpad(own, stats.maxOwnerLength) + " " + gcl + _s.rpad(grp, stats.maxGroupLength)
+    ocl + rpad(own, stats.maxOwnerLength) + " " + gcl + rpad(grp, stats.maxGroupLength)
 
 rwxString = (mode, i) ->
     
@@ -378,7 +384,7 @@ ignore = (p) ->
         return true if p == 'desktop.ini'
         return true if p.toLowerCase().startsWith 'ntuser'
     else
-        return true if slash.ext(p) == 'app' 
+        return true if slash.ext(p) == 'app'
     
     return true if p in args.ignore
     false
@@ -515,7 +521,7 @@ listDir = (p) ->
         files = fs.readdirSync(p)
     catch error
         msg = error.message
-        msg = "permission denied" if _s.startsWith(msg, "EACCES")
+        msg = "permission denied" if msg.startsWith "EACCES"
         log_error msg
 
     if args.find
@@ -531,9 +537,9 @@ listDir = (p) ->
     else
         s = colors['_arrow'] + " ▶ " + colors['_header'][0]
         ps = slash.resolve ps if ps[0] != '~'
-        if _s.startsWith ps, process.env.PWD
+        if ps.startsWith process.env.PWD
             ps = ps.substr process.env.PWD.length+1
-        else if _s.startsWith p, process.env.HOME
+        else if p.startsWith process.env.HOME
             ps = "~" + p.substr process.env.HOME.length
 
         if ps == '/'
@@ -594,6 +600,7 @@ main = (args) ->
     
     log ""
     if args.info
+        kstr = require 'kxk/js/str'
         log BW(1) + " " +
         fw(8) + stats.num_dirs + (stats.hidden_dirs and fw(4) + "+" + fw(5) + (stats.hidden_dirs) or "") + fw(4) + " dirs " +
         fw(8) + stats.num_files + (stats.hidden_files and fw(4) + "+" + fw(5) + (stats.hidden_files) or "") + fw(4) + " files " +
