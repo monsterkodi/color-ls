@@ -1,6 +1,6 @@
 {
   "name": "color-ls",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "lists files, but more colorful than ls",
   "main": "./coffee/color-ls.coffee",
   "author": "monsterkodi",
@@ -29,7 +29,7 @@
   ],
   "dependencies": {
     "ansi-256-colors": "^1.1.0",
-    "kxk": "^0.294.0",
+    "kxk": "^0.298.0",
     "moment": "^2.24.0",
     "underscore.string": "^3.3.5"
   },

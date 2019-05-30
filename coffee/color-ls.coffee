@@ -8,16 +8,11 @@
 
 startTime = process.hrtime.bigint()
 
-▸profile 'require'
-    ▸profile 'kstr  ' { lpad, rpad } = require 'kxk/js/str'
-    ▸profile '_     ' _      = require 'lodash'
-    ▸profile 'fs    ' fs     = require 'fs'
-    ▸profile 'childp' childp = require 'child_process'
-    ▸profile 'slash ' slash  = require 'kxk/js/slash'
-    ▸profile 'ansi  ' ansi   = require 'ansi-256-colors'
-    ▸profile 'util  ' util   = require 'util'
-    ▸profile 'moment' moment = require 'moment'
-    ▸profile 'icons ' icons  = require './icons'
+{ lpad, rpad } = require 'kxk/js/str'
+fs     = require 'fs'
+slash  = require 'kxk/js/slash'
+ansi   = require 'ansi-256-colors'
+util   = require 'util'
 
 token = {}
 
@@ -89,7 +84,10 @@ if module.parent.id == '.'
     if args.dirs and args.files
         args.dirs = args.files = false
         
-    args.ignore = args.ignore.split ' '
+    if args.ignore?.length
+        args.ignore = args.ignore.split ' ' 
+    else
+        args.ignore = []
         
     if args.depth == '∞' then args.depth = Infinity
     else args.depth = Math.max 0, parseInt args.depth
@@ -153,6 +151,7 @@ userMap = {}
 username = (uid) ->
     if not userMap[uid]
         try
+            childp = require 'child_process'
             userMap[uid] = childp.spawnSync("id", ["-un", "#{uid}"]).stdout.toString('utf8').trim()
         catch e
             log e
@@ -162,6 +161,7 @@ groupMap = null
 groupname = (gid) ->
     if not groupMap
         try
+            childp = require 'child_process'
             gids = childp.spawnSync("id", ["-G"]).stdout.toString('utf8').split(' ')
             gnms = childp.spawnSync("id", ["-Gn"]).stdout.toString('utf8').split(' ')
             groupMap = {}
@@ -171,7 +171,7 @@ groupname = (gid) ->
             log e
     groupMap[gid]
 
-if _.isFunction process.getuid
+if 'function' == typeof process.getuid
     colors['_users'][username(process.getuid())] = fg(0,4,0)
 
 # 00000000   00000000   000  000   000  000000000
@@ -197,7 +197,11 @@ linkString = (file) ->
 
 nameString = (name, ext) -> 
     
-    icon = args.nerdy and (colors[colors[ext]? and ext or '_default'][2] + (icons.get(name, ext) ? ' ')) + ' ' or ''
+    if args.nerdy
+        icons = require './icons'
+        icon = (colors[colors[ext]? and ext or '_default'][2] + (icons.get(name, ext) ? ' ')) + ' '
+    else
+        icon = ''
     " " + icon + colors[colors[ext]? and ext or '_default'][0] + name + reset
     
 dotString  = (ext) -> 
@@ -206,7 +210,9 @@ dotString  = (ext) ->
     
 extString  = (name, ext) -> 
     
-    if args.nerdy and name and icons.get(name, ext) then return ''
+    if args.nerdy and name 
+        icons = require './icons'
+        if icons.get(name, ext) then return ''
     dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
     
 dirString  = (name, ext) ->
@@ -244,6 +250,7 @@ sizeString = (stat) ->
 
 timeString = (stat) ->
     
+    moment = require 'moment'
     t = moment(stat.mtime)
     if args.pretty
         age = moment().to(t, true)
@@ -322,10 +329,10 @@ getPrefix = (stat, depth) ->
     if args.mdate
         s += timeString stat
         
-    if depth
-        s += _.pad '', depth*4
+    if depth and args.tree
+        s += rpad '', depth*4
         
-    if s.length == 1 and args.offset
+    if s.length == 0 and args.offset
         s += '       '
     s
     
@@ -336,6 +343,9 @@ getPrefix = (stat, depth) ->
 # 0000000    0000000   000   000     000
 
 sort = (list, stats, exts=[]) ->
+    
+    _ = require 'lodash'
+    moment = require 'moment'
     
     l = _.zip list, stats, [0...list.length], (exts.length > 0 and exts or [0...list.length])
     
@@ -596,6 +606,7 @@ main = (args) ->
         listFiles process.cwd(), filestats.map( (s) -> s[0] )
     
     for p in pathstats.filter( (f) -> f.length and f[1].isDirectory() )
+        log '' if args.tree
         listDir p[0]
     
     log ""
