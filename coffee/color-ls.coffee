@@ -6,7 +6,7 @@
  0000000   0000000   0000000   0000000   000   000          0000000  0000000
 ###
 
-startTime = process.hrtime.bigint()
+startTime = process.hrtime.bigint?()
 
 { lpad, rpad } = require 'kxk/js/str'
 fs     = require 'fs'
@@ -14,6 +14,7 @@ slash  = require 'kxk/js/slash'
 ansi   = require 'ansi-256-colors'
 util   = require 'util'
 
+args  = null
 token = {}
 
 bold   = '\x1b[1m'
@@ -69,6 +70,8 @@ if module.parent.id == '.'
     
     version      #{require("#{__dirname}/../package.json").version}
     """
+    
+initArgs = ->
     
     if args.size
         args.files = true
@@ -389,14 +392,15 @@ sort = (list, stats, exts=[]) ->
 
 ignore = (p) ->
     
+    base = slash.basename p
     if slash.win()
-        return true if p[0] == '$'
-        return true if p == 'desktop.ini'
-        return true if p.toLowerCase().startsWith 'ntuser'
+        return true if base[0] == '$'
+        return true if base == 'desktop.ini'
     else
-        return true if slash.ext(p) == 'app'
+        return true if slash.ext(base) == 'app'
     
-    return true if p in args.ignore
+    return true if base.toLowerCase().startsWith 'ntuser'
+    return true if base in args.ignore
     false
     
 # 00000000  000  000      00000000   0000000
@@ -517,12 +521,12 @@ listFiles = (p, files, depth) ->
 # 000   000  000  000   000
 # 0000000    000  000   000
 
-listDir = (p) ->
+listDir = (p, opt={}) ->
     
-    return if ignore slash.basename p
+    return if ignore p
         
     if args.recurse
-        depth = pathDepth p
+        depth = pathDepth p, opt
         return if depth > args.depth
     
     ps = p
@@ -547,10 +551,11 @@ listDir = (p) ->
     else
         s = colors['_arrow'] + " ▶ " + colors['_header'][0]
         ps = slash.resolve ps if ps[0] != '~'
-        if ps.startsWith process.env.PWD
-            ps = ps.substr process.env.PWD.length+1
-        else if p.startsWith process.env.HOME
-            ps = "~" + p.substr process.env.HOME.length
+        ps = slash.relative ps, process.cwd()
+        # if ps.startsWith process.env.PWD
+            # ps = ps.substr process.env.PWD.length+1
+        # else if p.startsWith process.env.HOME
+            # ps = "~" + p.substr process.env.HOME.length
 
         if ps == '/'
             s += '/'
@@ -576,11 +581,11 @@ listDir = (p) ->
             slash.isDir slash.join p, f
             
         for pr in fs.readdirSync(p).filter doRecurse
-            listDir slash.resolve slash.join p, pr
+            listDir slash.resolve(slash.join p, pr), opt
             
-pathDepth = (p) ->
+pathDepth = (p, opt) ->
     
-    rel = slash.relative p, process.cwd()
+    rel = slash.relative p, opt?.relativeTo ? process.cwd()
     return 0 if p == '.'
     rel.split('/').length
 
@@ -590,7 +595,7 @@ pathDepth = (p) ->
 # 000 0 000  000   000  000  000  0000
 # 000   000  000   000  000  000   000
 
-main = (args) ->
+main = ->
     
     pathstats = args.paths.map (f) ->
         try
@@ -607,7 +612,7 @@ main = (args) ->
     
     for p in pathstats.filter( (f) -> f.length and f[1].isDirectory() )
         log '' if args.tree
-        listDir p[0]
+        listDir p[0], relativeTo:args.tree and slash.dirname(p[0]) or process.cwd()
     
     log ""
     if args.info
@@ -615,11 +620,38 @@ main = (args) ->
         log BW(1) + " " +
         fw(8) + stats.num_dirs + (stats.hidden_dirs and fw(4) + "+" + fw(5) + (stats.hidden_dirs) or "") + fw(4) + " dirs " +
         fw(8) + stats.num_files + (stats.hidden_files and fw(4) + "+" + fw(5) + (stats.hidden_files) or "") + fw(4) + " files " +
-        fw(8) + kstr.time(process.hrtime.bigint()-startTime) + " " +
+        fw(8) + kstr.time(process.hrtime.bigint?()-startTime) + " " +
         reset
     
 if args
-    main args
+    initArgs()
+    main()
 else
-    module.exports = main
+    moduleMain = (arg, opt={}) ->
+        
+        switch typeof arg
+            when 'string'
+                args = Object.assign {}, opt
+                args.paths ?= []
+                args.paths.push arg
+            when 'object'
+                args = Object.assign {}, arg
+            else
+                args = paths:['.']
+        initArgs()
+        
+        # log 'args:', args
+        
+        out = ''
+        oldlog = console.log
+        console.log = -> 
+            for arg in arguments then out += String(arg)
+            out += '\n'
+        
+        main()
+        
+        console.log = oldlog
+        out
+    
+    module.exports = moduleMain
     
