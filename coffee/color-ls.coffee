@@ -393,14 +393,9 @@ sort = (list, stats, exts=[]) ->
 ignore = (p) ->
     
     base = slash.basename p
-    if slash.win()
-        return true if base[0] == '$'
-        return true if base == 'desktop.ini'
-    else
-        return true if slash.ext(base) == 'app'
-    
+    return true if base[0] == '$'
+    return true if base == 'desktop.ini'    
     return true if base.toLowerCase().startsWith 'ntuser'
-    return true if base in args.ignore
     false
     
 # 00000000  000  000      00000000   0000000
@@ -522,9 +517,7 @@ listFiles = (p, files, depth) ->
 # 0000000    000  000   000
 
 listDir = (p, opt={}) ->
-    
-    return if ignore p
-        
+            
     if args.recurse
         depth = pathDepth p, opt
         return if depth > args.depth
@@ -577,6 +570,9 @@ listDir = (p, opt={}) ->
     if args.recurse
         
         doRecurse = (f) -> 
+            
+            return false if slash.basename(f) in args.ignore
+            return false if slash.ext(f) == 'app'
             return false if not args.all and f[0] == '.'
             slash.isDir slash.join p, f
             
