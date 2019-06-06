@@ -1,15 +1,19 @@
 
 ![icon](./bin/img/icon.png)
 
-![example01](./bin/img/example01.png)
+![example](./bin/img/example01.png)
 
 ### recursion
 
-![example02](./bin/img/example02.png)
+![recursion](./bin/img/example02.png)
+
+### tree
+
+![tree](./bin/img/example04.png)
 
 ### find files
 
-![example02](./bin/img/example03.png)
+![find](./bin/img/example03.png)
 
 ### nerd font icons
 

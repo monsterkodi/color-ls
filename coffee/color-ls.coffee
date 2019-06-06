@@ -192,7 +192,6 @@ linkString = (file) ->
     s  = reset + fw(1) + colors['_link']['arrow'] + " ► " 
     s += colors['_link'][(file in stats.brokenLinks) and 'broken' or 'path'] 
     try
-        slash = require 'kxk/js/slash'
         s += slash.path fs.readlinkSync(file)
     catch err
         s += ' ? '
