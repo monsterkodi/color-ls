@@ -3,13 +3,13 @@
 
 ![example](./bin/img/example01.png)
 
-### recursion
-
-![recursion](./bin/img/example02.png)
-
 ### tree
 
 ![tree](./bin/img/example04.png)
+
+### recursion
+
+![recursion](./bin/img/example02.png)
 
 ### find files
 
