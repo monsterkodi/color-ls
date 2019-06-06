@@ -1,5 +1,5 @@
 name            color-ls
-version         1.15.0
+version         1.16.0
 description     lists files, but more colorful than ls
 main            ./js/color-ls.js
 author          monsterkodi
