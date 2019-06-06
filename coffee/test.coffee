@@ -77,7 +77,9 @@ describe 'ls' ->
         out[3].should.include 'a.txt'
         out[4].should.include 'txt.txt'        
         out[5].should.include 'b'
-        out[6].should.include 'b.lnk ► b.txt'
+        
+        if not slash.win()
+            out[6].should.include 'b.lnk ► b.txt'
         
     it 'recursive' ->
         
@@ -91,6 +93,8 @@ describe 'ls' ->
         out[8].should.include '▶ a/b'
         
         out[10].should.include 'c'
-        out[11].should.include 'b.lnk ► b.txt'
+        
+        if not slash.win()
+            out[11].should.include 'b.lnk ► b.txt'
         
         

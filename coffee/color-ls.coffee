@@ -10,7 +10,7 @@ startTime = process.hrtime.bigint?()
 
 { lpad, rpad } = require 'kxk/js/str'
 fs     = require 'fs'
-slash  = require 'kxk/js/slash'
+slash  = require 'kslash'
 ansi   = require 'ansi-256-colors'
 util   = require 'util'
 
@@ -39,7 +39,7 @@ stats = # counters for (hidden) dirs/files
 # 000   000  000   000  000   000       000
 # 000   000  000   000   0000000   0000000
 
-if module.parent.id == '.'
+if not module.parent or module.parent.id == '.'
 
     karg = require 'karg'
     args = karg """
@@ -444,12 +444,12 @@ listFiles = (p, files, depth) ->
             lstat = fs.lstatSync file
             link  = lstat.isSymbolicLink()
             stat  = link and fs.statSync(file) or lstat
-        catch
+        catch err
             if link
                 stat = lstat
                 stats.brokenLinks.push file
             else
-                log_error "can't read file: ", file, link
+                # log_error "can't read file: ", file, link
                 return
 
         ext  = slash.ext file
@@ -526,16 +526,14 @@ listDir = (p, opt={}) ->
 
     try
         files = fs.readdirSync(p)
-    catch error
-        msg = error.message
-        msg = "permission denied" if msg.startsWith "EACCES"
-        log_error msg
+    catch err
+        true
 
     if args.find
         files = files.filter (f) ->
             f if RegExp(args.find).test f
             
-    if args.find and not files.length
+    if args.find and not files?.length
         true
     else if args.paths.length == 1 and args.paths[0] == '.' and not args.recurse
         log reset
@@ -545,10 +543,6 @@ listDir = (p, opt={}) ->
         s = colors['_arrow'] + " ▶ " + colors['_header'][0]
         ps = slash.resolve ps if ps[0] != '~'
         ps = slash.relative ps, process.cwd()
-        # if ps.startsWith process.env.PWD
-            # ps = ps.substr process.env.PWD.length+1
-        # else if p.startsWith process.env.HOME
-            # ps = "~" + p.substr process.env.HOME.length
 
         if ps == '/'
             s += '/'
@@ -564,7 +558,7 @@ listDir = (p, opt={}) ->
         log s + " " + reset
         log reset
 
-    if files.length
+    if files?.length
         listFiles p, files, depth
 
     if args.recurse
@@ -576,8 +570,14 @@ listDir = (p, opt={}) ->
             return false if not args.all and f[0] == '.'
             slash.isDir slash.join p, f
             
-        for pr in fs.readdirSync(p).filter doRecurse
-            listDir slash.resolve(slash.join p, pr), opt
+        try
+            for pr in fs.readdirSync(p).filter doRecurse
+                listDir slash.resolve(slash.join p, pr), opt
+        catch err
+            msg = err.message
+            msg = "permission denied" if msg.startsWith "EACCES"
+            msg = "permission denied" if msg.startsWith "EPERM"
+            log_error msg
             
 pathDepth = (p, opt) ->
     
