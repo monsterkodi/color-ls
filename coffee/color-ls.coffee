@@ -109,30 +109,30 @@ initArgs = ->
 #  0000000   0000000   0000000   0000000   000   000  0000000
 
 colors =
-    'coffee':   [ bold+fg(4,4,0),  fg(1,1,0), fg(1,1,0) ]
-    'koffee':   [ bold+fg(5,5,0),  fg(1,0,0), fg(1,0,0) ]
-    'py':       [ bold+fg(0,2,0),  fg(0,1,0), fg(0,1,0) ]
-    'rb':       [ bold+fg(4,0,0),  fg(1,0,0), fg(1,0,0) ]
-    'json':     [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ]
-    'cson':     [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ]
-    'noon':     [ bold+fg(4,4,0),  fg(1,1,0), fg(1,1,0) ]
-    'plist':    [ bold+fg(4,0,4),  fg(1,0,1), fg(1,0,1) ]
-    'js':       [ bold+fg(5,0,5),  fg(1,0,1), fg(1,0,1) ]
-    'cpp':      [ bold+fg(5,4,0),  fw(1),     fg(1,1,0) ]
-    'h':        [      fg(3,1,0),  fw(1),     fg(1,1,0) ]
-    'pyc':      [      fw(5),      fw(1),     fw(1) ]
-    'log':      [      fw(5),      fw(1),     fw(1) ]
-    'log':      [      fw(5),      fw(1),     fw(1) ]
-    'txt':      [      fw(20),     fw(1),     fw(2) ]
-    'md':       [ bold+fw(20),     fw(1),     fw(2) ]
-    'markdown': [ bold+fw(20),     fw(1),     fw(2) ]
-    'sh':       [ bold+fg(5,1,0),  fg(1,0,0), fg(1,0,0) ]
-    'png':      [ bold+fg(5,0,0),  fg(1,0,0), fg(1,0,0) ]
-    'jpg':      [ bold+fg(0,3,0),  fg(0,1,0), fg(0,1,0) ]
-    'pxm':      [ bold+fg(1,1,5),  fg(0,0,1), fg(0,0,2) ]
-    'tiff':     [ bold+fg(1,1,5),  fg(0,0,1), fg(0,0,2) ]
+    'coffee':   [ bold+fg(4,4,0),  fg(1,1,0), fg(2,2,0) ]
+    'koffee':   [ bold+fg(5,5,0),  fg(1,0,0), fg(3,1,0) ]
+    'py':       [ bold+fg(0,3,0),  fg(0,1,0), fg(0,2,0) ]
+    'rb':       [ bold+fg(4,0,0),  fg(1,0,0), fg(2,0,0) ]
+    'json':     [ bold+fg(4,0,4),  fg(1,0,1), fg(2,0,1) ]
+    'cson':     [ bold+fg(4,0,4),  fg(1,0,1), fg(2,0,2) ]
+    'noon':     [ bold+fg(4,4,0),  fg(1,1,0), fg(2,2,0) ]
+    'plist':    [ bold+fg(4,0,4),  fg(1,0,1), fg(2,0,2) ]
+    'js':       [ bold+fg(5,0,5),  fg(1,0,1), fg(3,0,3) ]
+    'cpp':      [ bold+fg(5,4,0),  fw(1),     fg(3,2,0) ]
+    'h':        [      fg(3,1,0),  fw(1),     fg(2,1,0) ]
+    'pyc':      [      fw(5),      fw(1),     fw(4) ]
+    'log':      [      fw(5),      fw(1),     fw(3) ]
+    'log':      [      fw(5),      fw(1),     fw(3) ]
+    'txt':      [      fw(20),     fw(1),     fw(4) ]
+    'md':       [ bold+fw(20),     fw(1),     fw(4) ]
+    'markdown': [ bold+fw(20),     fw(1),     fw(4) ]
+    'sh':       [ bold+fg(5,1,0),  fg(1,0,0), fg(3,0,0) ]
+    'png':      [ bold+fg(5,0,0),  fg(1,0,0), fg(3,0,0) ]
+    'jpg':      [ bold+fg(0,3,0),  fg(0,1,0), fg(0,2,0) ]
+    'pxm':      [ bold+fg(1,1,5),  fg(0,0,2), fg(0,0,4) ]
+    'tiff':     [ bold+fg(1,1,5),  fg(0,0,2), fg(0,0,4) ]
 
-    '_default': [      fw(15),     fw(1),     fw(6) ]
+    '_default': [      fw(15),     fw(1),     fw(10) ]
     '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), bold+BG(0,0,2)+fg(2,2,5) ]
     '_.dir':    [ bold+BG(0,0,1)+fw(23), bold+BG(0,0,1)+fg(1,1,5), bold+BG(0,0,1)+fg(2,2,5) ]
     '_link':    { 'arrow': fg(1,0,1), 'path': fg(4,0,4), 'broken': BG(5,0,0)+fg(5,5,0) }
@@ -215,7 +215,7 @@ extString  = (name, ext) ->
     if args.nerdy and name 
         icons = require './icons'
         if icons.get(name, ext) then return ''
-    dotString(ext) + colors[colors[ext]? and ext or '_default'][2] + ext + reset
+    dotString(ext) + colors[colors[ext]? and ext or '_default'][1] + ext + reset
     
 dirString  = (name, ext) ->
     
