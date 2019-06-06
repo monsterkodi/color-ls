@@ -1,11 +1,15 @@
 name            color-ls
-version         1.10.0
+version         1.11.0
 description     lists files, but more colorful than ls
 main            ./js/color-ls.js
 author          monsterkodi
 license         Unlicense
 bin
                 color-ls  ./bin/color-ls
+files
+                bin/color-ls
+                js/color-ls.js
+                js/icons.js
 scripts
                 test    ./node_modules/.bin/mocha -c --require koffee/js/register ./coffee/test.coffee
                 watch   ./node_modules/.bin/onchange coffee/test.coffee coffee/color-ls.coffee -- npm run test --silent
