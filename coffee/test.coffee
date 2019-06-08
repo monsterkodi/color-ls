@@ -6,9 +6,11 @@
    000     00000000  0000000      000   
 ###
 
-{ chai, slash, kstr, _ } = require 'kxk'
+chai  = require 'chai'
+slash = require 'kslash'
+kstr  = require 'kstr'
 
-chai()
+chai.should()
 
 ls = require '../'
 

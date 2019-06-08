@@ -1,5 +1,5 @@
 name            color-ls
-version         1.16.0
+version         1.18.0
 description     lists files, but more colorful than ls
 main            ./js/color-ls.js
 author          monsterkodi
@@ -21,19 +21,15 @@ keywords
                 ls
                 list
                 files
-                commandline
-                coffeescript
                 ansi
-                color
                 colors
 dependencies
-                ansi-256-colors  ^1.1.0
-                kslash          ^1.10.0
-                kxk             ^0.304.0
                 moment          ^2.24.0
-                underscore.string  ^3.3.5
+                ansi-256-colors  ^1.1.0
+                kslash          >=1.10.0
+                kstr            >=0.1.0
 devDependencies
                 chai      ^4.2.0
-                koffee    ^0.56.0
                 mocha     ^6.1.4
                 onchange  ^6.0.0
+                koffee    >=0.56.0

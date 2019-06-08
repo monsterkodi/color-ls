@@ -8,7 +8,7 @@
 
 startTime = process.hrtime.bigint?()
 
-{ lpad, rpad } = require 'kxk/js/str'
+{ lpad, rpad, time } = require 'kstr'
 fs     = require 'fs'
 slash  = require 'kslash'
 ansi   = require 'ansi-256-colors'
@@ -97,8 +97,8 @@ initArgs = ->
     if Number.isNaN args.depth then args.depth = 0
         
     if args.debug
-        { klog, noon } = require 'kxk'
-        klog noon.stringify args, colors:true
+        noon = require 'noon'
+        log noon.stringify args, colors:true
     
     args.paths = ['.'] unless args.paths?.length > 0
 
@@ -611,11 +611,10 @@ main = ->
     
     log ""
     if args.info
-        kstr = require 'kxk/js/str'
         log BW(1) + " " +
         fw(8) + stats.num_dirs + (stats.hidden_dirs and fw(4) + "+" + fw(5) + (stats.hidden_dirs) or "") + fw(4) + " dirs " +
         fw(8) + stats.num_files + (stats.hidden_files and fw(4) + "+" + fw(5) + (stats.hidden_files) or "") + fw(4) + " files " +
-        fw(8) + kstr.time(process.hrtime.bigint?()-startTime) + " " +
+        fw(8) + time(process.hrtime.bigint?()-startTime) + " " +
         reset
     
 if args
