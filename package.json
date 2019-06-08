@@ -1,6 +1,6 @@
 {
   "name": "color-ls",
-  "version": "1.18.0",
+  "version": "1.19.0",
   "description": "lists files, but more colorful than ls",
   "main": "./js/color-ls.js",
   "author": "monsterkodi",
@@ -30,10 +30,11 @@
     "colors"
   ],
   "dependencies": {
-    "moment": "^2.24.0",
     "ansi-256-colors": "^1.1.0",
+    "karg": ">=1.18.0",
     "kslash": ">=1.10.0",
-    "kstr": ">=0.1.0"
+    "kstr": ">=0.1.0",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
