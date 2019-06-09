@@ -117,22 +117,22 @@ colors =
     'cson':     [ bold+fg(4,0,4),  fg(1,0,1), fg(2,0,2) ]
     'noon':     [ bold+fg(4,4,0),  fg(1,1,0), fg(2,2,0) ]
     'plist':    [ bold+fg(4,0,4),  fg(1,0,1), fg(2,0,2) ]
-    'js':       [ bold+fg(5,0,5),  fg(1,0,1), fg(3,0,3) ]
-    'cpp':      [ bold+fg(5,4,0),  fw(1),     fg(3,2,0) ]
-    'h':        [      fg(3,1,0),  fw(1),     fg(2,1,0) ]
-    'pyc':      [      fw(5),      fw(1),     fw(4) ]
-    'log':      [      fw(5),      fw(1),     fw(3) ]
-    'log':      [      fw(5),      fw(1),     fw(3) ]
-    'txt':      [      fw(20),     fw(1),     fw(4) ]
-    'md':       [ bold+fw(20),     fw(1),     fw(4) ]
-    'markdown': [ bold+fw(20),     fw(1),     fw(4) ]
-    'sh':       [ bold+fg(5,1,0),  fg(1,0,0), fg(3,0,0) ]
-    'png':      [ bold+fg(5,0,0),  fg(1,0,0), fg(3,0,0) ]
-    'jpg':      [ bold+fg(0,3,0),  fg(0,1,0), fg(0,2,0) ]
+    'js':       [ bold+fg(5,0,5),  fg(2,0,2), fg(3,0,3) ]
+    'cpp':      [ bold+fg(5,4,0),  fw(3),     fg(3,2,0) ]
+    'h':        [      fg(3,1,0),  fw(3),     fg(2,1,0) ]
+    'pyc':      [      fw(5),      fw(3),     fw(4) ]
+    'log':      [      fw(5),      fw(2),     fw(3) ]
+    'log':      [      fw(5),      fw(2),     fw(3) ]
+    'txt':      [      fw(20),     fw(3),     fw(4) ]
+    'md':       [ bold+fw(20),     fw(3),     fw(4) ]
+    'markdown': [ bold+fw(20),     fw(3),     fw(4) ]
+    'sh':       [ bold+fg(5,1,0),  fg(2,0,0), fg(3,0,0) ]
+    'png':      [ bold+fg(5,0,0),  fg(2,0,0), fg(3,0,0) ]
+    'jpg':      [ bold+fg(0,3,0),  fg(0,2,0), fg(0,2,0) ]
     'pxm':      [ bold+fg(1,1,5),  fg(0,0,2), fg(0,0,4) ]
-    'tiff':     [ bold+fg(1,1,5),  fg(0,0,2), fg(0,0,4) ]
+    'tiff':     [ bold+fg(1,1,5),  fg(0,0,3), fg(0,0,4) ]
 
-    '_default': [      fw(15),     fw(1),     fw(10) ]
+    '_default': [      fw(15),     fw(4),     fw(10) ]
     '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), bold+BG(0,0,2)+fg(2,2,5) ]
     '_.dir':    [ bold+BG(0,0,1)+fw(23), bold+BG(0,0,1)+fg(1,1,5), bold+BG(0,0,1)+fg(2,2,5) ]
     '_link':    { 'arrow': fg(1,0,1), 'path': fg(4,0,4), 'broken': BG(5,0,0)+fg(5,5,0) }
@@ -143,12 +143,12 @@ colors =
     '_groups':  { wheel: fg(1,0,0), staff: fg(0,1,0), admin: fg(1,1,0), default: fg(1,0,1) }
     '_error':   [ bold+BG(5,0,0)+fg(5,5,0), bold+BG(5,0,0)+fg(5,5,5) ]
     '_rights':
-                  'r+': bold+BW(1)+fg(1,1,1)
-                  'r-': reset+BW(1)
+                  'r+': bold+BW(1)+fw(6)
+                  'r-': reset+BW(1)+fw(2)
                   'w+': bold+BW(1)+fg(2,2,5)
-                  'w-': reset+BW(1)
+                  'w-': reset+BW(1)+fw(2)
                   'x+': bold+BW(1)+fg(5,0,0)
-                  'x-': reset+BW(1)
+                  'x-': reset+BW(1)+fw(2)
 
 userMap = {}
 username = (uid) ->
@@ -304,17 +304,28 @@ ownerString = (stat) ->
     gcl = colors['_groups']['default'] unless gcl
     ocl + rpad(own, stats.maxOwnerLength) + " " + gcl + rpad(grp, stats.maxGroupLength)
 
-rwxString = (mode, i) ->
+rwxString = (stat, i) ->
     
-    (((mode >> (i*3)) & 0b100) and colors['_rights']['r+'] + ' r' or colors['_rights']['r-'] + '  ') +
-    (((mode >> (i*3)) & 0b010) and colors['_rights']['w+'] + ' w' or colors['_rights']['w-'] + '  ') +
-    (((mode >> (i*3)) & 0b001) and colors['_rights']['x+'] + ' x' or colors['_rights']['x-'] + '  ')
+    mode = stat.mode
+    
+    if args.nerdy
+        r = ' \uf441'
+        w = '\uf040'
+        x = stat.isDirectory() and '\uf085' or '\uf013'
+        
+        (((mode >> (i*3)) & 0b100) and colors['_rights']['r+'] + r or colors['_rights']['r-'] + r) +
+        (((mode >> (i*3)) & 0b010) and colors['_rights']['w+'] + w or colors['_rights']['w-'] + w) +
+        (((mode >> (i*3)) & 0b001) and colors['_rights']['x+'] + x or colors['_rights']['x-'] + x)
+    else
+        (((mode >> (i*3)) & 0b100) and colors['_rights']['r+'] + ' r' or colors['_rights']['r-'] + '  ') +
+        (((mode >> (i*3)) & 0b010) and colors['_rights']['w+'] + ' w' or colors['_rights']['w-'] + '  ') +
+        (((mode >> (i*3)) & 0b001) and colors['_rights']['x+'] + ' x' or colors['_rights']['x-'] + '  ')
 
 rightsString = (stat) ->
     
-    ur = rwxString(stat.mode, 2) + " "
-    gr = rwxString(stat.mode, 1) + " "
-    ro = rwxString(stat.mode, 0) + " "
+    ur = rwxString(stat, 2)
+    gr = rwxString(stat, 1)
+    ro = rwxString(stat, 0) + " "
     ur + gr + ro + reset
 
 getPrefix = (stat, depth) ->
