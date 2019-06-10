@@ -138,7 +138,7 @@ colors =
     '_link':    { 'arrow': fg(1,0,1), 'path': fg(4,0,4), 'broken': BG(5,0,0)+fg(5,5,0) }
     '_arrow':     BW(2)+fw(0)
     '_header':  [ bold+BW(2)+fg(3,2,0),  fw(4), bold+BW(2)+fg(5,5,0) ]
-    '_size':    { b: [fg(0,0,3)], kB: [fg(0,0,5), fg(0,0,3)], MB: [fg(1,1,5), fg(0,0,5)], GB: [fg(4,4,5), fg(2,2,5)], TB: [fg(4,4,5), fg(2,2,5)] }
+    '_size':    { b: [fg(0,0,3), fg(0,0,2)], kB: [fg(0,0,5), fg(0,0,3)], MB: [fg(1,1,5), fg(0,0,4)], GB: [fg(4,4,5), fg(2,2,5)], TB: [fg(4,4,5), fg(2,2,5)] }
     '_users':   { root:  fg(3,0,0), default: fg(1,0,1) }
     '_groups':  { wheel: fg(1,0,0), staff: fg(0,1,0), admin: fg(1,1,0), default: fg(1,0,1) }
     '_error':   [ bold+BG(5,0,0)+fg(5,5,0), bold+BG(5,0,0)+fg(5,5,5) ]
@@ -197,6 +197,12 @@ linkString = (file) ->
         s += ' ? '
     s
 
+# 000   000   0000000   00     00  00000000  
+# 0000  000  000   000  000   000  000       
+# 000 0 000  000000000  000000000  0000000   
+# 000  0000  000   000  000 0 000  000       
+# 000   000  000   000  000   000  00000000  
+
 nameString = (name, ext) -> 
     
     if args.nerdy
@@ -223,8 +229,43 @@ dirString  = (name, ext) ->
     icon = args.nerdy and colors[c][2] + ' \uf413' or ''
     icon + colors[c][0] + (name and (" " + name) or " ") + (if ext then colors[c][1] + '.' + colors[c][2] + ext else "") + " "
 
+#  0000000  000  0000000  00000000  
+# 000       000     000   000       
+# 0000000   000    000    0000000   
+#      000  000   000     000       
+# 0000000   000  0000000  00000000  
+
 sizeString = (stat) ->
-    
+
+    if args.nerdy and args.pretty
+
+        bar = (n) ->
+            b = '▏▎▍▌▋▊▉'
+            b[Math.floor n/(1000/7)]  
+        
+        if stat.size == 0
+            return rpad '', 8
+        if stat.size <= 1000
+            return colors['_size']['b'][1] + rpad bar(stat.size), 8
+        if stat.size <= 10000
+            return colors['_size']['b'][1] + '█' + rpad bar(stat.size/10), 7
+        if stat.size <= 100000
+            return colors['_size']['b'][1] + '██' + rpad bar(stat.size/100), 6
+        if stat.size <= 1000000
+            return colors['_size']['b'][1] + '███' + colors['_size']['kB'][1] + rpad bar(stat.size/1000), 5
+            
+        mb = parseInt stat.size / 1000000
+        if stat.size <= 10000000
+            return colors['_size']['b'][1] + '███' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['kB'][1] + rpad bar(stat.size/10000), 4
+        if stat.size <= 100000000
+            return colors['_size']['b'][1] + '███' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['kB'][1] + rpad bar(stat.size/100000), 3
+        if stat.size <= 1000000000
+            return colors['_size']['b'][1] + '███' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['MB'][1] + rpad bar(stat.size/1000000), 2
+        if stat.size <= 10000000000
+            return colors['_size']['b'][1] + '███' + colors['_size']['kB'][1] + '███' + colors['_size']['MB'][1] + '█' + rpad bar(stat.size/10000000), 1
+        if stat.size <= 100000000000
+            return colors['_size']['b'][1] + '███' + colors['_size']['kB'][1] + '███' + colors['_size']['MB'][1] + '██' + bar(stat.size/100000000)
+        
     if args.pretty and stat.size == 0
         return lpad(' ', 11)
     if stat.size < 1000
@@ -250,10 +291,41 @@ sizeString = (stat) ->
         else
             colors['_size']['TB'][0] + lpad(stat.size, 10) + " "
 
+# 000000000  000  00     00  00000000  
+#    000     000  000   000  000       
+#    000     000  000000000  0000000   
+#    000     000  000 0 000  000       
+#    000     000  000   000  00000000  
+
 timeString = (stat) ->
     
+    if args.nerdy and args.pretty
+        sec = parseInt (Date.now()-stat.mtimeMs)/1000
+        mn  = parseInt sec/60
+        hr  = parseInt sec/3600
+        if hr < 12
+            if sec < 60
+                return BG(0,0,1) + '   ' + fg(5,5,5) + '○◔◑◕'[parseInt sec/15] + reset + fg(0,0,1) + '▉' 
+            else if mn < 60
+                return BG(0,0,1) + '  ' + fg(4,4,5) + '○◔◑◕'[parseInt mn/15] + fg(0,0,3) + '◌' + reset + fg(0,0,1) + '▉' 
+            else
+                return BG(0,0,1) + ' ' + fg(3,3,5) + '○◔◑◕'[parseInt hr/3] + fg(0,0,3) + '◌◌' + reset + fg(0,0,1) + '▉' 
+        else
+            dy = parseInt Math.round sec/(24*3600)
+            wk = parseInt Math.round sec/(7*24*3600)
+            mt = parseInt Math.round sec/(30*24*3600)
+            yr = parseInt Math.round sec/(365*24*3600)
+            if dy < 10
+                return BG(0,0,1) + fg(0,0,5) + " #{dy} \uf185" + reset + fg(0,0,1) + '▉' 
+            else if wk < 8
+                return BG(0,0,1) + fg(0,0,4) + " #{wk} \uf186" + reset + fg(0,0,1) + '▉' 
+            else if mt < 10
+                return BG(0,0,1) + fg(0,0,3) + " #{mt} \uf455" + reset + fg(0,0,1) + '▉' 
+            else 
+                return BG(0,0,1) + fg(0,0,3) + " #{yr} \uf6e6" + reset + fg(0,0,1) + '▉' 
+                    
     moment = require 'moment'
-    t = moment(stat.mtime)
+    t = moment stat.mtime
     if args.pretty
         age = moment().to(t, true)
         [num, range] = age.split ' '
@@ -280,6 +352,12 @@ timeString = (stat) ->
         fw(14) + t.format("mm") + col = fw(1)+':' +
         fw( 4) + t.format("ss") + ' '
 
+#  0000000   000   000  000   000  00000000  00000000   
+# 000   000  000 0 000  0000  000  000       000   000  
+# 000   000  000000000  000 0 000  0000000   0000000    
+# 000   000  000   000  000  0000  000       000   000  
+#  0000000   00     00  000   000  00000000  000   000  
+
 ownerName = (stat) ->
     
     try
@@ -303,6 +381,12 @@ ownerString = (stat) ->
     gcl = colors['_groups'][grp]
     gcl = colors['_groups']['default'] unless gcl
     ocl + rpad(own, stats.maxOwnerLength) + " " + gcl + rpad(grp, stats.maxGroupLength)
+
+# 00000000   000   0000000   000   000  000000000   0000000  
+# 000   000  000  000        000   000     000     000       
+# 0000000    000  000  0000  000000000     000     0000000   
+# 000   000  000  000   000  000   000     000          000  
+# 000   000  000   0000000   000   000     000     0000000   
 
 rwxString = (stat, i) ->
     
@@ -337,10 +421,10 @@ getPrefix = (stat, depth) ->
     if args.owner
         s += ownerString stat
         s += " "
-    if args.bytes
-        s += sizeString stat
     if args.mdate
         s += timeString stat
+    if args.bytes
+        s += sizeString stat
         
     if depth and args.tree
         s += rpad '', depth*4

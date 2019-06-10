@@ -197,6 +197,11 @@ exports.ext =
     yaml:               ''  
     yml:                ''  
     zip:                ''  
+    tgz:                ''  
+    bz2:                ''  
+    pkg:                '\uf8d6'
+    dmg:                '\uf7c9'
+    xpi:                '\uf492'
     zsh:                ''  
     zshrc:              ''  
         
