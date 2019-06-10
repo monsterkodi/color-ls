@@ -1,6 +1,6 @@
 {
   "name": "color-ls",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "description": "lists files, but more colorful than ls",
   "main": "./js/color-ls.js",
   "author": "monsterkodi",
@@ -21,6 +21,7 @@
     "type": "git",
     "url": "git://github.com/monsterkodi/color-ls"
   },
+  "homepage": "https://npmjs.com/package/color-ls",
   "preferGlobal": true,
   "keywords": [
     "ls",
@@ -31,15 +32,15 @@
   ],
   "dependencies": {
     "ansi-256-colors": "^1.1.0",
-    "karg": ">=1.18.0",
-    "kslash": ">=1.11.0",
-    "kstr": ">=0.1.0",
+    "karg": ">=1.18.1",
+    "kslash": ">=1.11.3",
+    "kstr": ">=0.2.0",
     "moment": "^2.24.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.1.4",
     "onchange": "^6.0.0",
-    "koffee": ">=0.56.0"
+    "koffee": ">=1.0.0"
   }
 }
