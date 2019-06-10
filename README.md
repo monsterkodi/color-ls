@@ -7,10 +7,6 @@
 
 ![tree](./bin/img/tree.png)
 
-### recursion
-
-![recursion](./bin/img/recursion.png)
-
 ### find files
 
 ![find](./bin/img/find.png)
