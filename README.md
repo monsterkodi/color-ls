@@ -40,3 +40,17 @@ If you don't use `node`, go try out [ls-go](https://github.com/acarl005/ls-go), 
 * needs a terminal that supports 256 colors
 * optimized for dark backgrounds
 * call a doctor if your eyes start bleeding :)
+
+[![npm package][npm-image]][npm-url] 
+[![Build Status][travis-image]][travis-url] 
+[![Coverage Status][coveralls-image]][coveralls-url] 
+[![Dependencies Status][david-image]][david-url]
+
+[npm-image]:https://img.shields.io/npm/v/color-ls.svg
+[npm-url]:http://npmjs.org/package/color-ls
+[travis-image]:https://travis-ci.org/glicht/color-ls.svg?branch=master
+[travis-url]:https://travis-ci.org/glicht/color-ls
+[david-image]:https://david-dm.org/glicht/color-ls/status.svg
+[david-url]:https://david-dm.org/glicht/color-ls
+[coveralls-image]:https://coveralls.io/repos/github/glicht/color-ls/badge.svg?branch=master
+[coveralls-url]:https://coveralls.io/github/glicht/color-ls?branch=master
