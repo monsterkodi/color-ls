@@ -48,9 +48,9 @@ If you don't use `node`, go try out [ls-go](https://github.com/acarl005/ls-go), 
 
 [npm-image]:https://img.shields.io/npm/v/color-ls.svg
 [npm-url]:http://npmjs.org/package/color-ls
-[travis-image]:https://travis-ci.org/glicht/color-ls.svg?branch=master
-[travis-url]:https://travis-ci.org/glicht/color-ls
-[david-image]:https://david-dm.org/glicht/color-ls/status.svg
-[david-url]:https://david-dm.org/glicht/color-ls
-[coveralls-image]:https://coveralls.io/repos/github/glicht/color-ls/badge.svg?branch=master
-[coveralls-url]:https://coveralls.io/github/glicht/color-ls?branch=master
+[travis-image]:https://travis-ci.org/monsterkodi/color-ls.svg?branch=master
+[travis-url]:https://travis-ci.org/monsterkodi/color-ls
+[david-image]:https://david-dm.org/monsterkodi/color-ls/status.svg
+[david-url]:https://david-dm.org/monsterkodi/color-ls
+[coveralls-image]:https://coveralls.io/repos/github/monsterkodi/color-ls/badge.svg?branch=master
+[coveralls-url]:https://coveralls.io/github/monsterkodi/color-ls?branch=master
