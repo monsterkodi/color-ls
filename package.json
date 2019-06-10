@@ -1,6 +1,6 @@
 {
   "name": "color-ls",
-  "version": "1.20.0",
+  "version": "1.21.0",
   "description": "lists files, but more colorful than ls",
   "main": "./js/color-ls.js",
   "author": "monsterkodi",

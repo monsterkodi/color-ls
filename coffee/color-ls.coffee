@@ -58,7 +58,7 @@ if not module.parent or module.parent.id == '.'
         kind          . ? sort by kind                    . = false
         nerdy         . ? use nerd font icons             . = false
         pretty        . ? pretty size and age             . = true
-        ignore        . ? don't recurse into              . = node_modules
+        ignore        . ? don't recurse into              . = node_modules .git
         info          . ? show statistics                 . = false . - I
         alphabetical  . ? don't group dirs before files   . = false . - A
         offset        . ? indent short listings           . = false . - O
@@ -327,7 +327,7 @@ timeString = (stat) ->
             else if mt < 10
                 return BG(0,0,1) + fg(0,0,3) + " #{mt} \uf455 "
             else 
-                return BG(0,0,1) + fg(0,0,3) + " #{yr} \uf6e6 "
+                return BG(0,0,1) + fg(0,0,3) + " #{rpad yr, 2}\uf6e6 "
                     
     moment = require 'moment'
     t = moment stat.mtime
@@ -642,10 +642,9 @@ listDir = (p, opt={}) ->
     else
         s = colors['_arrow'] + " ▶ " + colors['_header'][0]
         ps = slash.tilde slash.resolve p
-        if ps[0] != '~'
-            rs = slash.relative ps, process.cwd()
-            if rs.length < ps.length
-                ps = rs
+        rs = slash.relative ps, process.cwd()
+        if rs.length < ps.length
+            ps = rs
 
         if ps == '/'
             s += '/'
