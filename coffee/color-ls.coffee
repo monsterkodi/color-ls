@@ -72,7 +72,7 @@ if not module.parent or module.parent.id == '.'
     """
     
 initArgs = ->
-    
+        
     if args.size
         args.files = true
     
@@ -131,6 +131,11 @@ colors =
     'jpg':      [ bold+fg(0,3,0),  fg(0,2,0), fg(0,2,0) ]
     'pxm':      [ bold+fg(1,1,5),  fg(0,0,2), fg(0,0,4) ]
     'tiff':     [ bold+fg(1,1,5),  fg(0,0,3), fg(0,0,4) ]
+    'tgz':      [ bold+fg(0,3,4),  fg(0,1,2), fg(0,2,3) ]
+    'pkg':      [ bold+fg(0,3,4),  fg(0,1,2), fg(0,2,3) ]
+    'zip':      [ bold+fg(0,3,4),  fg(0,1,2), fg(0,2,3) ]
+    'dmg':      [ bold+fg(1,4,4),  fg(0,2,2), fg(0,3,3) ]
+    'ttf':      [ bold+fg(2,1,3),  fg(1,0,2), fg(1,0,2) ]
 
     '_default': [      fw(15),     fw(4),     fw(10) ]
     '_dir':     [ bold+BG(0,0,2)+fw(23), fg(1,1,5), bold+BG(0,0,2)+fg(2,2,5) ]
@@ -248,23 +253,23 @@ sizeString = (stat) ->
         if stat.size <= 1000
             return colors['_size']['b'][1] + rpad bar(stat.size), 8
         if stat.size <= 10000
-            return colors['_size']['b'][1] + '█' + rpad bar(stat.size/10), 7
+            return BG(0,0,2) + ' ' + reset + colors['_size']['b'][1] + rpad bar(stat.size/10), 7
         if stat.size <= 100000
-            return colors['_size']['b'][1] + '██' + rpad bar(stat.size/100), 6
+            return BG(0,0,2) + '  ' + reset + colors['_size']['b'][1] + rpad bar(stat.size/100), 6
         if stat.size <= 1000000
-            return colors['_size']['b'][1] + '███' + colors['_size']['kB'][1] + rpad bar(stat.size/1000), 5
+            return BG(0,0,2) +  '   ' + reset + colors['_size']['kB'][1] + rpad bar(stat.size/1000), 5
             
         mb = parseInt stat.size / 1000000
         if stat.size <= 10000000
-            return colors['_size']['b'][1] + '███' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['kB'][1] + rpad bar(stat.size/10000), 4
+            return BG(0,0,2) + '   ' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['kB'][1] + rpad bar(stat.size/10000), 4
         if stat.size <= 100000000
-            return colors['_size']['b'][1] + '███' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['kB'][1] + rpad bar(stat.size/100000), 3
+            return BG(0,0,2) + '   ' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['kB'][1] + rpad bar(stat.size/100000), 3
         if stat.size <= 1000000000
-            return colors['_size']['b'][1] + '███' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['MB'][1] + rpad bar(stat.size/1000000), 2
+            return BG(0,0,2) + '   ' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['MB'][1] + rpad bar(stat.size/1000000), 2
         if stat.size <= 10000000000
-            return colors['_size']['b'][1] + '███' + colors['_size']['kB'][1] + '███' + colors['_size']['MB'][1] + '█' + rpad bar(stat.size/10000000), 1
+            return BG(0,0,2) + '   ' + colors['_size']['kB'][1] + '███' + colors['_size']['MB'][1] + '█' + rpad bar(stat.size/10000000), 1
         if stat.size <= 100000000000
-            return colors['_size']['b'][1] + '███' + colors['_size']['kB'][1] + '███' + colors['_size']['MB'][1] + '██' + bar(stat.size/100000000)
+            return BG(0,0,2) + '   ' + colors['_size']['kB'][1] + '███' + colors['_size']['MB'][1] + '██' + bar(stat.size/100000000)
         
     if args.pretty and stat.size == 0
         return lpad(' ', 11)
@@ -305,24 +310,24 @@ timeString = (stat) ->
         hr  = parseInt sec/3600
         if hr < 12
             if sec < 60
-                return BG(0,0,1) + '   ' + fg(5,5,5) + '○◔◑◕'[parseInt sec/15] + reset + fg(0,0,1) + '▉' 
+                return BG(0,0,1) + '   ' + fg(5,5,5) + '○◔◑◕'[parseInt sec/15] + ' ' 
             else if mn < 60
-                return BG(0,0,1) + '  ' + fg(4,4,5) + '○◔◑◕'[parseInt mn/15] + fg(0,0,3) + '◌' + reset + fg(0,0,1) + '▉' 
+                return BG(0,0,1) + '  ' + fg(3,3,5) + '○◔◑◕'[parseInt mn/15] + fg(0,0,3) + '◌ '
             else
-                return BG(0,0,1) + ' ' + fg(3,3,5) + '○◔◑◕'[parseInt hr/3] + fg(0,0,3) + '◌◌' + reset + fg(0,0,1) + '▉' 
+                return BG(0,0,1) + ' ' + fg(2,2,5) + '○◔◑◕'[parseInt hr/3] + fg(0,0,3) + '◌◌ '
         else
             dy = parseInt Math.round sec/(24*3600)
             wk = parseInt Math.round sec/(7*24*3600)
             mt = parseInt Math.round sec/(30*24*3600)
             yr = parseInt Math.round sec/(365*24*3600)
             if dy < 10
-                return BG(0,0,1) + fg(0,0,5) + " #{dy} \uf185" + reset + fg(0,0,1) + '▉' 
-            else if wk < 8
-                return BG(0,0,1) + fg(0,0,4) + " #{wk} \uf186" + reset + fg(0,0,1) + '▉' 
+                return BG(0,0,1) + fg(0,0,5) + " #{dy} \uf185 "
+            else if wk < 5
+                return BG(0,0,1) + fg(0,0,4) + " #{wk} \uf186 "
             else if mt < 10
-                return BG(0,0,1) + fg(0,0,3) + " #{mt} \uf455" + reset + fg(0,0,1) + '▉' 
+                return BG(0,0,1) + fg(0,0,3) + " #{mt} \uf455 "
             else 
-                return BG(0,0,1) + fg(0,0,3) + " #{yr} \uf6e6" + reset + fg(0,0,1) + '▉' 
+                return BG(0,0,1) + fg(0,0,3) + " #{yr} \uf6e6 "
                     
     moment = require 'moment'
     t = moment stat.mtime
@@ -423,6 +428,7 @@ getPrefix = (stat, depth) ->
         s += " "
     if args.mdate
         s += timeString stat
+        s += reset
     if args.bytes
         s += sizeString stat
         
@@ -635,8 +641,11 @@ listDir = (p, opt={}) ->
         log getPrefix(slash.isDir(p), depth-1) + dirString(slash.base(ps), slash.ext(ps)) + reset
     else
         s = colors['_arrow'] + " ▶ " + colors['_header'][0]
-        ps = slash.resolve ps if ps[0] != '~'
-        ps = slash.relative ps, process.cwd()
+        ps = slash.tilde slash.resolve p
+        if ps[0] != '~'
+            rs = slash.relative ps, process.cwd()
+            if rs.length < ps.length
+                ps = rs
 
         if ps == '/'
             s += '/'
@@ -686,8 +695,9 @@ pathDepth = (p, opt) ->
 # 000   000  000   000  000  000   000
 
 main = ->
-    
+            
     pathstats = args.paths.map (f) ->
+        
         try
             [f, fs.statSync(f)]
         catch error
@@ -728,8 +738,6 @@ else
             else
                 args = paths:['.']
         initArgs()
-        
-        # log 'args:', args
         
         out = ''
         oldlog = console.log

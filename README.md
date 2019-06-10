@@ -21,6 +21,10 @@
 
 icon map by [lsd](https://github.com/Peltoche/lsd), works only with a [nerd font](https://github.com/ryanoasis/nerd-fonts)
 
+### pretty nerdy
+
+![pretty](./bin/img/pretty.png)
+
 ### usage
 
 ![usage](./bin/img/usage.png)
@@ -32,6 +36,7 @@ npm install -g color-ls
 ```
 
 If you don't use `node`, go try out [ls-go](https://github.com/acarl005/ls-go), which is similar to color-ls.
+
 [lsd](https://github.com/Peltoche/lsd) and [exa](https://github.com/ogham/exa) are also quite colorful alternatives.
 
 ### notes

@@ -9,19 +9,6 @@
 
 exports.name = 
         
-    bin:                ''
-    config:             ''
-    dockerfile:         ''
-    ds_store:           ''
-    gitignore_global:   ''
-    gradle:             ''
-    hidden:             ''
-    include:            ''
-    lib:                ''
-    localized:          ''
-    node_modules:       ''
-    npmignore:          ''
-    rubydoc:            ''
     Makefile:           '\uf423'
     LICENSE:            '\uf495'
     license:            '\uf495'
@@ -112,6 +99,7 @@ exports.ext =
     less:               ''
     lhs:                ''
     localized:          ''
+    DS_Store:           ''
     lock:               ''
     log:                ''
     lua:                ''
