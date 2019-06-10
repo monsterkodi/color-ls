@@ -43,7 +43,7 @@ If you don't use `node`, go try out [ls-go](https://github.com/acarl005/ls-go), 
 
 [![npm package][npm-image]][npm-url] 
 [![Build Status][travis-image]][travis-url] 
-[![Coverage Status][coveralls-image]][coveralls-url] 
+[![downloads][downloads-image]][downloads-url] 
 [![Dependencies Status][david-image]][david-url]
 
 [npm-image]:https://img.shields.io/npm/v/color-ls.svg
@@ -52,5 +52,5 @@ If you don't use `node`, go try out [ls-go](https://github.com/acarl005/ls-go), 
 [travis-url]:https://travis-ci.org/monsterkodi/color-ls
 [david-image]:https://david-dm.org/monsterkodi/color-ls/status.svg
 [david-url]:https://david-dm.org/monsterkodi/color-ls
-[coveralls-image]:https://coveralls.io/repos/github/monsterkodi/color-ls/badge.svg?branch=master
-[coveralls-url]:https://coveralls.io/github/monsterkodi/color-ls?branch=master
+[downloads-image]:https://img.shields.io/npm/dm/color-ls.svg
+[downloads-url]:http://npmjs.org/package/color-ls
