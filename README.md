@@ -53,4 +53,4 @@ If you don't use `node`, go try out [ls-go](https://github.com/acarl005/ls-go), 
 [david-image]:https://david-dm.org/monsterkodi/color-ls/status.svg
 [david-url]:https://david-dm.org/monsterkodi/color-ls
 [downloads-image]:https://img.shields.io/npm/dm/color-ls.svg
-[downloads-url]:http://npmjs.org/package/color-ls
+[downloads-url]:https://www.npmtrends.com/color-ls

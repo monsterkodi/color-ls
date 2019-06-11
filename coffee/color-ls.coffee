@@ -253,23 +253,24 @@ sizeString = (stat) ->
         if stat.size <= 1000
             return colors['_size']['b'][1] + rpad bar(stat.size), 8
         if stat.size <= 10000
-            return BG(0,0,2) + ' ' + reset + colors['_size']['b'][1] + rpad bar(stat.size/10), 7
+            return BG(0,0,2) + ' ' + reset + fg(0,0,2) + rpad bar(stat.size/10), 7
         if stat.size <= 100000
-            return BG(0,0,2) + '  ' + reset + colors['_size']['b'][1] + rpad bar(stat.size/100), 6
+            return BG(0,0,2) + '  ' + reset + fg(0,0,2) + rpad bar(stat.size/100), 6
         if stat.size <= 1000000
-            return BG(0,0,2) +  '   ' + reset + colors['_size']['kB'][1] + rpad bar(stat.size/1000), 5
+            return BG(0,0,2) +  '   ' + reset + fg(0,0,3) + rpad bar(stat.size/1000), 5
             
         mb = parseInt stat.size / 1000000
         if stat.size <= 10000000
-            return BG(0,0,2) + '   ' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['kB'][1] + rpad bar(stat.size/10000), 4
+            return BG(0,0,2) + '   ' + BG(0,0,3) + fg(0,0,2) + mb + reset + fg(0,0,3) + rpad bar(stat.size/10000), 4
         if stat.size <= 100000000
-            return BG(0,0,2) + '   ' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['kB'][1] + rpad bar(stat.size/100000), 3
+            return BG(0,0,2) + '   ' + BG(0,0,3) + fg(0,0,2) + mb + reset + fg(0,0,3) + rpad bar(stat.size/100000), 3
         if stat.size <= 1000000000
-            return BG(0,0,2) + '   ' + BG(0,0,3) + fg(0,0,2) + mb + reset + colors['_size']['MB'][1] + rpad bar(stat.size/1000000), 2
+            return BG(0,0,2) + '   ' + BG(0,0,3) + fg(0,0,2) + mb + reset + fg(0,0,3) + rpad bar(stat.size/1000000), 2
+        gb = parseInt mb / 1000
         if stat.size <= 10000000000
-            return BG(0,0,2) + '   ' + colors['_size']['kB'][1] + '███' + colors['_size']['MB'][1] + '█' + rpad bar(stat.size/10000000), 1
+            return BG(0,0,2) + '   ' + BG(0,0,3) + '   ' + BG(0,0,4) + fg(0,0,3) + gb + reset + fg(0,0,4) + rpad bar(stat.size/10000000), 1
         if stat.size <= 100000000000
-            return BG(0,0,2) + '   ' + colors['_size']['kB'][1] + '███' + colors['_size']['MB'][1] + '██' + bar(stat.size/100000000)
+            return BG(0,0,2) + '   ' + BG(0,0,3) + '   ' + BG(0,0,4) + fg(0,0,3) + gb + reset + fg(0,0,4) + bar(stat.size/100000000)
         
     if args.pretty and stat.size == 0
         return lpad(' ', 11)
