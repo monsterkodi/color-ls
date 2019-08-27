@@ -27,11 +27,11 @@ keywords
 dependencies
                 ansi-256-colors  ^1.1.0
                 karg            ^1.19.0
-                kslash          ^1.12.0
-                kstr            ^0.3.0
+                kslash          ^1.16.0
+                kstr            ^0.6.0
                 moment          ^2.24.0
 devDependencies
                 chai      ^4.2.0
-                mocha     ^6.1.4
+                mocha     ^6.2.0
                 onchange  ^6.0.0
-                koffee    ^1.1.0
+                koffee    ^1.4.0
