@@ -9,6 +9,7 @@
 startTime = process.hrtime.bigint?()
 
 { lpad, rpad, time } = require 'kstr'
+os     = require 'os'
 fs     = require 'fs'
 slash  = require 'kslash'
 ansi   = require 'ansi-256-colors'
@@ -197,7 +198,7 @@ linkString = (file) ->
     s  = reset + fw(1) + colors['_link']['arrow'] + " ► " 
     s += colors['_link'][(file in stats.brokenLinks) and 'broken' or 'path'] 
     try
-        s += slash.path fs.readlinkSync(file)
+        s += slash.tilde fs.readlinkSync(file)
     catch err
         s += ' ? '
     s
@@ -544,6 +545,15 @@ listFiles = (p, files, depth) ->
         try
             lstat = fs.lstatSync file
             link  = lstat.isSymbolicLink()
+            if link and os.platform() == 'win32'
+                if slash.tilde(file)[0] == '~'
+                    try
+                        target = slash.tilde fs.readlinkSync file
+                        return if target.startsWith '~/AppData'
+                        return if target in ['~/Documents']
+                    catch err
+                        true
+                            
             stat  = link and fs.statSync(file) or lstat
         catch err
             if link
