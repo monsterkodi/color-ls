@@ -714,13 +714,19 @@ main = ->
             log_error 'no such file: ', f
             []
     
-    filestats = pathstats.filter( (f) -> f.length and not f[1].isDirectory() )
+    pathstats = pathstats.filter (f) -> f.length
+    
+    if not pathstats.length then process.exit(1)
+    
+    filestats = pathstats.filter (f) -> not f[1].isDirectory()
     
     if filestats.length > 0
         log reset
         listFiles process.cwd(), filestats.map( (s) -> s[0] )
     
-    for p in pathstats.filter( (f) -> f.length and f[1].isDirectory() )
+    dirstats = pathstats.filter (f) -> f.length and f[1].isDirectory()
+        
+    for p in dirstats
         log '' if args.tree
         listDir p[0], relativeTo:args.tree and slash.dirname(p[0]) or process.cwd()
     
