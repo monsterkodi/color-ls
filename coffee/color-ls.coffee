@@ -68,6 +68,8 @@ if not module.parent or module.parent.id == '.'
         depth         . ? recursion depth                 . = ∞     . - D
         find          . ? filter with a regexp                      . - F
         debug                                             . = false . - X
+        followSymLinks                                    . = false . - S 
+        inodeInfos                                        . = false . - N 
     
     version      #{require("#{__dirname}/../package.json").version}
     """
@@ -211,7 +213,7 @@ linkString = (file) ->
 
 nameString = (name, ext) -> 
     
-    if args.nerdy
+    if args.nerdy        
         icons = require './icons'
         icon = (colors[colors[ext]? and ext or '_default'][2] + (icons.get(name, ext) ? ' ')) + ' '
     else
@@ -419,9 +421,17 @@ rightsString = (stat) ->
     ro = rwxString(stat, 0) + " "
     ur + gr + ro + reset
 
+inodeString = (stat) ->
+    
+    lpad(stat.ino, 8) + ' ' + lpad(stat.nlink, 3)
+    
 getPrefix = (stat, depth) ->
     
     s = ''
+    
+    if args.inodeInfos
+        s += inodeString stat
+        s += " "
     if args.rights
         s += rightsString stat
         s += " "
@@ -679,9 +689,12 @@ listDir = (p, opt={}) ->
         doRecurse = (f) -> 
             
             return false if slash.basename(f) in args.ignore
-            return false if slash.ext(f) == 'app'
+            return false if not args.all and slash.ext(f) == 'app'
             return false if not args.all and f[0] == '.'
-            slash.isDir slash.join p, f
+            fp = slash.join p, f
+            return false if not args.followSymLinks and fs.lstatSync(fp).isSymbolicLink()
+            
+            slash.isDir fp
             
         try
             for pr in fs.readdirSync(p).filter doRecurse

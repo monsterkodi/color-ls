@@ -39,7 +39,7 @@ describe 'ls' ->
         out.should.include 'node_modules'
         out.should.include 'package.noon'
         out.should.include 'package.json'
-        out.should.include 'README.md'
+        out.should.include 'readme.md'
         
     it 'ls .' ->
         
@@ -50,7 +50,7 @@ describe 'ls' ->
         out.should.include 'node_modules'
         out.should.include 'package.noon'
         out.should.include 'package.json'
-        out.should.include 'README.md'
+        out.should.include 'readme.md'
         
     it 'ls bin' ->
         

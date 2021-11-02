@@ -6,6 +6,7 @@
 000   0000000   0000000   000   000  0000000 
 ###
 
+slash = require 'kslash'
 
 exports.name = 
         
@@ -227,5 +228,5 @@ exports.ext =
         
 exports.get = (name, ext) ->
    
-    exports.ext[ext] ? exports.name[name] 
+    exports.ext[ext] ? exports.name[name] ? exports.ext[slash.ext ext]
     
