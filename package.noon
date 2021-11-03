@@ -1,5 +1,5 @@
 name            color-ls
-version         1.29.0
+version         1.30.0
 description     lists files, but more colorful than ls
 main            ./js/color-ls.js
 author          monsterkodi
@@ -30,6 +30,8 @@ dependencies
                 kslash          ^2.3.0
                 kstr            ^0.13.0
                 lodash.filter   ^4.6.0
+                lodash.unzip    ^3.4.0
+                lodash.zip      ^4.2.0
                 moment          ^2.29.1
 devDependencies
                 chai      ^4.3.4

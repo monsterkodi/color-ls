@@ -151,13 +151,16 @@ colors =
     '_users':   { root:  fg(3,0,0), default: fg(1,0,1) }
     '_groups':  { wheel: fg(1,0,0), staff: fg(0,1,0), admin: fg(1,1,0), default: fg(1,0,1) }
     '_error':   [ bold+BG(5,0,0)+fg(5,5,0), bold+BG(5,0,0)+fg(5,5,5) ]
+    '_inodes':  
+                'id':  bold+BG(1,0,1)+fg(4,0,4) 
+                'lnk': bold+BG(4,0,4)+fg(1,0,1)
     '_rights':
-                  'r+': bold+BW(1)+fw(6)
-                  'r-': reset+BW(1)+fw(2)
-                  'w+': bold+BW(1)+fg(2,2,5)
-                  'w-': reset+BW(1)+fw(2)
-                  'x+': bold+BW(1)+fg(5,0,0)
-                  'x-': reset+BW(1)+fw(2)
+                'r+': bold+BW(1)+fw(6)
+                'r-': reset+BW(1)+fw(2)
+                'w+': bold+BW(1)+fg(2,2,5)
+                'w-': reset+BW(1)+fw(2)
+                'x+': bold+BW(1)+fg(5,0,0)
+                'x-': reset+BW(1)+fw(2)
 
 userMap = {}
 username = (uid) ->
@@ -424,7 +427,11 @@ rightsString = (stat) ->
 
 inodeString = (stat) ->
     
-    lpad(stat.ino, 8) + ' ' + lpad(stat.nlink, 3)
+    if stat.nlink > 1
+        lnk = colors['_inodes']['lnk'] + lpad(stat.nlink, 3) + ' ' + reset
+    else 
+        lnk = reset + '    '
+    colors['_inodes']['id'] + lpad(stat.ino, 8) + ' ' + lnk
     
 getPrefix = (stat, depth) ->
     
@@ -460,10 +467,11 @@ getPrefix = (stat, depth) ->
 
 sort = (list, stats, exts=[]) ->
     
-    _ = require 'lodash'
+    zip    = require 'lodash.zip'
+    unzip  = require 'lodash.unzip'
     moment = require 'moment'
     
-    l = _.zip list, stats, [0...list.length], (exts.length > 0 and exts or [0...list.length])
+    l = zip list, stats, [0...list.length], (exts.length > 0 and exts or [0...list.length])
     
     if args.kind
         if exts == [] then return list
@@ -495,7 +503,7 @@ sort = (list, stats, exts=[]) ->
             if a[1].size < b[1].size then return -1
             if a[2] > b[2] then return 1
             -1)
-    _.unzip(l)[0]
+    unzip(l)[0]
 
 # 000   0000000   000   000   0000000   00000000   00000000  
 # 000  000        0000  000  000   000  000   000  000       
