@@ -12,6 +12,7 @@ startTime = process.hrtime.bigint?()
 os     = require 'os'
 fs     = require 'fs'
 slash  = require 'kslash'
+filter = require 'lodash.filter'
 ansi   = require 'ansi-256-colors'
 util   = require 'util'
 
@@ -45,31 +46,31 @@ if not module.parent or module.parent.id == '.'
     karg = require 'karg'
     args = karg """
     color-ls
-        paths         . ? the file(s) and/or folder(s) to display . **
-        all           . ? show dot files                  . = false
-        dirs          . ? show only dirs                  . = false
-        files         . ? show only files                 . = false
-        bytes         . ? include size                    . = false
-        mdate         . ? include modification date       . = false
-        long          . ? include size and date           . = false
-        owner         . ? include owner and group         . = false
-        rights        . ? include rights                  . = false
-        size          . ? sort by size                    . = false
-        time          . ? sort by time                    . = false
-        kind          . ? sort by kind                    . = false
-        nerdy         . ? use nerd font icons             . = false
-        pretty        . ? pretty size and age             . = true
-        ignore        . ? don't recurse into              . = node_modules .git
-        info          . ? show statistics                 . = false . - I
-        alphabetical  . ? don't group dirs before files   . = false . - A
-        offset        . ? indent short listings           . = false . - O
-        recurse       . ? recurse into subdirs            . = false . - R
-        tree          . ? recurse and indent              . = false . - T
-        depth         . ? recursion depth                 . = ∞     . - D
-        find          . ? filter with a regexp                      . - F
-        debug                                             . = false . - X
-        followSymLinks                                    . = false . - S 
-        inodeInfos                                        . = false . - N 
+        paths           . ? the file(s) and/or folder(s) to display . **
+        all             . ? show dot files                  . = false
+        dirs            . ? show only dirs                  . = false
+        files           . ? show only files                 . = false
+        bytes           . ? include size                    . = false
+        mdate           . ? include modification date       . = false
+        long            . ? include size and date           . = false
+        owner           . ? include owner and group         . = false
+        rights          . ? include rights                  . = false
+        size            . ? sort by size                    . = false
+        time            . ? sort by time                    . = false
+        kind            . ? sort by kind                    . = false
+        nerdy           . ? use nerd font icons             . = false
+        pretty          . ? pretty size and age             . = true
+        ignore          . ? don't recurse into              . = node_modules .git
+        info            . ? show statistics                 . = false . - I
+        alphabetical    . ? don't group dirs before files   . = false . - A
+        offset          . ? indent short listings           . = false . - O
+        recurse         . ? recurse into subdirs            . = false . - R
+        tree            . ? recurse and indent              . = false . - T
+        followSymLinks  . ? recurse follows symlinks        . = false . - S 
+        depth           . ? recursion depth                 . = ∞     . - D
+        find            . ? filter with a regexp            . - F
+        debug                                               . = false . - X
+        inodeInfos                                          . = false . - N 
     
     version      #{require("#{__dirname}/../package.json").version}
     """
@@ -516,7 +517,7 @@ ignore = (p) ->
 # 000       000  000      000            000
 # 000       000  0000000  00000000  0000000
 
-listFiles = (p, files, depth) ->
+listFiles = (p, dirents, depth) ->
     
     alph = [] if args.alphabetical
     dirs = [] # visible dirs
@@ -527,7 +528,8 @@ listFiles = (p, files, depth) ->
 
     if args.owner
         
-        files.forEach (rp) ->
+        dirents.forEach (de) ->
+            rp = de.name
             if slash.isAbsolute rp
                 file = slash.resolve rp
             else
@@ -543,7 +545,9 @@ listFiles = (p, files, depth) ->
             catch
                 return
 
-    files.forEach (rp) ->
+    dirents.forEach (de) ->
+        
+        rp = de.name
         
         if slash.isAbsolute rp
             file  = slash.resolve rp
@@ -564,7 +568,7 @@ listFiles = (p, files, depth) ->
                     catch err
                         true
                             
-            stat  = link and fs.statSync(file) or lstat
+            stat = link and fs.statSync(file) or lstat
         catch err
             if link
                 stat = lstat
@@ -637,8 +641,13 @@ listFiles = (p, files, depth) ->
 # 000   000  000  000   000
 # 0000000    000  000   000
 
-listDir = (p, opt={}) ->
+listDir = (de, opt={}) ->
             
+    p = de.name
+
+    if slash.isRelative(p) and opt.parent
+        p = slash.join opt.parent, p
+
     if args.recurse
         depth = pathDepth p, opt
         return if depth > args.depth
@@ -646,20 +655,21 @@ listDir = (p, opt={}) ->
     ps = p
 
     try
-        files = fs.readdirSync(p)
+        alldirents = fs.readdirSync p, withFileTypes:true
     catch err
         true
 
     if args.find
-        files = files.filter (f) ->
-            f if RegExp(args.find).test f
+        dirents = filter alldirents, (de) -> RegExp(args.find).test de.name
+    else
+        dirents = alldirents
             
-    if args.find and not files?.length
+    if args.find and not dirents?.length
         true
     else if args.paths.length == 1 and args.paths[0] == '.' and not args.recurse
         log reset
     else if args.tree
-        log getPrefix(slash.isDir(p), depth-1) + dirString(slash.base(ps), slash.ext(ps)) + reset
+        log getPrefix(de.isDirectory(), depth-1) + dirString(slash.base(ps), slash.ext(ps)) + reset
     else
         s = colors['_arrow'] + " ▶ " + colors['_header'][0]
         ps = slash.tilde slash.resolve p
@@ -681,24 +691,22 @@ listDir = (p, opt={}) ->
         log s + " " + reset
         log reset
 
-    if files?.length
-        listFiles p, files, depth
+    if dirents?.length
+        listFiles p, dirents, depth
 
     if args.recurse
         
-        doRecurse = (f) -> 
-            
+        doRecurse = (de) ->
+            f = de.name
             return false if slash.basename(f) in args.ignore
             return false if not args.all and slash.ext(f) == 'app'
             return false if not args.all and f[0] == '.'
-            fp = slash.join p, f
-            return false if not args.followSymLinks and fs.lstatSync(fp).isSymbolicLink()
-            
-            slash.isDir fp
+            return false if not args.followSymLinks and de.isSymbolicLink()
+            de.isDirectory() or de.isSymbolicLink() and fs.statSync(slash.join p, f).isDirectory()
             
         try
-            for pr in fs.readdirSync(p).filter doRecurse
-                listDir slash.resolve(slash.join p, pr), opt
+            for de in filter alldirents, doRecurse
+                listDir de, parent:p, relativeTo:opt.relativeTo
         catch err
             msg = err.message
             msg = "permission denied" if msg.startsWith "EACCES"
@@ -724,7 +732,7 @@ main = ->
         try
             [f, fs.statSync(f)]
         catch error
-            log_error 'no such file: ', f
+            log_error 'no such file: ' f
             []
     
     pathstats = pathstats.filter (f) -> f.length
@@ -735,13 +743,16 @@ main = ->
     
     if filestats.length > 0
         log reset
-        listFiles process.cwd(), filestats.map( (s) -> s[0] )
+        listFiles process.cwd(), filestats.map( (s) -> s[1].name ?= s[0]; s[1] )
     
-    dirstats = pathstats.filter (f) -> f.length and f[1].isDirectory()
+    dirstats = pathstats.filter (f) -> f[1]?.isDirectory()
         
     for p in dirstats
         log '' if args.tree
-        listDir p[0], relativeTo:args.tree and slash.dirname(p[0]) or process.cwd()
+        file = slash.file p[0]
+        parent = if slash.isRelative(p[0]) then process.cwd() else slash.dir p[0]
+        p[1].name ?= file
+        listDir p[1], parent:parent, relativeTo:parent
     
     log ""
     if args.info

@@ -73,7 +73,8 @@ describe 'ls' ->
     
     it 'tree' -> # todo: test depth
         
-        out = cls 'a', {tree:true, depth:99}
+        out = cls 'a' {tree:true, depth:99, followSymLinks:true}
+
         out[1].should.include 'a'
         out[2].should.include 'a.b.c'
         out[3].should.include 'a.txt'
@@ -85,7 +86,8 @@ describe 'ls' ->
         
     it 'recursive' ->
         
-        out = cls 'a', {recurse:true, depth:99}
+        out = cls 'a' {recurse:true, depth:99, followSymLinks:true}
+        
         out[1].should.include '▶ a'
         
         out[3].should.include 'b'
