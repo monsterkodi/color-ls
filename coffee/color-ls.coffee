@@ -59,6 +59,8 @@ if not module.parent or module.parent.id == '.'
         time            . ? sort by time                    . = false
         kind            . ? sort by kind                    . = false
         nerdy           . ? use nerd font icons             . = false
+        execute         . ? execute command for each find result            . - X
+        dryrun          . ? print instead of execute commands     . = false . - x
         pretty          . ? pretty size and age             . = true
         ignore          . ? don't recurse into              . = node_modules .git
         info            . ? show statistics                 . = false . - I
@@ -68,8 +70,8 @@ if not module.parent or module.parent.id == '.'
         tree            . ? recurse and indent              . = false . - T
         followSymLinks  . ? recurse follows symlinks        . = false . - S 
         depth           . ? recursion depth                 . = ∞     . - D
-        find            . ? filter with a regexp            . - F
-        debug                                               . = false . - X
+        find            . ? filter with a regexp            .           - F
+        debug                                               . = false . - Z
         inodeInfos                                          . = false . - N 
     
     version      #{require("#{__dirname}/../package.json").version}
@@ -525,6 +527,8 @@ ignore = (p) ->
 # 000       000  000      000            000
 # 000       000  0000000  00000000  0000000
 
+exec = [] # paths to execute on
+
 listFiles = (p, dirents, depth) ->
     
     alph = [] if args.alphabetical
@@ -607,6 +611,7 @@ listFiles = (p, dirents, depth) ->
                             s += linkString file
                         dirs.push s+reset
                         alph.push s+reset if args.alphabetical
+                        exec.push file if args.execute
                     dsts.push stat
                     stats.num_dirs += 1
                 else
@@ -622,6 +627,7 @@ listFiles = (p, dirents, depth) ->
                     alph.push s+reset if args.alphabetical
                     fsts.push stat
                     exts.push ext
+                    exec.push file if args.execute
                     stats.num_files += 1
                 else
                     stats.hidden_files += 1
@@ -642,7 +648,7 @@ listFiles = (p, dirents, depth) ->
     else
         log d for d in dirs
         log f for f in fils
-
+            
 # 0000000    000  00000000
 # 000   000  000  000   000
 # 000   000  000  0000000
@@ -677,7 +683,7 @@ listDir = (de, opt={}) ->
     else if args.paths.length == 1 and args.paths[0] == '.' and not args.recurse
         log reset
     else if args.tree
-        log getPrefix(de.isDirectory(), depth-1) + dirString(slash.base(ps), slash.ext(ps)) + reset
+        log getPrefix(fs.lstatSync(ps), depth-1) + dirString(slash.base(ps), slash.ext(ps)) + reset
     else
         s = colors['_arrow'] + " ▶ " + colors['_header'][0]
         ps = slash.tilde slash.resolve p
@@ -727,6 +733,11 @@ pathDepth = (p, opt) ->
     return 0 if p == '.'
     rel.split('/').length
 
+makeCommand = (p) ->
+    
+    # log args.execute.replace /\#\w+/g, (s) -> "(#{s}:#{slash[s[1..-1]] p})"
+    args.execute.replace /\#\w+/g, (s) -> "#{slash[s[1..-1]] p}"
+    
 # 00     00   0000000   000  000   000
 # 000   000  000   000  000  0000  000
 # 000000000  000000000  000  000 0 000
@@ -762,6 +773,31 @@ main = ->
         p[1].name ?= file
         listDir p[1], parent:parent, relativeTo:parent
     
+    if args.execute and exec
+        noon = require 'noon'
+        commands = ( makeCommand ex for ex in exec )
+        log ''
+        if args.dryrun
+            log BG(0 1 0) + fg(0 3 0) + ' dryrun ' + reset 
+            log ''
+            log noon.stringify commands
+        else
+            childp = require 'child_process'
+            log BG(2 0 0) + fg(5 5 0) + ' execute ' + reset 
+            log ''
+            for cmd in commands
+                log BW(1) + fw(4) + cmd + reset
+                try
+                    result = childp.execSync cmd, encoding: 'utf8'
+                    if result.status? or result.stdout?
+                        log 'dafuk?'
+                        log result.stdout
+                        log BG(4 0 0) + fg(5 5 0) + result.stderr + reset
+                    else
+                        log result
+                catch err
+                    error BG(4 0 0) + fg(5 5 0) + (err?.stdout ? err) + reset
+        
     log ""
     if args.info
         log BW(1) + " " +
