@@ -75,6 +75,8 @@ if not module.parent or module.parent.id == '.'
         inodeInfos                                          . = false . - N 
     
     version      #{require("#{__dirname}/../package.json").version}
+    
+    execute variables: #path #file #dir         
     """
     
 initArgs = ->
@@ -768,8 +770,12 @@ main = ->
         
     for p in dirstats
         log '' if args.tree
-        file = slash.file p[0]
-        parent = if slash.isRelative(p[0]) then process.cwd() else slash.dir p[0]
+        if slash.isRelative p[0]
+            abspth = slash.resolve slash.join process.cwd(), p[0]
+        else
+            abspth = slash.resolve p[0]
+        file = slash.file abspth
+        parent = slash.dir abspth
         p[1].name ?= file
         listDir p[1], parent:parent, relativeTo:parent
     
