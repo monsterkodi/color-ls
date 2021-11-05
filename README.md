@@ -44,13 +44,10 @@ If you don't use `node`, go try out [ls-go](https://github.com/acarl005/ls-go), 
 [![npm package][npm-image]][npm-url] 
 [![Build Status][travis-image]][travis-url] 
 [![downloads][downloads-image]][downloads-url] 
-[![Dependencies Status][david-image]][david-url]
 
 [npm-image]:https://img.shields.io/npm/v/color-ls.svg
 [npm-url]:http://npmjs.org/package/color-ls
 [travis-image]:https://travis-ci.org/monsterkodi/color-ls.svg?branch=master
 [travis-url]:https://travis-ci.org/monsterkodi/color-ls
-[david-image]:https://david-dm.org/monsterkodi/color-ls/status.svg
-[david-url]:https://david-dm.org/monsterkodi/color-ls
 [downloads-image]:https://img.shields.io/npm/dm/color-ls.svg
 [downloads-url]:https://www.npmtrends.com/color-ls
