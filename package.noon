@@ -26,8 +26,8 @@ keywords
                 colors
 dependencies
                 ansi-256-colors  ^1.1.0
-                karg            ^1.23.0
-                kslash          ^2.3.0
+                karg            ^1.26.0
+                kslash          ^2.4.0
                 kstr            ^0.13.0
                 lodash.filter   ^4.6.0
                 lodash.unzip    ^3.4.0
