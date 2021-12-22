@@ -8,6 +8,7 @@
 
 slash = require 'kslash'
 
+exports = {}
 exports.name = 
         
     Makefile:           '\uf423'
@@ -229,4 +230,6 @@ exports.ext =
 exports.get = (name, ext) ->
    
     exports.ext[ext] ? exports.name[name] ? exports.ext[slash.ext ext]
+    
+module.exports = exports
     

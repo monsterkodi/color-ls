@@ -1,5 +1,5 @@
 name            color-ls
-version         2.2.0
+version         2.2.2
 description     lists files, but more colorful than ls
 main            ./js/color-ls.js
 author          monsterkodi
@@ -13,10 +13,7 @@ files
 scripts
                 test    ./node_modules/.bin/mocha -c --require koffee/js/register ./coffee/test.coffee
                 watch   ./node_modules/.bin/onchange coffee/test.coffee coffee/color-ls.coffee -- npm run test --silent
-repository
-                type  git
-                url   git://github.com/monsterkodi/color-ls
-homepage        https://npmjs.com/package/color-ls
+repository      github:monsterkodi/color-ls
 preferGlobal    true
 keywords
                 ls
@@ -25,17 +22,18 @@ keywords
                 ansi
                 colors
 dependencies
+                karg            monsterkodi/karg
+                kslash          monsterkodi/kslash
+                kstr            monsterkodi/kstr
+                noon            monsterkodi/noon
                 ansi-256-colors  ^1.1.0
-                karg            ^1.26.0
-                kslash          ^2.4.0
-                kstr            ^0.13.0
                 lodash.filter   ^4.6.0
                 lodash.unzip    ^3.4.0
                 lodash.zip      ^4.2.0
                 moment          ^2.29.1
-                noon            ^3.1.0
 devDependencies
+                kode            monsterkodi/kode
                 chai      ^4.3.4
-                koffee    ^1.14.0
+                koffee    ^1.19.0
                 mocha     ^9.1.3
                 onchange  ^7.1.0
