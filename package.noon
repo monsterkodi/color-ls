@@ -1,9 +1,17 @@
 name            color-ls
-version         2.2.2
+version         2.3.0
 description     lists files, but more colorful than ls
 main            ./js/color-ls.js
 author          monsterkodi
 license         Unlicense
+keywords
+                ls
+                list
+                files
+                ansi
+                colors
+preferGlobal    true
+repository      github:monsterkodi/color-ls
 bin
                 color-ls  ./bin/color-ls
 files
@@ -11,16 +19,9 @@ files
                 js/color-ls.js
                 js/icons.js
 scripts
-                test    ./node_modules/.bin/mocha -c --require koffee/js/register ./coffee/test.coffee
-                watch   ./node_modules/.bin/onchange coffee/test.coffee coffee/color-ls.coffee -- npm run test --silent
-repository      github:monsterkodi/color-ls
-preferGlobal    true
-keywords
-                ls
-                list
-                files
-                ansi
-                colors
+                build   ./node_modules/.bin/kode -Ho js kode/color-ls.kode kode/icons.kode
+                test    ./node_modules/.bin/kode -t kode/test.kode
+                watch   ./node_modules/.bin/kode -wt kode/*.kode 
 dependencies
                 karg            monsterkodi/karg
                 kslash          monsterkodi/kslash
@@ -32,8 +33,4 @@ dependencies
                 lodash.zip      ^4.2.0
                 moment          ^2.29.1
 devDependencies
-                kode            monsterkodi/kode
-                chai      ^4.3.4
-                koffee    ^1.19.0
-                mocha     ^9.1.3
-                onchange  ^7.1.0
+                kode      monsterkodi/kode

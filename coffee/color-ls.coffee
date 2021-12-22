@@ -108,7 +108,7 @@ initArgs = ->
         noon = require 'noon'
         log noon.stringify args, colors:true
     
-    args.paths = ['.'] unless args.paths?.length > 0
+    args.paths = ['.'] if not args.paths?.length > 0
 
 #  0000000   0000000   000       0000000   00000000    0000000
 # 000       000   000  000      000   000  000   000  000
@@ -379,14 +379,14 @@ ownerName = (stat) ->
     
     try
         username stat.uid
-    catch
+    catch err
         stat.uid
 
 groupName = (stat) ->
     
     try
         groupname stat.gid
-    catch
+    catch errerr
         stat.gid
 
 ownerString = (stat) ->
@@ -394,9 +394,9 @@ ownerString = (stat) ->
     own = ownerName(stat)
     grp = groupName(stat)
     ocl = colors['_users'][own]
-    ocl = colors['_users']['default'] unless ocl
+    ocl = colors['_users']['default'] if not ocl
     gcl = colors['_groups'][grp]
-    gcl = colors['_groups']['default'] unless gcl
+    gcl = colors['_groups']['default'] if not gcl
     ocl + rpad(own, stats.maxOwnerLength) + " " + gcl + rpad(grp, stats.maxGroupLength)
 
 # 00000000   000   0000000   000   000  000000000   0000000  
@@ -414,13 +414,13 @@ rwxString = (stat, i) ->
         w = '\uf040'
         x = stat.isDirectory() and '\uf085' or '\uf013'
         
-        (((mode >> (i*3)) & 0b100) and colors['_rights']['r+'] + r or colors['_rights']['r-'] + r) +
-        (((mode >> (i*3)) & 0b010) and colors['_rights']['w+'] + w or colors['_rights']['w-'] + w) +
-        (((mode >> (i*3)) & 0b001) and colors['_rights']['x+'] + x or colors['_rights']['x-'] + x)
+        return ((((mode >> (i*3)) & 0b100) and colors['_rights']['r+'] + r or colors['_rights']['r-'] + r) + \
+                (((mode >> (i*3)) & 0b010) and colors['_rights']['w+'] + w or colors['_rights']['w-'] + w) + \
+                (((mode >> (i*3)) & 0b001) and colors['_rights']['x+'] + x or colors['_rights']['x-'] + x))
     else
-        (((mode >> (i*3)) & 0b100) and colors['_rights']['r+'] + ' r' or colors['_rights']['r-'] + '  ') +
-        (((mode >> (i*3)) & 0b010) and colors['_rights']['w+'] + ' w' or colors['_rights']['w-'] + '  ') +
-        (((mode >> (i*3)) & 0b001) and colors['_rights']['x+'] + ' x' or colors['_rights']['x-'] + '  ')
+        return ((((mode >> (i*3)) & 0b100) and colors['_rights']['r+'] + ' r' or colors['_rights']['r-'] + '  ') + \
+                (((mode >> (i*3)) & 0b010) and colors['_rights']['w+'] + ' w' or colors['_rights']['w-'] + '  ') + \
+                (((mode >> (i*3)) & 0b001) and colors['_rights']['x+'] + ' x' or colors['_rights']['x-'] + '  '))
 
 rightsString = (stat) ->
     
@@ -556,7 +556,7 @@ listFiles = (p, dirents, depth) ->
                     stats.maxOwnerLength = ol
                 if gl > stats.maxGroupLength
                     stats.maxGroupLength = gl
-            catch
+            catch err
                 return
 
     dirents.forEach (de) ->
@@ -752,7 +752,7 @@ main = ->
         
         try
             [f, fs.statSync(f)]
-        catch error
+        catch err
             log_error 'no such file: ' f
             []
     
