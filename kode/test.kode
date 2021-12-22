@@ -1,0 +1,102 @@
+###
+000000000  00000000   0000000  000000000
+   000     000       000          000   
+   000     0000000   0000000      000   
+   000     000            000     000   
+   000     00000000  0000000      000   
+###
+
+slash = require 'kslash'
+kstr  = require 'kstr'
+
+ls = require '../'
+
+cls = ->
+    
+    raw = ls.apply ls, arguments
+    stripped = kstr.stripAnsi raw
+    lines = stripped.split '\n'
+    trimmed = lines.map (s) -> s.trim()
+    trimmed.lines = lines
+    trimmed.clrzd = raw.split '\n'
+    trimmed
+
+▸ ls
+           
+    ▸ module
+        
+        ls is 'function' ▸ yes
+        
+    ▸ ls
+        
+        out = cls()
+        'js'            in out and   
+        'bin'           in out and   
+        'kode'          in out and   
+        'node_modules'  in out and   
+        'package.noon'  in out and   
+        'package.json'  in out and   
+        'readme.md'     in out ▸ yes
+        
+    ▸ ls .
+        
+        out = cls '.'
+        'js'            in out and
+        'bin'           in out and
+        'kode'          in out and
+        'node_modules'  in out and
+        'package.noon'  in out and
+        'package.json'  in out and
+        'readme.md'     in out ▸ yes
+        
+    ▸ ls bin
+        
+        out = cls './bin'
+        'img'           in out and
+        'test'          in out and
+        'color-ls'      in out ▸ yes
+
+    ▸ cd bin/test and ls .
+        
+        process.chdir './bin/test'
+        out = cls '.'
+        'Makefile'      in out ▸ yes
+        
+    ▸ offset
+        
+        out = cls '.' {offset:true}
+        '        Makefile'      in out.lines and
+        '        coffee.coffee' in out.lines ▸ yes
+    
+    ▸ tree 
+        # todo: test depth
+        
+        out = cls 'a' {tree:true, depth:99, followSymLinks:true}
+
+        'a'       in out[1] ▸ yes
+        'a.b.c'   in out[2] ▸ yes
+        'a.txt'   in out[3] ▸ yes
+        'txt.txt' in out[4] ▸ yes
+        'b'       in out[5] ▸ yes
+        
+        if not slash.win()
+            'b.lnk ► b.txt' in out[6] ▸ true
+        
+    ▸ recursive
+        
+        out = cls 'a' {recurse:true, depth:99, followSymLinks:true}
+        
+        '▶ a' in out[1] ▸ yes
+        
+        'b'       in out[3] and
+        'a.b.c'   in out[4] and
+        'a.txt'   in out[5] and     
+        'txt.txt' in out[6] and       
+        '▶ a/b'   in out[8] ▸ yes
+        
+        'c' in out[10] ▸ yes
+        
+        if not slash.win()
+            'b.lnk ► b.txt' in out[11] ▸ yes
+        
+        

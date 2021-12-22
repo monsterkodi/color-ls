@@ -1,5 +1,5 @@
 name            color-ls
-version         2.3.0
+version         2.4.0
 description     lists files, but more colorful than ls
 main            ./js/color-ls.js
 author          monsterkodi
@@ -21,7 +21,7 @@ files
 scripts
                 build   ./node_modules/.bin/kode -Ho js kode/color-ls.kode kode/icons.kode
                 test    ./node_modules/.bin/kode -t kode/test.kode
-                watch   ./node_modules/.bin/kode -wt kode/*.kode 
+                watch   ./node_modules/.bin/kode -wt kode/*.kode
 dependencies
                 karg            monsterkodi/karg
                 kslash          monsterkodi/kslash
@@ -33,4 +33,4 @@ dependencies
                 lodash.zip      ^4.2.0
                 moment          ^2.29.1
 devDependencies
-                kode      monsterkodi/kode
+                kode  monsterkodi/kode
