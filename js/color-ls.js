@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.211.0
+// monsterkodi/kode 0.275.0
 
-var _k_ = {in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
+var _k_ = {list: function (l) {return l != null ? typeof l.length === 'number' ? l : [] : []}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
 var ansi, args, BG, bold, BW, colors, dirString, dotString, exec, extString, fg, filter, fs, fw, getPrefix, groupMap, groupname, groupName, ignore, initArgs, inodeString, karg, linkString, listDir, listFiles, log_error, lpad, main, makeCommand, moduleMain, nameString, os, ownerName, ownerString, pathDepth, reset, rightsString, rpad, rwxString, sizeString, slash, sort, startTime, stats, time, timeString, token, userMap, username, util, _9_33_
 
@@ -146,14 +146,14 @@ groupMap = null
 
 groupname = function (gid)
 {
-    var childp, entry, group, groups
+    var childp, entry, group, groups, _193_18_
 
     if (!groupMap)
     {
         try
         {
             childp = require('child_process')
-            groups = childp.spawnSync("getent",['group']).stdout.toString('utf8').split('\n')
+            groups = childp.spawnSync('getent',['group']).stdout.toString('utf8').split('\n')
         }
         catch (e)
         {
@@ -164,8 +164,10 @@ groupname = function (gid)
             groups = fs.readFileSync('/etc/group','utf8').split('\n')
         }
         groupMap = {}
-        for (group of groups)
+        var list = _k_.list(groups)
+        for (var _190_18_ = 0; _190_18_ < list.length; _190_18_++)
         {
+            group = list[_190_18_]
             entry = group.split(':')
             if (entry.length > 2 && entry[2])
             {
@@ -173,7 +175,7 @@ groupname = function (gid)
             }
         }
     }
-    return groupMap[gid] != null ? groupMap[gid] : `${gid}`
+    return ((_193_18_=groupMap[gid]) != null ? _193_18_ : `${gid}`)
 }
 if ('function' === typeof(process.getuid))
 {
@@ -204,12 +206,12 @@ linkString = function (file)
 
 nameString = function (name, ext)
 {
-    var icon, icons, _226_86_
+    var icon, icons, _228_86_
 
     if (args.nerdy)
     {
         icons = require('./icons')
-        icon = (colors[(colors[ext] != null) && ext || '_default'][2] + (((_226_86_=icons.get(name,ext)) != null ? _226_86_ : ' '))) + ' '
+        icon = (colors[(colors[ext] != null) && ext || '_default'][2] + (((_228_86_=icons.get(name,ext)) != null ? _228_86_ : ' '))) + ' '
     }
     else
     {
@@ -410,7 +412,7 @@ timeString = function (stat)
     if (args.pretty)
     {
         age = moment().to(t,true)
-        var _348_21_ = age.split(' ') ; num = _348_21_[0]        ; range = _348_21_[1]
+        var _350_21_ = age.split(' '); num = _350_21_[0]; range = _350_21_[1]
 
         if (num[0] === 'a')
         {
@@ -913,24 +915,24 @@ listFiles = function (p, dirents, depth)
     if (args.alphabetical)
     {
         var list = _k_.list(alph)
-        for (var _649_20_ = 0; _649_20_ < list.length; _649_20_++)
+        for (var _651_20_ = 0; _651_20_ < list.length; _651_20_++)
         {
-            p = list[_649_20_]
+            p = list[_651_20_]
             console.log(p)
         }
     }
     else
     {
         var list1 = _k_.list(dirs)
-        for (var _651_20_ = 0; _651_20_ < list1.length; _651_20_++)
+        for (var _653_20_ = 0; _653_20_ < list1.length; _653_20_++)
         {
-            d = list1[_651_20_]
+            d = list1[_653_20_]
             console.log(d)
         }
         var list2 = _k_.list(fils)
-        for (var _652_20_ = 0; _652_20_ < list2.length; _652_20_++)
+        for (var _654_20_ = 0; _654_20_ < list2.length; _654_20_++)
         {
-            f = list2[_652_20_]
+            f = list2[_654_20_]
             console.log(f)
         }
     }
@@ -1048,9 +1050,9 @@ listDir = function (de, opt = {})
         try
         {
             var list = _k_.list(filter(alldirents,doRecurse))
-            for (var _724_19_ = 0; _724_19_ < list.length; _724_19_++)
+            for (var _726_19_ = 0; _726_19_ < list.length; _726_19_++)
             {
-                de = list[_724_19_]
+                de = list[_726_19_]
                 listDir(de,{parent:p,relativeTo:opt.relativeTo})
             }
         }
@@ -1072,9 +1074,9 @@ listDir = function (de, opt = {})
 
 pathDepth = function (p, opt)
 {
-    var rel, _734_44_
+    var rel, _736_44_
 
-    rel = slash.relative(p,((_734_44_=(opt != null ? opt.relativeTo : undefined)) != null ? _734_44_ : process.cwd()))
+    rel = slash.relative(p,((_736_44_=(opt != null ? opt.relativeTo : undefined)) != null ? _736_44_ : process.cwd()))
     if (p === '.')
     {
         return 0
@@ -1092,7 +1094,7 @@ makeCommand = function (p)
 
 main = function ()
 {
-    var abspth, childp, cmd, commands, dirstats, ex, file, filestats, noon, p, parent, pathstats, result, _779_18_, _798_36_, _798_54_, _805_63_, _812_42_
+    var abspth, childp, cmd, commands, dirstats, ex, file, filestats, noon, p, parent, pathstats, result, _781_18_, _800_36_, _800_54_, _807_63_, _814_42_
 
     pathstats = args.paths.map(function (f)
     {
@@ -1123,9 +1125,9 @@ main = function ()
         console.log(reset)
         listFiles(process.cwd(),filestats.map(function (s)
         {
-            var _767_65_
+            var _769_65_
 
-            s[1].name = ((_767_65_=s[1].name) != null ? _767_65_ : s[0])
+            s[1].name = ((_769_65_=s[1].name) != null ? _769_65_ : s[0])
             return s[1]
         }))
     }
@@ -1134,9 +1136,9 @@ main = function ()
         return (f[1] != null ? f[1].isDirectory() : undefined)
     })
     var list = _k_.list(dirstats)
-    for (var _771_10_ = 0; _771_10_ < list.length; _771_10_++)
+    for (var _773_10_ = 0; _773_10_ < list.length; _773_10_++)
     {
-        p = list[_771_10_]
+        p = list[_773_10_]
         if (args.tree)
         {
             console.log('')
@@ -1151,13 +1153,13 @@ main = function ()
         }
         file = slash.file(abspth)
         parent = slash.dir(abspth)
-        p[1].name = ((_779_18_=p[1].name) != null ? _779_18_ : file)
+        p[1].name = ((_781_18_=p[1].name) != null ? _781_18_ : file)
         listDir(p[1],{parent:parent,relativeTo:parent})
     }
     if (args.execute && exec)
     {
         noon = require('noon')
-        commands = (function () { var result = []; var list1 = _k_.list(exec); for (var _784_43_ = 0; _784_43_ < list1.length; _784_43_++)  { ex = list1[_784_43_];result.push(makeCommand(ex))  } return result }).bind(this)()
+        commands = (function () { var r_786_43_ = []; var list1 = _k_.list(exec); for (var _786_43_ = 0; _786_43_ < list1.length; _786_43_++)  { ex = list1[_786_43_];r_786_43_.push(makeCommand(ex))  } return r_786_43_ }).bind(this)()
         console.log('')
         if (args.dryrun)
         {
@@ -1171,9 +1173,9 @@ main = function ()
             console.log(BG(2,0,0) + fg(5,5,0) + ' execute ' + reset)
             console.log('')
             var list2 = _k_.list(commands)
-            for (var _794_20_ = 0; _794_20_ < list2.length; _794_20_++)
+            for (var _796_20_ = 0; _796_20_ < list2.length; _796_20_++)
             {
-                cmd = list2[_794_20_]
+                cmd = list2[_796_20_]
                 console.log(BW(1) + fw(4) + cmd + reset)
                 try
                 {
@@ -1191,7 +1193,7 @@ main = function ()
                 }
                 catch (err)
                 {
-                    console.error(BG(4,0,0) + fg(5,5,0) + (((_805_63_=(err != null ? err.stdout : undefined)) != null ? _805_63_ : err)) + reset)
+                    console.error(BG(4,0,0) + fg(5,5,0) + (((_807_63_=(err != null ? err.stdout : undefined)) != null ? _807_63_ : err)) + reset)
                 }
             }
         }
@@ -1211,13 +1213,13 @@ else
 {
     moduleMain = function (arg, opt = {})
     {
-        var oldlog, out, _824_27_
+        var oldlog, out, _826_27_
 
         switch (typeof(arg))
         {
             case 'string':
                 args = Object.assign({},opt)
-                args.paths = ((_824_27_=args.paths) != null ? _824_27_ : [])
+                args.paths = ((_826_27_=args.paths) != null ? _826_27_ : [])
                 args.paths.push(arg)
                 break
             case 'object':
@@ -1233,9 +1235,9 @@ else
         console.log = function ()
         {
             var list = _k_.list(arguments)
-            for (var _835_20_ = 0; _835_20_ < list.length; _835_20_++)
+            for (var _837_20_ = 0; _837_20_ < list.length; _837_20_++)
             {
-                arg = list[_835_20_]
+                arg = list[_837_20_]
                 out += String(arg)
             }
             return out += '\n'
