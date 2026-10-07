@@ -100,3 +100,18 @@ cls = ->
             'b.lnk ► b.txt' in out[11] ▸ yes
         
         
+▸ owner
+
+    ▸ group outside my own groups
+
+        out = cls '/etc/passwd' {owner:true}
+
+        joined = out.join ' '
+        'root root' in joined ▸ yes
+
+    ▸ no group is ever undefined
+
+        out = cls '/etc' {owner:true}
+
+        clean = out.every (line) -> not ('undefined' in line)
+        clean ▸ yes

@@ -181,14 +181,16 @@ groupname = (gid) ->
     if not groupMap
         try
             childp = require 'child_process'
-            gids = childp.spawnSync("id", ["-G"]).stdout.toString('utf8').split(' ')
-            gnms = childp.spawnSync("id", ["-Gn"]).stdout.toString('utf8').split(' ')
-            groupMap = {}
-            for i in [0...gids.length]
-                groupMap[gids[i]] = gnms[i]
+            groups = childp.spawnSync('getent', ['group']).stdout.toString('utf8').split('\n')
         catch e
-            log e
-    groupMap[gid]
+            groups = []
+        if not groups.length and fs.existsSync '/etc/group'
+            groups = fs.readFileSync('/etc/group', 'utf8').split('\n')
+        groupMap = {}
+        for group in groups
+            entry = group.split ':'
+            groupMap[entry[2]] = entry[0] if entry.length > 2 and entry[2]
+    groupMap[gid] ? "#{gid}"
 
 if 'function' == typeof process.getuid
     colors['_users'][username(process.getuid())] = fg(0,4,0)

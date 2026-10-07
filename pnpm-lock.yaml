@@ -1,0 +1,203 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      ansi-256-colors:
+        specifier: ^1.1.0
+        version: 1.1.0
+      karg:
+        specifier: github:monsterkodi/karg
+        version: https://codeload.github.com/monsterkodi/karg/tar.gz/acecedf5bf1e9680f505cf9add968cd9692c6494
+      kslash:
+        specifier: github:monsterkodi/kslash
+        version: https://codeload.github.com/monsterkodi/kslash/tar.gz/e8fc17135b31d3847c091d2aaefe3272cbd36c94
+      kstr:
+        specifier: github:monsterkodi/kstr
+        version: https://codeload.github.com/monsterkodi/kstr/tar.gz/eb2a520d328972788d8f3c700258c63adf1b3464
+      lodash.filter:
+        specifier: ^4.6.0
+        version: 4.6.0
+      lodash.unzip:
+        specifier: ^3.4.0
+        version: 3.4.0
+      lodash.zip:
+        specifier: ^4.2.0
+        version: 4.2.0
+      moment:
+        specifier: ^2.29.1
+        version: 2.31.0
+      noon:
+        specifier: github:monsterkodi/noon
+        version: https://codeload.github.com/monsterkodi/noon/tar.gz/9ba597cc72309f12bab572b4df1b7caf8a229e7d
+    devDependencies:
+      kode:
+        specifier: github:monsterkodi/kode
+        version: https://codeload.github.com/monsterkodi/kode/tar.gz/15b911c123cb783bdede2e7128ee89622a89d08a
+
+packages:
+
+  ansi-256-colors@1.1.0:
+    resolution: {integrity: sha512-roJI/AVBdJIhcohHDNXUoFYsCZG4MZIs5HtKNgVKY5QzqQoQJe+o0ouiqZDaSC+ggKdBVcuSwlSdJckrrlm3/A==}
+    engines: {node: '>=0.10.0'}
+
+  colorcat@https://codeload.github.com/monsterkodi/colorcat/tar.gz/e6446c4294438c56b3e8c8c9655e904fe5bf7d13:
+    resolution: {gitHosted: true, integrity: sha512-a6M/vTflBJycG7opMP4rQ5VBQLGZ9wXDxaL+9UD1wYmNJriJ3z++QNyOfH720z23obkv6uSssxVvqgu7qzWViQ==, tarball: https://codeload.github.com/monsterkodi/colorcat/tar.gz/e6446c4294438c56b3e8c8c9655e904fe5bf7d13}
+    version: 2.16.0
+    hasBin: true
+
+  fs-extra@10.1.0:
+    resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
+    engines: {node: '>=12'}
+
+  graceful-fs@4.2.11:
+    resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
+
+  html-entities@2.6.0:
+    resolution: {integrity: sha512-kig+rMn/QOVRvr7c86gQ8lWXq+Hkv6CbAH1hLu+RG338StTpE8Z0b44SDVaqVu7HGKf27frdmUYEs9hTUX/cLQ==}
+
+  isbinaryfile@4.0.10:
+    resolution: {integrity: sha512-iHrqe5shvBUcFbmZq9zOQHBoeOhZJu6RQGrDpBgenUm/Am+F3JM2MgQj+rK3Z601fzrL5gLZWtAPH2OBaSVcyw==}
+    engines: {node: '>= 8.0.0'}
+
+  jsonfile@6.2.1:
+    resolution: {integrity: sha512-zwOTdL3rFQ/lRdBnntKVOX6k5cKJwEc1HdilT71BWEu7J41gXIB2MRp+vxduPSwZJPWBxEzv4yH1wYLJGUHX4Q==}
+
+  karg@https://codeload.github.com/monsterkodi/karg/tar.gz/acecedf5bf1e9680f505cf9add968cd9692c6494:
+    resolution: {gitHosted: true, integrity: sha512-3hSYA/paeKFizbGf4QjLJV1+gk8smkMOhxIVB1p0Vqj9uVkUFgePzEkrzINxj3ymxwGhVkF9iIgkY0RPVrZHDg==, tarball: https://codeload.github.com/monsterkodi/karg/tar.gz/acecedf5bf1e9680f505cf9add968cd9692c6494}
+    version: 2.6.1
+
+  klor@https://codeload.github.com/monsterkodi/klor/tar.gz/55dc4c0f159118cf07144a36e298b2ebf17fb957:
+    resolution: {gitHosted: true, integrity: sha512-KgDnu4Cv9bjCPr1e27HWw+00M3Tqu/r0+3j6uywOK8ZkSITv1G7KpAPIgC94+yJ1ZEU2ADg6J1PowkmCws/VSA==, tarball: https://codeload.github.com/monsterkodi/klor/tar.gz/55dc4c0f159118cf07144a36e298b2ebf17fb957}
+    version: 2.40.0
+
+  kode@https://codeload.github.com/monsterkodi/kode/tar.gz/15b911c123cb783bdede2e7128ee89622a89d08a:
+    resolution: {gitHosted: true, integrity: sha512-O0SWnTHGSm5DkL07aINQIvyBjWe/ZGhzcVOXq7kmuDqDFV67r/PRSybmeE0QBwVC2y7Y1I6gfcbYpHfOvNUZbQ==, tarball: https://codeload.github.com/monsterkodi/kode/tar.gz/15b911c123cb783bdede2e7128ee89622a89d08a}
+    version: 0.275.0
+    hasBin: true
+
+  kslash@https://codeload.github.com/monsterkodi/kslash/tar.gz/e8fc17135b31d3847c091d2aaefe3272cbd36c94:
+    resolution: {gitHosted: true, integrity: sha512-w/N7S8hmCnNdyD6+s2In6qPt5JOi1VVDSmIdb8FuTTKEmY3H/gJx9afWKYHYdWiS7wb9TpeBGv+n+ETSDk8GxA==, tarball: https://codeload.github.com/monsterkodi/kslash/tar.gz/e8fc17135b31d3847c091d2aaefe3272cbd36c94}
+    version: 2.26.0
+
+  kstr@https://codeload.github.com/monsterkodi/kstr/tar.gz/eb2a520d328972788d8f3c700258c63adf1b3464:
+    resolution: {gitHosted: true, integrity: sha512-r5FbKclqGtzGE4sL6VgMu3VQPMzXery42UK9zh3MJrEUTUxXtGoe30pHOVEz6Wz0Mav4H6IR0SHnS6B7FEr+7w==, tarball: https://codeload.github.com/monsterkodi/kstr/tar.gz/eb2a520d328972788d8f3c700258c63adf1b3464}
+    version: 0.22.1
+
+  lodash.filter@4.6.0:
+    resolution: {integrity: sha512-pXYUy7PR8BCLwX5mgJ/aNtyOvuJTdZAo9EQFUvMIYugqmJxnrYaANvTbgndOzHSCSR0wnlBBfRXJL5SbWxo3FQ==}
+
+  lodash.unzip@3.4.0:
+    resolution: {integrity: sha512-XikbKgrWCThtE4pX+w+L70NkZhznx9y2M9WvX3P7wkfJroy1qSa/7EtgE8zFkm7wlm8eox+Xj06zffmcIC2LvA==}
+
+  lodash.zip@4.2.0:
+    resolution: {integrity: sha512-C7IOaBBK/0gMORRBd8OETNx3kmOkgIWIPvyDpZSCTwUrpYmgZwJkjZeOD8ww4xbOUOs4/attY+pciKvadNfFbg==}
+
+  moment@2.31.0:
+    resolution: {integrity: sha512-0acOTfMiWOheYS4eoWb80yYMb/JLvVv9SHbs2PehaDzfUG0Bw855SKyk0IKTnPGa5+U2bmi3W68l1+sGLX/pvw==}
+
+  noon@https://codeload.github.com/monsterkodi/noon/tar.gz/9ba597cc72309f12bab572b4df1b7caf8a229e7d:
+    resolution: {gitHosted: true, integrity: sha512-W68tgahd9aVBMdaZGdIIxtstx9htVmYHjLQgL2ETn+e59uIFq376rAdM6nSjEISAoKvYkkNyCaI0DlLLfYnakQ==, tarball: https://codeload.github.com/monsterkodi/noon/tar.gz/9ba597cc72309f12bab572b4df1b7caf8a229e7d}
+    version: 4.6.1
+    hasBin: true
+
+  textextensions@5.16.0:
+    resolution: {integrity: sha512-7D/r3s6uPZyU//MCYrX6I14nzauDwJ5CxazouuRGNuvSCihW87ufN6VLoROLCrHg6FblLuJrT6N2BVaPVzqElw==}
+    engines: {node: '>=0.8'}
+
+  universalify@2.0.1:
+    resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
+    engines: {node: '>= 10.0.0'}
+
+  uuid@8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+    hasBin: true
+
+  walkdir@0.4.1:
+    resolution: {integrity: sha512-3eBwRyEln6E1MSzcxcVpQIhRG8Q1jLvEqRmCZqS3dsfXEDR/AhOF4d+jHg1qvDCpYaVRZjENPQyrVxAkQqxPgQ==}
+    engines: {node: '>=6.0.0'}
+
+snapshots:
+
+  ansi-256-colors@1.1.0: {}
+
+  colorcat@https://codeload.github.com/monsterkodi/colorcat/tar.gz/e6446c4294438c56b3e8c8c9655e904fe5bf7d13:
+    dependencies:
+      karg: https://codeload.github.com/monsterkodi/karg/tar.gz/acecedf5bf1e9680f505cf9add968cd9692c6494
+      klor: https://codeload.github.com/monsterkodi/klor/tar.gz/55dc4c0f159118cf07144a36e298b2ebf17fb957
+      kslash: https://codeload.github.com/monsterkodi/kslash/tar.gz/e8fc17135b31d3847c091d2aaefe3272cbd36c94
+      noon: https://codeload.github.com/monsterkodi/noon/tar.gz/9ba597cc72309f12bab572b4df1b7caf8a229e7d
+
+  fs-extra@10.1.0:
+    dependencies:
+      graceful-fs: 4.2.11
+      jsonfile: 6.2.1
+      universalify: 2.0.1
+
+  graceful-fs@4.2.11: {}
+
+  html-entities@2.6.0: {}
+
+  isbinaryfile@4.0.10: {}
+
+  jsonfile@6.2.1:
+    dependencies:
+      universalify: 2.0.1
+    optionalDependencies:
+      graceful-fs: 4.2.11
+
+  karg@https://codeload.github.com/monsterkodi/karg/tar.gz/acecedf5bf1e9680f505cf9add968cd9692c6494:
+    dependencies:
+      klor: https://codeload.github.com/monsterkodi/klor/tar.gz/55dc4c0f159118cf07144a36e298b2ebf17fb957
+      kstr: https://codeload.github.com/monsterkodi/kstr/tar.gz/eb2a520d328972788d8f3c700258c63adf1b3464
+      noon: https://codeload.github.com/monsterkodi/noon/tar.gz/9ba597cc72309f12bab572b4df1b7caf8a229e7d
+
+  klor@https://codeload.github.com/monsterkodi/klor/tar.gz/55dc4c0f159118cf07144a36e298b2ebf17fb957: {}
+
+  kode@https://codeload.github.com/monsterkodi/kode/tar.gz/15b911c123cb783bdede2e7128ee89622a89d08a:
+    dependencies:
+      colorcat: https://codeload.github.com/monsterkodi/colorcat/tar.gz/e6446c4294438c56b3e8c8c9655e904fe5bf7d13
+      karg: https://codeload.github.com/monsterkodi/karg/tar.gz/acecedf5bf1e9680f505cf9add968cd9692c6494
+      kslash: https://codeload.github.com/monsterkodi/kslash/tar.gz/e8fc17135b31d3847c091d2aaefe3272cbd36c94
+      kstr: https://codeload.github.com/monsterkodi/kstr/tar.gz/eb2a520d328972788d8f3c700258c63adf1b3464
+      noon: https://codeload.github.com/monsterkodi/noon/tar.gz/9ba597cc72309f12bab572b4df1b7caf8a229e7d
+
+  kslash@https://codeload.github.com/monsterkodi/kslash/tar.gz/e8fc17135b31d3847c091d2aaefe3272cbd36c94:
+    dependencies:
+      fs-extra: 10.1.0
+      isbinaryfile: 4.0.10
+      textextensions: 5.16.0
+      uuid: 8.3.2
+      walkdir: 0.4.1
+
+  kstr@https://codeload.github.com/monsterkodi/kstr/tar.gz/eb2a520d328972788d8f3c700258c63adf1b3464:
+    dependencies:
+      html-entities: 2.6.0
+      noon: https://codeload.github.com/monsterkodi/noon/tar.gz/9ba597cc72309f12bab572b4df1b7caf8a229e7d
+
+  lodash.filter@4.6.0: {}
+
+  lodash.unzip@3.4.0: {}
+
+  lodash.zip@4.2.0: {}
+
+  moment@2.31.0: {}
+
+  noon@https://codeload.github.com/monsterkodi/noon/tar.gz/9ba597cc72309f12bab572b4df1b7caf8a229e7d:
+    dependencies:
+      karg: https://codeload.github.com/monsterkodi/karg/tar.gz/acecedf5bf1e9680f505cf9add968cd9692c6494
+      klor: https://codeload.github.com/monsterkodi/klor/tar.gz/55dc4c0f159118cf07144a36e298b2ebf17fb957
+
+  textextensions@5.16.0: {}
+
+  universalify@2.0.1: {}
+
+  uuid@8.3.2: {}
+
+  walkdir@0.4.1: {}

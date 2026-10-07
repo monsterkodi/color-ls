@@ -146,27 +146,34 @@ groupMap = null
 
 groupname = function (gid)
 {
-    var childp, gids, gnms, i
+    var childp, entry, group, groups
 
     if (!groupMap)
     {
         try
         {
             childp = require('child_process')
-            gids = childp.spawnSync("id",["-G"]).stdout.toString('utf8').split(' ')
-            gnms = childp.spawnSync("id",["-Gn"]).stdout.toString('utf8').split(' ')
-            groupMap = {}
-            for (var _187_22_ = i = 0, _187_26_ = gids.length; (_187_22_ <= _187_26_ ? i < gids.length : i > gids.length); (_187_22_ <= _187_26_ ? ++i : --i))
-            {
-                groupMap[gids[i]] = gnms[i]
-            }
+            groups = childp.spawnSync("getent",['group']).stdout.toString('utf8').split('\n')
         }
         catch (e)
         {
-            console.log(e)
+            groups = []
+        }
+        if (!groups.length && fs.existsSync('/etc/group'))
+        {
+            groups = fs.readFileSync('/etc/group','utf8').split('\n')
+        }
+        groupMap = {}
+        for (group of groups)
+        {
+            entry = group.split(':')
+            if (entry.length > 2 && entry[2])
+            {
+                groupMap[entry[2]] = entry[0]
+            }
         }
     }
-    return groupMap[gid]
+    return groupMap[gid] != null ? groupMap[gid] : `${gid}`
 }
 if ('function' === typeof(process.getuid))
 {
