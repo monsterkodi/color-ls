@@ -1,8 +1,6 @@
-// monsterkodi/kode 0.211.0
-
 var _k_ = {in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
-var cls, kstr, ls, out, slash
+var clean, cls, joined, kstr, ls, out, slash
 
 slash = require('kslash')
 kstr = require('kstr')
@@ -81,5 +79,24 @@ module.exports["ls"] = function ()
     })
 }
 module.exports["ls"]._section_ = true
+module.exports["owner"] = function ()
+{
+    section("group outside my own groups", function ()
+    {
+        out = cls('/etc/passwd',{owner:true})
+        joined = out.join(' ')
+        compare(_k_.in('root root',joined),true)
+    })
+    section("no group is ever undefined", function ()
+    {
+        out = cls('/etc',{owner:true})
+        clean = out.every(function (line)
+        {
+            return !(_k_.in('undefined',line))
+        })
+        compare(clean,true)
+    })
+}
+module.exports["owner"]._section_ = true
 module.exports._test_ = true
 module.exports
